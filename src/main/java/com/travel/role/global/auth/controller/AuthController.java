@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.travel.role.global.auth.dto.SignInRequestDTO;
 import com.travel.role.global.auth.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.service.AuthService;
 
@@ -23,4 +24,8 @@ public class AuthController {
 		return authService.signUp(signUpRequestDTO);
 	}
 
+	@PostMapping("/signin")
+	public ResponseEntity<?> signIn(@RequestBody SignInRequestDTO signInRequestDTO) {
+		return authService.signIn(signInRequestDTO);
+	}
 }

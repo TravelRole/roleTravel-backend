@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Token extends BaseTime {
 	@Id
-	@Column(name = "user_email")
+	@Column(name = "user_email", length = 1024)
 	private String userEmail;
 
-	@Column(name = "refresh_token")
+	@Column(name = "refresh_token", length = 1024)
 	private String refreshToken;
 }
