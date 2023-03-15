@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.Role;
 import com.travel.role.domain.user.domain.UserEntity;
-import com.travel.role.global.auth.dto.SignUpRequest;
+import com.travel.role.global.auth.dto.SignUpRequestDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,10 +16,10 @@ public class AuthService {
 
 	private final UserRepository userRepository;
 
-	public ResponseEntity<?> signUp(SignUpRequest signUpRequest) {
+	public ResponseEntity<?> signUp(SignUpRequestDTO signUpRequestDTO) {
 
-		UserEntity newUser = new UserEntity(null, signUpRequest.getNickname(), signUpRequest.getEmail(),
-			signUpRequest.getPassword(),
+		UserEntity newUser = new UserEntity(null, signUpRequestDTO.getNickname(), signUpRequestDTO.getEmail(),
+			signUpRequestDTO.getPassword(),
 			Role.USER);
 
 		userRepository.save(newUser);
