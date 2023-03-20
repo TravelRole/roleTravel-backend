@@ -34,4 +34,11 @@ public class UserEntity extends BaseTime{
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
+
+	@Column(name = "refresh_token", length = 1024)
+	private String refreshToken;
+
+	public void updateRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
 }

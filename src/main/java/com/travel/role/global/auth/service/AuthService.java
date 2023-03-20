@@ -8,10 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.travel.role.domain.user.dao.TokenRepository;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.Role;
-import com.travel.role.domain.user.domain.Token;
 import com.travel.role.domain.user.domain.UserEntity;
 import com.travel.role.global.auth.dto.AuthResponse;
 import com.travel.role.global.auth.dto.SignInRequestDTO;
@@ -27,14 +25,13 @@ public class AuthService {
 	private final AuthenticationManager authenticationManager;
 	private final TokenProvider tokenProvider;
 	private final UserRepository userRepository;
-	private final TokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	public ResponseEntity<?> signUp(SignUpRequestDTO signUpRequestDTO) {
 
 		UserEntity newUser = new UserEntity(null, signUpRequestDTO.getNickname(), signUpRequestDTO.getEmail(),
 			passwordEncoder.encode(signUpRequestDTO.getPassword()),
-			Role.USER);
+			Role.USER, null);
 
 		userRepository.save(newUser);
 
@@ -52,12 +49,19 @@ public class AuthService {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		TokenMapping tokenMapping = tokenProvider.createToken(authentication);
-		Token token = new Token(tokenMapping.getUserEmail(), tokenMapping.getRefreshToken());
-		tokenRepository.save(token);
+		updateToken(tokenMapping);
 
 		AuthResponse authResponse = new AuthResponse(tokenMapping.getAccessToken(), tokenMapping.getRefreshToken(),
 			null);
 
 		return ResponseEntity.ok(authResponse);
+	}
+
+	private void updateToken(TokenMapping tokenMapping) {
+		UserEntity findUser = userRepository.findByEmail(tokenMapping.getUserEmail()).orElseThrow(
+			() -> new RuntimeException("존재하지 않는 유저의 정보입니다.")
+		);
+		findUser.updateRefreshToken(tokenMapping.getRefreshToken());
+
 	}
 }
