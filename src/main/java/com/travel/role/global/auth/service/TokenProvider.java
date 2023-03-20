@@ -63,7 +63,7 @@ public class TokenProvider {
 		Claims claims = Jwts.parserBuilder()
 			.setSigningKey(SECRET_KEY)
 			.build()
-			.parseClaimsJwt(token)
+			.parseClaimsJws(token)
 			.getBody();
 
 		return Long.parseLong(claims.getSubject());
