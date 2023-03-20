@@ -30,10 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final CustomUserDetailService customUserDetailsService;
-//	private final CustomDefaultOAuth2UserService customOAuth2UserService;
-//	private final CustomSimpleUrlAuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-//	private final CustomSimpleUrlAuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter(){
 		return new JwtAuthenticationFilter();
@@ -70,9 +66,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.disable()
 			.httpBasic()
 				.disable()
-			// .exceptionHandling()
-				// .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-				// .and()
 			.authorizeRequests()
 				.antMatchers("/", "/h2-console").permitAll()
 				.antMatchers("/login/**", "/auth/**").permitAll()
@@ -80,10 +73,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authenticated()
 			.and()
 			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-			/*oauth 부분 생략*/
-
-			// http.addFilterBefore(JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 	}
 
 
