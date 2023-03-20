@@ -29,8 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 		String jwt = getJwtFromRequest(request);
 
-		// TODO: Validate 기능 추가할 것!
-		if (StringUtils.hasText(jwt)) {
+		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 			UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationById(jwt);
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			SecurityContextHolder.getContext().setAuthentication(authentication);

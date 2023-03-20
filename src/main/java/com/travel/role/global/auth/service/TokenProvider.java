@@ -1,6 +1,7 @@
 package com.travel.role.global.auth.service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
@@ -17,14 +18,17 @@ import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.token.UserPrincipal;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TokenProvider {
 
 	private final CustomUserDetailService customUserDetailService;
@@ -67,5 +71,17 @@ public class TokenProvider {
 			.getBody();
 
 		return Long.parseLong(claims.getSubject());
+	}
+
+	public boolean validateToken(String token) {
+		try {
+			Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
+			return true;
+		} catch (ExpiredJwtException e) {
+			log.info("validation 결과 Jwt 토큰이 잘못되었습니다 : {}", e.getMessage());
+		} catch (Exception e) {
+			log.info("JWT 토큰이 잘못되었습니다 : {}", e.getMessage());
+		}
+		return false;
 	}
 }
