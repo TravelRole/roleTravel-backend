@@ -38,7 +38,7 @@ public class AuthService {
 		return ResponseEntity.ok().body(newUser);
 	}
 
-	public ResponseEntity<?> signIn(SignInRequestDTO signInRequestDTO) {
+	public TokenMapping signIn(SignInRequestDTO signInRequestDTO) {
 		Authentication authentication = authenticationManager.authenticate(
 			new UsernamePasswordAuthenticationToken(
 				signInRequestDTO.getEmail(),
@@ -51,10 +51,7 @@ public class AuthService {
 		TokenMapping tokenMapping = tokenProvider.createToken(authentication);
 		updateToken(tokenMapping);
 
-		AuthResponse authResponse = new AuthResponse(tokenMapping.getAccessToken(), tokenMapping.getRefreshToken(),
-			null);
-
-		return ResponseEntity.ok(authResponse);
+		return tokenMapping;
 	}
 
 	private void updateToken(TokenMapping tokenMapping) {
