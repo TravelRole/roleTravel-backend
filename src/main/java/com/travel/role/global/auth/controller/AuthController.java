@@ -1,16 +1,19 @@
 package com.travel.role.global.auth.controller;
 
-import org.apache.coyote.Response;
+import static com.travel.role.global.auth.service.RefreshTokenCookieProvider.*;
+
+import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.global.auth.dto.AuthResponse;
+import com.travel.role.global.auth.dto.AccessTokenResponse;
 import com.travel.role.global.auth.dto.SignInRequestDTO;
 import com.travel.role.global.auth.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
@@ -33,11 +36,11 @@ public class AuthController {
 	}
 
 	@PostMapping("/auth/signin")
-	public ResponseEntity<AuthResponse> signIn(@RequestBody SignInRequestDTO signInRequestDTO) {
+	public ResponseEntity<AccessTokenResponse> signIn(@RequestBody SignInRequestDTO signInRequestDTO) {
 		TokenMapping tokenResult = authService.signIn(signInRequestDTO);
 
 		ResponseCookie cookie = refreshTokenCookieProvider.createCookie(tokenResult.getRefreshToken());
-		AuthResponse authResponse = new AuthResponse(tokenResult.getAccessToken());
+		AccessTokenResponse authResponse = new AccessTokenResponse(tokenResult.getAccessToken());
 
 		return ResponseEntity.ok()
 			.header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -49,4 +52,10 @@ public class AuthController {
 		return ResponseEntity.ok().body(userPrincipal);
 	}
 
+	@PostMapping("/auth/refresh")
+	public ResponseEntity<AccessTokenResponse> refresh(@CookieValue(value = REFRESH_TOKEN, required = false) String refreshToken) {
+		AccessTokenResponse result = authService.refresh(refreshToken);
+		return ResponseEntity.ok()
+			.body(result);
+	}
 }

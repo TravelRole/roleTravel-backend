@@ -22,11 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-// @EnableGlobalMethodSecurity(
-// 	securedEnabled = true,
-// 	jsr250Enabled = true,
-// 	prePostEnabled = true
-// )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final CustomUserDetailService customUserDetailsService;
@@ -67,10 +62,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic()
 				.disable()
 			.authorizeRequests()
-				.antMatchers("/", "/h2-console").permitAll()
+				.antMatchers("/", "/h2-console/**").permitAll()
 				.antMatchers("/login/**", "/auth/**").permitAll()
 			.anyRequest()
 				.authenticated()
+			.and()
+			.headers().frameOptions().disable() // h2 db 접속때문에 설정한것 //TODO: H2-DB 테스트 이후 삭제할것
 			.and()
 			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
