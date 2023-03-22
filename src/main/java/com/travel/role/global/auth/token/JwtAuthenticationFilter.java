@@ -29,6 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 		String jwt = getJwtFromRequest(request);
 
+		if (jwt == null) {
+			throw new RuntimeException("Access Token 값이 존재하지 않습니다.");
+		}
+
 		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 			UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationById(jwt);
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
