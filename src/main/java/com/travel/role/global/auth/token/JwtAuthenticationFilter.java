@@ -1,5 +1,7 @@
 package com.travel.role.global.auth.token;
 
+import static com.travel.role.global.exception.ExceptionMessage.*;
+
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
@@ -11,14 +13,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.travel.role.global.auth.exception.InvalidTokenException;
+import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.auth.service.TokenProvider;
+import com.travel.role.global.exception.ExceptionMessage;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Autowired
@@ -29,11 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 		String jwt = getJwtFromRequest(request);
 
-		if (jwt == null) {
-			throw new RuntimeException("Access Token 값이 존재하지 않습니다.");
-		}
-
-		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+		if (StringUtils.hasText(jwt)) {
+			tokenProvider.validateToken(jwt);
 			UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationById(jwt);
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			SecurityContextHolder.getContext().setAuthentication(authentication);

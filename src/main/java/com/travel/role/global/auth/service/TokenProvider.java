@@ -36,7 +36,7 @@ public class TokenProvider {
 	private final CustomUserDetailService customUserDetailService;
 
 	private static final Long ACCESS_TOKEN_EXPIRATION = 1000L * 30;
-	private static final Long REFRESH_TOKEN_EXPIRATION = 1000L * 60 * 5;
+	private static final Long REFRESH_TOKEN_EXPIRATION = 1000L * 60;
 	private static final String SECRET_KEY = "secretsegseigjesilgjesigjesiljgesilgjeislfilesnilvsenilsenfklesnfiesseifnesilnesi21tgf8h3igh38o2ur59t23utg9ehjnwasiotu89023uqjrtfi3qgh0983y12ht923h90gh3qw2g923h9g230hng239gh";
 
 	public TokenMapping createToken(Authentication authentication) {
@@ -96,16 +96,16 @@ public class TokenProvider {
 		return Long.parseLong(claims.getSubject());
 	}
 
-	public boolean validateToken(String token) {
+	public void validateToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
-			return true;
 		} catch (ExpiredJwtException e) {
 			log.info("validation 결과 Jwt 토큰이 잘못되었습니다 : {}", e.getMessage());
+			throw e;
 		} catch (Exception e) {
 			log.info("JWT 토큰이 잘못되었습니다 : {}", e.getMessage());
+			throw e;
 		}
-		return false;
 	}
 
 	public Long getTokenExpiration(String token) {

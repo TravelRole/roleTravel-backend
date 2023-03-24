@@ -1,5 +1,8 @@
 package com.travel.role.global.auth.service;
 
+import static com.travel.role.global.exception.ExceptionMessage.*;
+
+import java.rmi.server.ExportException;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
 import com.travel.role.global.auth.token.UserPrincipal;
+import com.travel.role.global.exception.ExceptionMessage;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +29,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
 		UserEntity user = userRepository.findByEmail(email)
 			.orElseThrow(()->
-				new UsernameNotFoundException("유저 정보를 찾을 수 없습니다."));
+				new UsernameNotFoundException(USERNAME_NOT_FOUND));
 
 		return UserPrincipal.create(user);
 	}
@@ -34,7 +38,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	public UserDetails loadUserById(Long id){
 		Optional<UserEntity> user = userRepository.findById(id);
 		if (user.isEmpty()) {
-			throw new RuntimeException("해당하는 유저가 없습니다.");
+			throw new UsernameNotFoundException(USERNAME_NOT_FOUND);
 		}
 
 		return UserPrincipal.create(user.get());

@@ -1,5 +1,6 @@
 package com.travel.role.global.auth.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.BeanIds;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.travel.role.global.auth.exception.TokenExceptionHandlerFilter;
 import com.travel.role.global.auth.service.CustomUserDetailService;
 import com.travel.role.global.auth.token.JwtAuthenticationFilter;
 
@@ -25,10 +27,12 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final CustomUserDetailService customUserDetailsService;
-	@Bean
-	public JwtAuthenticationFilter jwtAuthenticationFilter(){
-		return new JwtAuthenticationFilter();
-	}
+
+	@Autowired
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+	@Autowired
+	private final TokenExceptionHandlerFilter tokenExceptionHandlerFilter;
 
 	@Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -62,14 +66,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic()
 				.disable()
 			.authorizeRequests()
-				.antMatchers("/", "/h2-console/**").permitAll()
-				.antMatchers("/login/**", "/auth/**").permitAll()
+				.antMatchers("/auth/**", "/h2-console/**").permitAll()
 			.anyRequest()
 				.authenticated()
 			.and()
 			.headers().frameOptions().disable() // h2 db 접속때문에 설정한것 //TODO: H2-DB 테스트 이후 삭제할것
 			.and()
-			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(tokenExceptionHandlerFilter, JwtAuthenticationFilter.class);
 	}
 
 

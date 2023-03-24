@@ -1,5 +1,7 @@
 package com.travel.role.global.auth.service;
 
+import static com.travel.role.global.exception.ExceptionMessage.*;
+
 import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +21,9 @@ import com.travel.role.global.auth.dto.AccessTokenResponse;
 import com.travel.role.global.auth.dto.SignInRequestDTO;
 import com.travel.role.global.auth.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
+import com.travel.role.global.auth.exception.InvalidTokenException;
+import com.travel.role.global.auth.exception.NotExistTokenException;
 
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -61,41 +65,51 @@ public class AuthService {
 
 	public void updateToken(TokenMapping tokenMapping) {
 		UserEntity findUser = userRepository.findByEmail(tokenMapping.getUserEmail()).orElseThrow(
-			() -> new RuntimeException("존재하지 않는 유저의 정보입니다.")
+			() -> new UsernameNotFoundException(USERNAME_NOT_FOUND)
 		);
 		findUser.updateRefreshToken(tokenMapping.getRefreshToken());
 	}
 
-	public AccessTokenResponse refresh(final String refreshToken) {
-		validateRefreshToken(refreshToken);
+	public AccessTokenResponse refresh(final String refreshToken, String accessToken) {
+		validateToken(refreshToken, accessToken);
 
 		UserEntity findUser = userRepository.findByRefreshToken(refreshToken)
-			.orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+			.orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
 		UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationByEmail(
 			findUser.getEmail());
 
 		return tokenProvider.refreshAccessToken(authentication);
 	}
 
-	public void validateRefreshToken(final String refreshToken) {
-		if (refreshToken == null) {
-			throw new RuntimeException("Refresh Token이 존재하지 않습니다.");
+	public void validateToken(final String refreshToken, String accessToken) {
+		if (refreshToken == null || accessToken == null) {
+			throw new NotExistTokenException(NOT_EXISTS_TOKEN);
 		}
 
 		Optional<UserEntity> findUser = userRepository.findByRefreshToken(refreshToken);
 
 		if (findUser.isEmpty()) {
-			throw new RuntimeException("유효하지 않은 Refresh Token 입니다.");
+			throw new InvalidTokenException(INVALID_TOKEN);
 		}
 
-		Long expirationTime = tokenProvider.getTokenExpiration(refreshToken);
-		if (expirationTime < 0) {
+		Long accessTokenExpirationTime = 0L;
+		Long refreshTokenExpirationTime = 0L;
+		try {
+			accessTokenExpirationTime = tokenProvider.getTokenExpiration(accessToken);
+			refreshTokenExpirationTime = tokenProvider.getTokenExpiration(refreshToken);
+		} catch (Exception e) {
 			findUser.get().deleteRefreshToken();
-			throw new RuntimeException("만료시간이 지난 Token 입니다.");
+			throw new InvalidTokenException(INVALID_TOKEN);
 		}
 
-		if (!tokenProvider.validateToken(refreshToken)) {
-			throw new RuntimeException("유효하지 않은 Refresh Token 입니다.");
+		if (accessTokenExpirationTime > 0) {
+			findUser.get().deleteRefreshToken();
+			throw new InvalidTokenException(INVALID_TOKEN);
+		}
+
+		if (refreshTokenExpirationTime < 0) {
+			findUser.get().deleteRefreshToken();
+			throw new InvalidTokenException(INVALID_TOKEN);
 		}
 	}
 }
