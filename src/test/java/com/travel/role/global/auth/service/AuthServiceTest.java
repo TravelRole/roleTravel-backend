@@ -3,6 +3,8 @@ package com.travel.role.global.auth.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +12,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.user.dao.UserRepository;
+import com.travel.role.domain.user.domain.Role;
+import com.travel.role.domain.user.domain.UserEntity;
 import com.travel.role.global.auth.dto.SignUpRequestDTO;
+import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.exception.ExceptionMessage;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
@@ -24,7 +29,7 @@ class AuthServiceTest {
 	private UserRepository userRepository;
 
 	@Test
-	void 이미_존재하는_이메일로_회원가입을_진행할때() {
+	void 이미_존재하는_이메일로_회원가입을_진행할때_예외_발생() {
 		// given
 		SignUpRequestDTO signUpRequestDTO = createSignUpRequestDTO();
 		given(userRepository.existsByEmail(anyString())).willReturn(true);
@@ -36,7 +41,7 @@ class AuthServiceTest {
 	}
 
 	@Test
-	void 토큰없이_액세스토큰을_재발급_받으려는_경우() {
+	void 토큰없이_액세스토큰을_재발급_받으려는_경우_예외_발생() {
 		// given,when,then
 		assertThatThrownBy(() -> authService.refresh(null, "token"))
 			.isInstanceOf(NotExistTokenException.class)
@@ -51,11 +56,32 @@ class AuthServiceTest {
 			.hasMessageContaining(ExceptionMessage.NOT_EXISTS_TOKEN);
 	}
 
+	@Test
+	void 리프레시토큰을_가지고있는_유저가_없는경우_예외_발생() {
+		//given
+		given(userRepository.findByRefreshToken(anyString()))
+			.willReturn(Optional.empty());
+		//when, then
+		assertThatThrownBy(() -> authService.refresh("refreshToken", "accessToken"))
+			.isInstanceOf(InvalidTokenException.class)
+			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
+	}
+
 	private SignUpRequestDTO createSignUpRequestDTO() {
 		SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO();
 		signUpRequestDTO.setEmail("chan@naver.com");
 		signUpRequestDTO.setName("김철수");
 		signUpRequestDTO.setPassword("12342");
 		return signUpRequestDTO;
+	}
+
+	private UserEntity createUser() {
+		return UserEntity.builder()
+			.id(1L)
+			.email("chan@naver.com")
+			.name("김철수")
+			.password("$2a$10$RmFajfEsgvXwpJLl7GmKR.0OI5GaH6gb1XsZlvBVuruFZj852loyC")
+			.role(Role.USER)
+			.refreshToken("refreshToken").build();
 	}
 }
