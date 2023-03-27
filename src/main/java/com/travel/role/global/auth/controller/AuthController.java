@@ -36,7 +36,7 @@ public class AuthController {
 		return authService.signUp(signUpRequestDTO);
 	}
 
-	@PostMapping("/auth/signin")
+	@PostMapping("/auth/login")
 	public ResponseEntity<AccessTokenResponse> signIn(@RequestBody SignInRequestDTO signInRequestDTO) {
 		TokenMapping tokenResult = authService.signIn(signInRequestDTO);
 
@@ -46,11 +46,6 @@ public class AuthController {
 		return ResponseEntity.ok()
 			.header(HttpHeaders.SET_COOKIE, cookie.toString())
 			.body(authResponse);
-	}
-
-	@PostMapping("/test")
-	public ResponseEntity<?> test(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		return ResponseEntity.ok().body(userPrincipal);
 	}
 
 	@PostMapping("/auth/refresh")
