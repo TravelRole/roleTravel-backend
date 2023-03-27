@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.global.auth.dto.SignUpRequestDTO;
+import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.exception.ExceptionMessage;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
 
@@ -32,6 +33,22 @@ class AuthServiceTest {
 		assertThatThrownBy(() -> authService.signUp(signUpRequestDTO))
 			.isInstanceOf(AlreadyExistUserException.class)
 				.hasMessageContaining(ExceptionMessage.ALREADY_EXIST_USER);
+	}
+
+	@Test
+	void 토큰없이_액세스토큰을_재발급_받으려는_경우() {
+		// given,when,then
+		assertThatThrownBy(() -> authService.refresh(null, "token"))
+			.isInstanceOf(NotExistTokenException.class)
+			.hasMessageContaining(ExceptionMessage.NOT_EXISTS_TOKEN);
+
+		assertThatThrownBy(() -> authService.refresh("token", null))
+			.isInstanceOf(NotExistTokenException.class)
+			.hasMessageContaining(ExceptionMessage.NOT_EXISTS_TOKEN);
+
+		assertThatThrownBy(() -> authService.refresh(null, null))
+			.isInstanceOf(NotExistTokenException.class)
+			.hasMessageContaining(ExceptionMessage.NOT_EXISTS_TOKEN);
 	}
 
 	private SignUpRequestDTO createSignUpRequestDTO() {
