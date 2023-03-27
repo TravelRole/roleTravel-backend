@@ -63,7 +63,7 @@ public class UserEntity extends BaseTime{
 	public static UserEntity toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
 		return UserEntity.builder()
 			.name(signUpRequestDTO.getName())
-			.email(signUpRequestDTO.getName())
+			.email(signUpRequestDTO.getEmail())
 			.password(password)
 			.birth(signUpRequestDTO.getBirth())
 			.profile(signUpRequestDTO.getProfile())
