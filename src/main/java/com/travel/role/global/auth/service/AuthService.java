@@ -4,10 +4,10 @@ import static com.travel.role.global.exception.ExceptionMessage.*;
 
 import java.util.Optional;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.Role;
 import com.travel.role.domain.user.domain.UserEntity;
 import com.travel.role.global.auth.dto.AccessTokenResponse;
 import com.travel.role.global.auth.dto.SignInRequestDTO;
@@ -37,11 +36,7 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 
 	public ResponseEntity<?> signUp(SignUpRequestDTO signUpRequestDTO) {
-
-		UserEntity newUser = new UserEntity(null, signUpRequestDTO.getNickname(), signUpRequestDTO.getEmail(),
-			passwordEncoder.encode(signUpRequestDTO.getPassword()),
-			Role.USER, null);
-
+		UserEntity newUser = UserEntity.toEntity(signUpRequestDTO, passwordEncoder.encode(signUpRequestDTO.getPassword()));
 		userRepository.save(newUser);
 
 		return ResponseEntity.ok().body(newUser);

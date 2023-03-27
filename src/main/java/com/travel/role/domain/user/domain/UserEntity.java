@@ -12,7 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.travel.role.global.auth.dto.SignUpRequestDTO;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserEntity extends BaseTime{
 
 	@Id
@@ -54,5 +58,16 @@ public class UserEntity extends BaseTime{
 		if (refreshToken != null) {
 			refreshToken = null;
 		}
+	}
+
+	public static UserEntity toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
+		return UserEntity.builder()
+			.name(signUpRequestDTO.getName())
+			.email(signUpRequestDTO.getName())
+			.password(password)
+			.birth(signUpRequestDTO.getBirth())
+			.profile(signUpRequestDTO.getProfile())
+			.role(Role.USER)
+			.build();
 	}
 }
