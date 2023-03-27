@@ -1,10 +1,5 @@
 package com.travel.role.global.auth.service;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Base64;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -13,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.travel.role.global.auth.dto.AccessTokenResponse;
 import com.travel.role.global.auth.dto.TokenMapping;
@@ -40,7 +34,7 @@ public class TokenProvider {
 	private static final String SECRET_KEY = "secretsegseigjesilgjesigjesiljgesilgjeislfilesnilvsenilsenfklesnfiesseifnesilnesi21tgf8h3igh38o2ur59t23utg9ehjnwasiotu89023uqjrtfi3qgh0983y12ht923h90gh3qw2g923h9g230hng239gh";
 
 	public TokenMapping createToken(Authentication authentication) {
-		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
 
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
 		SecretKey key = Keys.hmacShaKeyFor(keyBytes);

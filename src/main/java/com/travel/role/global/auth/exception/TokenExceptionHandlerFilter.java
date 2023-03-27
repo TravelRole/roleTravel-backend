@@ -8,15 +8,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.travel.role.global.exception.ExceptionFilterResponse;
-import com.travel.role.global.exception.ExceptionResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +23,7 @@ public class TokenExceptionHandlerFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-		try	{
+		try {
 			filterChain.doFilter(request, response);
 		} catch (Exception e) {
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());

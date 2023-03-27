@@ -1,7 +1,5 @@
 package com.travel.role.global.auth.token;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
-
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
@@ -17,10 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.auth.service.TokenProvider;
-import com.travel.role.global.exception.ExceptionMessage;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -2,11 +2,10 @@ package com.travel.role.global.auth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.BeanIds;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -39,17 +38,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		authenticationManagerBuilder
 			.userDetailsService(customUserDetailsService)
 			.passwordEncoder(passwordEncoder());
-}
-
+	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder(){
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean(BeanIds.AUTHENTICATION_MANAGER)
 	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception{
+	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
 
@@ -57,24 +55,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.cors()
-				.and()
+			.and()
 			.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
 			.csrf()
-				.disable()
+			.disable()
 			.httpBasic()
-				.disable()
+			.disable()
 			.authorizeRequests()
-				.antMatchers("/auth/**", "/h2-console/**").permitAll()
+			.antMatchers("/auth/**", "/h2-console/**").permitAll()
 			.anyRequest()
-				.authenticated()
+			.authenticated()
 			.and()
 			.headers().frameOptions().disable() // h2 db 접속때문에 설정한것 //TODO: H2-DB 테스트 이후 삭제할것
 			.and()
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(tokenExceptionHandlerFilter, JwtAuthenticationFilter.class);
 	}
-
 
 }
