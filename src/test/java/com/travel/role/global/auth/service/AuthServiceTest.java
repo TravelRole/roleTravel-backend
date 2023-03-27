@@ -27,6 +27,8 @@ class AuthServiceTest {
 	private AuthService authService;
 	@Mock
 	private UserRepository userRepository;
+	@Mock
+	private TokenProvider tokenProvider;
 
 	@Test
 	void 이미_존재하는_이메일로_회원가입을_진행할때_예외_발생() {
@@ -63,6 +65,24 @@ class AuthServiceTest {
 			.willReturn(Optional.empty());
 		//when, then
 		assertThatThrownBy(() -> authService.refresh("refreshToken", "accessToken"))
+			.isInstanceOf(InvalidTokenException.class)
+			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
+	}
+
+	@Test
+	void 액세스토큰의_유효시간이_지나지않았는데_토큰을_새로발급받을_경우_예외_발생() {
+		//given
+		final String refreshToken = "refreshToken";
+		final String accessToken = "accessToken";
+
+		given(userRepository.findByRefreshToken(anyString()))
+			.willReturn(Optional.of(createUser()));
+
+		given(tokenProvider.getTokenExpiration(accessToken))
+			.willReturn(20L);
+
+		//when,then
+		assertThatThrownBy(() -> authService.refresh(refreshToken, accessToken))
 			.isInstanceOf(InvalidTokenException.class)
 			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
 	}
