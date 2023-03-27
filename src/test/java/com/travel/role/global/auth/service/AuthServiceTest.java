@@ -87,6 +87,26 @@ class AuthServiceTest {
 			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
 	}
 
+	@Test
+	void 리프레시토큰의_유효시간이_지났는데_토큰을_재발급받을경우_예외_발생() {
+		//given
+		final String refreshToken = "refreshToken";
+		final String accessToken = "accessToken";
+
+		given(userRepository.findByRefreshToken(anyString()))
+			.willReturn(Optional.of(createUser()));
+
+		given(tokenProvider.getTokenExpiration(accessToken))
+			.willReturn(-20L);
+
+		given(tokenProvider.getTokenExpiration(refreshToken))
+			.willReturn(-20L);
+		//when,then
+		assertThatThrownBy(() -> authService.refresh(refreshToken, accessToken))
+			.isInstanceOf(InvalidTokenException.class)
+			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
+	}
+
 	private SignUpRequestDTO createSignUpRequestDTO() {
 		SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO();
 		signUpRequestDTO.setEmail("chan@naver.com");
