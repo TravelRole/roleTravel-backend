@@ -20,8 +20,8 @@ import com.travel.role.global.auth.dto.AccessTokenResponse;
 import com.travel.role.global.auth.dto.SignInRequestDTO;
 import com.travel.role.global.auth.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.auth.exception.auth.InvalidTokenException;
+import com.travel.role.global.auth.exception.auth.NotExistTokenException;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 import lombok.RequiredArgsConstructor;

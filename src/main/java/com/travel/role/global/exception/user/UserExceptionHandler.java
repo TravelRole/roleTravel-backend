@@ -1,4 +1,4 @@
-package com.travel.role.global.auth.exception.user;
+package com.travel.role.global.exception.user;
 
 import java.time.LocalDateTime;
 

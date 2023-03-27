@@ -1,8 +1,9 @@
-package com.travel.role.global.auth.exception;
+package com.travel.role.global.auth.exception.auth;
 
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,6 +29,12 @@ public class AuthExceptionHandler {
 	@ExceptionHandler(InvalidTokenException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public ExceptionResponse invalidTokenHandler(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(BadCredentialsException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ExceptionResponse badCredentialUserHandler(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED, LocalDateTime.now());
 	}
 }

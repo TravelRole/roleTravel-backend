@@ -1,9 +1,9 @@
 package com.travel.role.global.auth.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.travel.role.global.auth.exception.TokenExceptionHandlerFilter;
+import com.travel.role.global.auth.exception.auth.TokenExceptionHandlerFilter;
+import com.travel.role.global.auth.service.CustomAuthProvider;
 import com.travel.role.global.auth.service.CustomUserDetailService;
 import com.travel.role.global.auth.token.JwtAuthenticationFilter;
 
@@ -27,17 +28,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final CustomUserDetailService customUserDetailsService;
 
-	@Autowired
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-	@Autowired
 	private final TokenExceptionHandlerFilter tokenExceptionHandlerFilter;
 
 	@Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		authenticationManagerBuilder
+			.authenticationProvider(authenticationProvider())
 			.userDetailsService(customUserDetailsService)
 			.passwordEncoder(passwordEncoder());
+	}
+
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		return new CustomAuthProvider(customUserDetailsService, passwordEncoder());
 	}
 
 	@Bean
