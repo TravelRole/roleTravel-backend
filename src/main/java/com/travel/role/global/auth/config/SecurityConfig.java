@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.travel.role.global.auth.exception.auth.TokenExceptionHandlerFilter;
+import com.travel.role.global.auth.exception.TokenExceptionHandlerFilter;
 import com.travel.role.global.auth.service.CustomAuthProvider;
 import com.travel.role.global.auth.service.CustomUserDetailService;
 import com.travel.role.global.auth.token.JwtAuthenticationFilter;
