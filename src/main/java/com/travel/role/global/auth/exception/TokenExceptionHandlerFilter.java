@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travel.role.global.exception.ExceptionFilterResponse;
+import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +26,7 @@ public class TokenExceptionHandlerFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 		try {
 			filterChain.doFilter(request, response);
-		} catch (Exception e) {
+		} catch (InvalidTokenException | NotExistTokenException | AlreadyExistUserException e) {
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/json");
