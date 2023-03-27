@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.travel.role.global.auth.dto.AccessTokenRequestDTO;
@@ -22,17 +23,18 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
 
 	private final AuthService authService;
 	private final RefreshTokenCookieProvider refreshTokenCookieProvider;
 
-	@PostMapping("/auth/signup")
+	@PostMapping("/signup")
 	public ResponseEntity<?> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO) {
 		return authService.signUp(signUpRequestDTO);
 	}
 
-	@PostMapping("/auth/login")
+	@PostMapping("/login")
 	public ResponseEntity<AccessTokenResponse> signIn(@RequestBody SignInRequestDTO signInRequestDTO) {
 		TokenMapping tokenResult = authService.signIn(signInRequestDTO);
 
@@ -44,7 +46,7 @@ public class AuthController {
 			.body(authResponse);
 	}
 
-	@PostMapping("/auth/refresh")
+	@PostMapping("/refresh")
 	public ResponseEntity<AccessTokenResponse> refresh(
 		@CookieValue(value = REFRESH_TOKEN, required = false) String refreshToken,
 		@RequestBody AccessTokenRequestDTO token) {
