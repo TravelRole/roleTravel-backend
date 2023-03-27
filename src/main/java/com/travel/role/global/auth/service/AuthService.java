@@ -22,6 +22,7 @@ import com.travel.role.global.auth.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +37,10 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 
 	public ResponseEntity<?> signUp(SignUpRequestDTO signUpRequestDTO) {
+		if (userRepository.existsByEmail(signUpRequestDTO.getEmail())) {
+			throw new AlreadyExistUserException(ALREADY_EXIST_USER);
+		}
+
 		UserEntity newUser = UserEntity.toEntity(signUpRequestDTO, passwordEncoder.encode(signUpRequestDTO.getPassword()));
 		userRepository.save(newUser);
 

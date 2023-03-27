@@ -11,4 +11,5 @@ import com.travel.role.domain.user.domain.UserEntity;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	Optional<UserEntity> findByEmail(String email);
 	Optional<UserEntity> findByRefreshToken(String refreshToken);
+	boolean existsByEmail(String email);
 }
