@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.travel.role.global.auth.dto.SignUpRequestDTO;
+import com.travel.role.domain.user.dto.SignUpRequestDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
