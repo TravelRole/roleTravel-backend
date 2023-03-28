@@ -25,7 +25,7 @@ public class RoomInfoService {
         return roomRepository.findAll();
     }
 
-    public void validate(final RoomEntity entity){
+    private void validate(final RoomEntity entity){
         if(entity == null){
             log.warn("Entity가 null인 상태입니다.");
             throw new RuntimeException("Entity cannot be null.");
