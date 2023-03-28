@@ -18,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor // 모든 필드 값 파라미터로 하는 생성자
 @NoArgsConstructor // 기본 생성자
 @Builder
-public class RoomEntity{
+public class RoomEntity extends BaseTime{
 
     @Id //식별자
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 자동생성 => DB에 위임 (AUTO_INCREMENT)
@@ -37,10 +37,6 @@ public class RoomEntity{
 
     @Column(nullable = false)
     private String roomImage;
-
-    @Column(updatable = false)
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private String totalParticipants;
