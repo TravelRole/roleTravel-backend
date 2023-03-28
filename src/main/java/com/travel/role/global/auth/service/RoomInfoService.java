@@ -12,17 +12,17 @@ import java.util.List;
 @Slf4j
 @Service
 public class RoomInfoService {
-    @Autowired
-    private RoomRepository repository;
+    private RoomRepository roomRepository;
 
     public List<RoomEntity> create(final RoomEntity entity){
 
         validate(entity);
-        return repository.findAll();
+        roomRepository.save(entity);
+        return roomRepository.findAll();
     }
 
     public List<RoomEntity> read(){
-        return repository.findAll();
+        return roomRepository.findAll();
     }
 
     public void validate(final RoomEntity entity){
@@ -30,6 +30,5 @@ public class RoomInfoService {
             log.warn("Entity가 null인 상태입니다.");
             throw new RuntimeException("Entity cannot be null.");
         }
-        repository.save(entity);
     }
 }
