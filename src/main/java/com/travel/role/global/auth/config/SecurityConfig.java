@@ -74,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				// .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 				// .and()
 			.authorizeRequests()
-				.antMatchers("/", "/h2-console").permitAll()
+				.antMatchers("/**", "/h2-console").permitAll()
 				.antMatchers("/login/**", "/auth/**").permitAll()
 			.anyRequest()
 				.authenticated()
