@@ -65,7 +65,7 @@ public class UserEntity extends BaseTime{
 			.name(signUpRequestDTO.getName())
 			.email(signUpRequestDTO.getEmail())
 			.password(password)
-			.birth(signUpRequestDTO.getBirth())
+			.birth(LocalDate.of(signUpRequestDTO.getYear(), signUpRequestDTO.getMonth(), signUpRequestDTO.getDay()))
 			.profile(signUpRequestDTO.getProfile())
 			.role(Role.USER)
 			.build();

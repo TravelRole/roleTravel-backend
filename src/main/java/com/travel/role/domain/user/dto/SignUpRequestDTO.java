@@ -9,6 +9,11 @@ public class SignUpRequestDTO {
 	private String name;
 	private String email;
 	private String password;
-	private LocalDate birth;
+	private Integer year;
+	private Integer month;
+	private Integer day;
+
 	private String profile;
+	private String expiration;
+	private UserCheckDTO check;
 }
