@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class AuthService {
 
 	private final AuthenticationManager authenticationManager;
@@ -36,6 +36,7 @@ public class AuthService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	@Transactional
 	public ResponseEntity<?> signUp(SignUpRequestDTO signUpRequestDTO) {
 		if (userRepository.existsByEmail(signUpRequestDTO.getEmail())) {
 			throw new AlreadyExistUserException(ALREADY_EXIST_USER);
@@ -47,6 +48,7 @@ public class AuthService {
 		return ResponseEntity.ok().body(newUser);
 	}
 
+	@Transactional
 	public TokenMapping signIn(SignInRequestDTO signInRequestDTO) {
 		Authentication authentication = authenticationManager.authenticate(
 			new UsernamePasswordAuthenticationToken(
@@ -63,6 +65,7 @@ public class AuthService {
 		return tokenMapping;
 	}
 
+	@Transactional
 	public void updateToken(TokenMapping tokenMapping) {
 		UserEntity findUser = userRepository.findByEmail(tokenMapping.getUserEmail()).orElseThrow(
 			() -> new UsernameNotFoundException(USERNAME_NOT_FOUND)
@@ -81,6 +84,7 @@ public class AuthService {
 		return tokenProvider.refreshAccessToken(authentication);
 	}
 
+	@Transactional
 	public void validateToken(final String refreshToken, String accessToken) {
 		if (refreshToken == null || accessToken == null) {
 			throw new NotExistTokenException(NOT_EXISTS_TOKEN);
