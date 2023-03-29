@@ -2,9 +2,9 @@ package com.travel.role.global.auth.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,8 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.dto.SignUpResponseDTO;
 import com.travel.role.global.auth.dto.TokenResponse;
-import com.travel.role.domain.user.dto.SignInRequestDTO;
+import com.travel.role.domain.user.dto.LoginRequestDTO;
 import com.travel.role.domain.user.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.exception.InvalidTokenException;
@@ -36,8 +37,10 @@ public class AuthService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	private static final String SUCCESS_SIGN_UP = "회원가입에 성공하셨습니다";
+
 	@Transactional
-	public ResponseEntity<?> signUp(SignUpRequestDTO signUpRequestDTO) {
+	public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
 		if (userRepository.existsByEmail(signUpRequestDTO.getEmail())) {
 			throw new AlreadyExistUserException(ALREADY_EXIST_USER);
 		}
@@ -45,15 +48,15 @@ public class AuthService {
 		UserEntity newUser = UserEntity.toEntity(signUpRequestDTO, passwordEncoder.encode(signUpRequestDTO.getPassword()));
 		userRepository.save(newUser);
 
-		return ResponseEntity.ok().body(newUser);
+		new SignUpResponseDTO(newUser.getEmail(),newUser.getName(), SUCCESS_SIGN_UP, LocalDateTime.now());
 	}
 
 	@Transactional
-	public TokenMapping signIn(SignInRequestDTO signInRequestDTO) {
+	public TokenMapping signIn(LoginRequestDTO loginRequestDTO) {
 		Authentication authentication = authenticationManager.authenticate(
 			new UsernamePasswordAuthenticationToken(
-				signInRequestDTO.getEmail(),
-				signInRequestDTO.getPassword()
+				loginRequestDTO.getEmail(),
+				loginRequestDTO.getPassword()
 			)
 		);
 
