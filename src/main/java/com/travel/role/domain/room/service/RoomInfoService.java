@@ -1,4 +1,4 @@
-package com.travel.role.global.auth.service;
+package com.travel.role.domain.room.service;
 
 
 import com.travel.role.domain.room.dao.RoomRepository;

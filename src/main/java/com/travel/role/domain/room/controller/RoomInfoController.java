@@ -1,9 +1,9 @@
-package com.travel.role.global.auth.controller;
+package com.travel.role.domain.room.controller;
 
 import com.travel.role.domain.room.domain.RoomEntity;
 import com.travel.role.global.auth.dto.ResponseDTO;
-import com.travel.role.global.auth.dto.RoomInfoDTO;
-import com.travel.role.global.auth.service.RoomInfoService;
+import com.travel.role.domain.room.dto.RoomInfoDTO;
+import com.travel.role.domain.room.service.RoomInfoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

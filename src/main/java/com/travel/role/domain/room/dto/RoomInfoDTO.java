@@ -1,4 +1,4 @@
-package com.travel.role.global.auth.dto;
+package com.travel.role.domain.room.dto;
 
 import com.travel.role.domain.room.domain.RoomEntity;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
 @Builder
 @NoArgsConstructor // 기본 생성자 만듦
 @AllArgsConstructor
