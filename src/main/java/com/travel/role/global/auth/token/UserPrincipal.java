@@ -5,7 +5,6 @@ package com.travel.role.global.auth.token;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,7 +18,6 @@ public class UserPrincipal implements UserDetails {
 	private String email;
 	private String password;
 	private Collection<? extends GrantedAuthority> authorities;
-	private Map<String, Object> attributes;
 
 	public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
