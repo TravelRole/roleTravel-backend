@@ -48,7 +48,7 @@ public class AuthService {
 		UserEntity newUser = UserEntity.toEntity(signUpRequestDTO, passwordEncoder.encode(signUpRequestDTO.getPassword()));
 		userRepository.save(newUser);
 
-		new SignUpResponseDTO(newUser.getEmail(),newUser.getName(), SUCCESS_SIGN_UP, LocalDateTime.now());
+		return new SignUpResponseDTO(newUser.getEmail(),newUser.getName(), SUCCESS_SIGN_UP, LocalDateTime.now());
 	}
 
 	@Transactional
