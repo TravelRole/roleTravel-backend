@@ -33,21 +33,16 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<TokenResponse> signIn(@RequestBody LoginRequestDTO loginRequestDTO) {
+	public TokenResponse signIn(@RequestBody LoginRequestDTO loginRequestDTO) {
 		TokenMapping tokenResult = authService.signIn(loginRequestDTO);
 
-		TokenResponse authResponse = new TokenResponse(tokenResult.getAccessToken(), tokenResult.getRefreshToken());
-
-		return ResponseEntity.ok()
-			.body(authResponse);
+		return new TokenResponse(tokenResult.getAccessToken(), tokenResult.getRefreshToken());
 	}
 
 	@PostMapping("/refresh")
-	public ResponseEntity<TokenResponse> refresh(
+	public TokenResponse refresh(
 		@CookieValue(value = REFRESH_TOKEN, required = false) String refreshToken,
 		@RequestBody AccessTokenRequestDTO token) {
-		TokenResponse result = authService.refresh(refreshToken, token.getAccessToken());
-		return ResponseEntity.ok()
-			.body(result);
+		return authService.refresh(refreshToken, token.getAccessToken());
 	}
 }
