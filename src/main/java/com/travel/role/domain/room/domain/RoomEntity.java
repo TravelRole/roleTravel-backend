@@ -12,7 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Table(name = "roomInfo")
+@Table(name = "ROOM_INFO")
 @Getter //lombok: getter, setter
 @Entity
 @AllArgsConstructor // 모든 필드 값 파라미터로 하는 생성자
@@ -24,7 +24,7 @@ public class RoomEntity extends BaseTime{
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 자동생성 => DB에 위임 (AUTO_INCREMENT)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length=100)
     private String roomName;
 
     @Column(nullable = false)
@@ -38,10 +38,10 @@ public class RoomEntity extends BaseTime{
     @Column(nullable = false)
     private String roomImage;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length=20)
     private String totalParticipants;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length=20)
     private String roomPassword;
 
 }

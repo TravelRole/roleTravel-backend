@@ -13,13 +13,13 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class RoomInfoDTO {
-
     private String roomName;
     private LocalDateTime travelStartDate;
     private LocalDateTime travelEndDate;
     private String roomImage;
     private String totalParticipants;
     private String roomPassword;
+
 
     public RoomInfoDTO(final RoomEntity entity){
         this.roomName=entity.getRoomName();
@@ -28,7 +28,12 @@ public class RoomInfoDTO {
         this.roomImage=entity.getRoomImage();
         this.totalParticipants=entity.getTotalParticipants();
         this.roomPassword=entity.getRoomPassword();
+    }
 
+    public static RoomInfoDTO from(RoomEntity entity){
+        return new RoomInfoDTO(entity.getRoomName(), entity.getTravelStartDate(),
+                entity.getTravelEndDate(), entity.getRoomImage(),
+                entity.getTotalParticipants(), entity.getRoomPassword());
     }
 
     public static RoomEntity toEntity(final RoomInfoDTO dto){

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/roomInfo")
+@RequestMapping("/room-info")
 public class RoomInfoController {
     private RoomInfoService roomInfoService;
     public RoomInfoController(RoomInfoService roomInfoService){
