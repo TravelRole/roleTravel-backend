@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
-import com.travel.role.global.auth.dto.AccessTokenResponse;
+import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.domain.user.dto.SignInRequestDTO;
 import com.travel.role.domain.user.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
@@ -73,7 +73,7 @@ public class AuthService {
 		findUser.updateRefreshToken(tokenMapping.getRefreshToken());
 	}
 
-	public AccessTokenResponse refresh(final String refreshToken, String accessToken) {
+	public TokenResponse refresh(final String refreshToken, String accessToken) {
 		validateToken(refreshToken, accessToken);
 
 		UserEntity findUser = userRepository.findByRefreshToken(refreshToken)

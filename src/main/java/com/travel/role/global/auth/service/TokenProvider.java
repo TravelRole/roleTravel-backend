@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.travel.role.global.auth.dto.AccessTokenResponse;
+import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.token.UserPrincipal;
 
@@ -46,7 +46,7 @@ public class TokenProvider {
 		return new TokenMapping(userPrincipal.getEmail(), accessToken, refreshToken);
 	}
 
-	public AccessTokenResponse refreshAccessToken(Authentication authentication) {
+	public TokenResponse refreshAccessToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
 
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
@@ -54,7 +54,7 @@ public class TokenProvider {
 
 		String accessToken = createAccessToken(userPrincipal, key);
 
-		return new AccessTokenResponse(accessToken);
+		return new TokenResponse(accessToken, null);
 	}
 
 	private static String createAccessToken(UserPrincipal userPrincipal, SecretKey key) {
