@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
 import com.travel.role.global.auth.dto.TokenMapping;
+import com.travel.role.global.auth.service.RefreshTokenCookieProvider;
 import com.travel.role.global.auth.service.TokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -25,12 +27,9 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	private final TokenProvider tokenProvider;
-
-	private final ObjectMapper mapper = new ObjectMapper();
-
 	private static final String redirectPath = "http://localhost:3000/landing/social";
-
 	private final UserRepository userRepository;
+	private final RefreshTokenCookieProvider refreshTokenCookieProvider;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
@@ -43,13 +42,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 		TokenMapping token = tokenProvider.createToken(authentication);
-
 		saveUser(token);
 
-		response.setContentType("application/json");
-		response.setCharacterEncoding("utf-8");
-
-		response.sendRedirect(redirectPath + "?accessToken=" + token.getAccessToken() + "&refreshToken=" + token.getRefreshToken());
+		ResponseCookie cookie = refreshTokenCookieProvider.createCookie(token.getRefreshToken());
+		response.addHeader("Set-Cookie", cookie.toString());
+		response.sendRedirect(redirectPath + "?accessToken=" + token.getAccessToken());
 	}
 
 	private void saveUser(TokenMapping token) {
