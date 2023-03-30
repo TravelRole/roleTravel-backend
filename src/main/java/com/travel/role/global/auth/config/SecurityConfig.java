@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -87,13 +88,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.headers().frameOptions().disable() // h2 db 접속때문에 설정한것 //TODO: H2-DB 테스트 이후 삭제할것
 			.and()
-			.oauth2Login()
-			.redirectionEndpoint()
-			.baseUri("/oauth2/callback/*")
+				.oauth2Login()
+				.redirectionEndpoint()
+				.baseUri("/oauth2/callback/*")
 			.and()
-			.successHandler(oAuth2SuccessHandler)
-			.failureHandler(oAuth2FailureHandler)
-			.userInfoEndpoint().userService(customOAuth2UserService);
+				.userInfoEndpoint().userService(customOAuth2UserService)
+			.and()
+				.successHandler(oAuth2SuccessHandler)
+				.failureHandler(oAuth2FailureHandler)
+			.and()
+				.exceptionHandling()
+					.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
 
 		http
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

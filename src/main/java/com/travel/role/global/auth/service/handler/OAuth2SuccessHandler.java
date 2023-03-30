@@ -24,6 +24,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
+	private static final String redirectPath = "http://localhost:3000/landing/social";
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 		Authentication authentication) throws IOException, ServletException {
@@ -38,7 +40,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 
-		String result = mapper.writeValueAsString(token);
-		response.getWriter().write(result);
+		response.sendRedirect(redirectPath + "?accessToken=" + token.getAccessToken());
 	}
 }
