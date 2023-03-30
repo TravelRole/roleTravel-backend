@@ -29,8 +29,8 @@ public class TokenProvider {
 
 	private final CustomUserDetailService customUserDetailService;
 
-	private static final Long ACCESS_TOKEN_EXPIRATION = 1000L * 30;
-	private static final Long REFRESH_TOKEN_EXPIRATION = 1000L * 60;
+	private static final Long ACCESS_TOKEN_EXPIRATION = 1000L * 10;
+	private static final Long REFRESH_TOKEN_EXPIRATION = 1000L * 60 * 10;
 	private static final String SECRET_KEY = "secretsegseigjesilgjesigjesiljgesilgjeislfilesnilvsenilsenfklesnfiesseifnesilnesi21tgf8h3igh38o2ur59t23utg9ehjnwasiotu89023uqjrtfi3qgh0983y12ht923h90gh3qw2g923h9g230hng239gh";
 
 	public TokenMapping createToken(Authentication authentication) {
