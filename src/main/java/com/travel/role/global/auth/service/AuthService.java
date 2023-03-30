@@ -25,6 +25,7 @@ import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,10 +46,11 @@ public class AuthService {
 			throw new AlreadyExistUserException(ALREADY_EXIST_USER);
 		}
 
-		UserEntity newUser = UserEntity.toEntity(signUpRequestDTO, passwordEncoder.encode(signUpRequestDTO.getPassword()));
+		UserEntity newUser = UserEntity.toEntity(signUpRequestDTO,
+			passwordEncoder.encode(signUpRequestDTO.getPassword()));
 		userRepository.save(newUser);
 
-		return new SignUpResponseDTO(newUser.getEmail(),newUser.getName(), SUCCESS_SIGN_UP, LocalDateTime.now());
+		return new SignUpResponseDTO(newUser.getEmail(), newUser.getName(), SUCCESS_SIGN_UP, LocalDateTime.now());
 	}
 
 	@Transactional
@@ -99,17 +101,10 @@ public class AuthService {
 			throw new InvalidTokenException(INVALID_TOKEN);
 		}
 
-		Long accessTokenExpirationTime = 0L;
 		Long refreshTokenExpirationTime = 0L;
 		try {
-			accessTokenExpirationTime = tokenProvider.getTokenExpiration(accessToken);
 			refreshTokenExpirationTime = tokenProvider.getTokenExpiration(refreshToken);
 		} catch (Exception e) {
-			findUser.get().deleteRefreshToken();
-			throw new InvalidTokenException(INVALID_TOKEN);
-		}
-
-		if (accessTokenExpirationTime > 0) {
 			findUser.get().deleteRefreshToken();
 			throw new InvalidTokenException(INVALID_TOKEN);
 		}
@@ -117,6 +112,14 @@ public class AuthService {
 		if (refreshTokenExpirationTime < 0) {
 			findUser.get().deleteRefreshToken();
 			throw new InvalidTokenException(INVALID_TOKEN);
+		}
+
+		try {
+			tokenProvider.getTokenExpiration(accessToken);
+		} catch (ExpiredJwtException ignored) {
+		} catch (Exception e) {
+			findUser.get().deleteRefreshToken();
+			throw new InvalidTokenException(e.getMessage());
 		}
 	}
 }
