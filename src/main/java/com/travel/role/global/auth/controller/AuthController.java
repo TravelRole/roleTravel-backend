@@ -2,6 +2,7 @@ package com.travel.role.global.auth.controller;
 
 import static com.travel.role.global.auth.service.RefreshTokenCookieProvider.*;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import com.travel.role.domain.user.dto.LoginRequestDTO;
 import com.travel.role.domain.user.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.service.AuthService;
+import com.travel.role.global.auth.service.RefreshTokenCookieProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
 	private final AuthService authService;
+	private final RefreshTokenCookieProvider refreshTokenCookieProvider;
 
 
 	@PostMapping("/signup")
@@ -33,10 +36,13 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public TokenResponse signIn(@RequestBody LoginRequestDTO loginRequestDTO) {
+	public ResponseEntity<AccessTokenRequestDTO> signIn(@RequestBody LoginRequestDTO loginRequestDTO) {
 		TokenMapping tokenResult = authService.signIn(loginRequestDTO);
+		ResponseCookie cookie = refreshTokenCookieProvider.createCookie(tokenResult.getRefreshToken());
 
-		return new TokenResponse(tokenResult.getAccessToken(), tokenResult.getRefreshToken());
+		return ResponseEntity.ok()
+			.header("Set-Cookie", cookie.toString())
+			.body(new AccessTokenRequestDTO(tokenResult.getAccessToken()));
 	}
 
 	@PostMapping("/refresh")
