@@ -49,7 +49,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 
-		response.sendRedirect(redirectPath + "?accessToken=" + token.getAccessToken());
+		response.sendRedirect(redirectPath + "?accessToken=" + token.getAccessToken() + "&refreshToken=" + token.getRefreshToken());
 	}
 
 	private void saveUser(TokenMapping token) {
