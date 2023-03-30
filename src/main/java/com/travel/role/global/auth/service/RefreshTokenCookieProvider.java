@@ -18,4 +18,11 @@ public class RefreshTokenCookieProvider {
 			.maxAge(EXPIRED_TIME)
 			.build();
 	}
+
+	public ResponseCookie logout() {
+		return ResponseCookie.from(REFRESH_TOKEN, "")
+			.maxAge(0)
+			.path("/")
+			.build();
+	}
 }
