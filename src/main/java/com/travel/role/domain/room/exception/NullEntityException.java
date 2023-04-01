@@ -3,8 +3,8 @@ package com.travel.role.domain.room.exception;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class ValidateEntityException extends RuntimeException {
-    public ValidateEntityException(String msg){
+public class NullEntityException extends RuntimeException {
+    public NullEntityException(String msg){
         super(msg);
     }
 

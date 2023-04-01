@@ -1,4 +1,4 @@
-package com.travel.role.global.exception;
+package com.travel.role.domain.room.exception;
 
 import java.time.LocalDateTime;
 
@@ -14,3 +14,4 @@ public class ExceptionResponse {
     private HttpStatus httpStatus;
     private LocalDateTime time;
 }
+

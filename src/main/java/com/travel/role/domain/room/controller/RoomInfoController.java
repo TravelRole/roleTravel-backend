@@ -1,14 +1,17 @@
 package com.travel.role.domain.room.controller;
 
 import com.travel.role.domain.room.domain.RoomEntity;
-import com.travel.role.global.auth.dto.ResponseDTO;
+import com.travel.role.domain.room.dto.ResponseDTO;
 import com.travel.role.domain.room.dto.RoomInfoDTO;
+import com.travel.role.domain.room.exception.NullEntityException;
 import com.travel.role.domain.room.service.RoomInfoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.travel.role.domain.room.exception.NullEntityExceptionMessage.ENTITY_IS_NULL;
 
 @RestController
 @RequestMapping("/room-info")
@@ -19,7 +22,7 @@ public class RoomInfoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createRoom(@RequestBody RoomInfoDTO dto){
+    public ResponseEntity<?> createRoom(@RequestBody RoomInfoDTO dto) {
         try {
             RoomEntity entity = RoomInfoDTO.toEntity(dto);
 
@@ -34,13 +37,14 @@ public class RoomInfoController {
             return ResponseEntity.ok().body(response);
 
 
-        } catch(Exception e){
+        } catch (NullEntityException e) {
+            throw new NullEntityException(ENTITY_IS_NULL);
+        } catch (Exception e) {
             String error = e.getMessage();
             ResponseDTO<RoomInfoDTO> response = ResponseDTO.<RoomInfoDTO>builder().error(error).build();
             return ResponseEntity.badRequest().body(response);
         }
     }
-
     @GetMapping
     public ResponseEntity<?> readRoomInfoList(){
         List<RoomEntity> entities = roomInfoService.read();
