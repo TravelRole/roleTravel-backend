@@ -21,7 +21,7 @@ public class RoomInfoController {
         this.roomInfoService = roomInfoService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createRoom(@RequestBody RoomInfoDTO dto) {
         try {
             RoomEntity entity = RoomInfoDTO.toEntity(dto);

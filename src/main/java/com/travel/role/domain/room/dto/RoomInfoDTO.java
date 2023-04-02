@@ -30,11 +30,6 @@ public class RoomInfoDTO {
         this.roomPassword=entity.getRoomPassword();
     }
 
-    public static RoomInfoDTO from(RoomEntity entity){
-        return new RoomInfoDTO(entity.getRoomName(), entity.getTravelStartDate(),
-                entity.getTravelEndDate(), entity.getRoomImage(),
-                entity.getTotalParticipants(), entity.getRoomPassword());
-    }
 
     public static RoomEntity toEntity(final RoomInfoDTO dto){
         return RoomEntity.builder()

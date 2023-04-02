@@ -38,9 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		authenticationManagerBuilder
-			.authenticationProvider(authenticationProvider())
-			.userDetailsService(customUserDetailsService)
-			.passwordEncoder(passwordEncoder());
+				.authenticationProvider(authenticationProvider())
+				.userDetailsService(customUserDetailsService)
+				.passwordEncoder(passwordEncoder());
 	}
 
 	@Bean
@@ -62,44 +62,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-<<<<<<< HEAD
-			.cors()
+				.cors().configurationSource(corsConfigurationSource())
 				.and()
-			.sessionManagement()
+				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-			.csrf()
+				.csrf()
 				.disable()
-			.httpBasic()
+				.httpBasic()
 				.disable()
-			// .exceptionHandling()
-				// .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-				// .and()
-			.authorizeRequests()
-				.antMatchers("/**", "/h2-console").permitAll()
-				.antMatchers("/login/**", "/auth/**").permitAll()
-			.anyRequest()
+				.authorizeRequests()
+				.antMatchers("/auth/**", "/h2-console/**").permitAll()
+				.antMatchers("/**").permitAll()
+				.anyRequest()
 				.authenticated()
-=======
-			.cors().configurationSource(corsConfigurationSource())
->>>>>>> dafe32c1bafaf93bae23d367f5693c755327c50a
-			.and()
-			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
-			.csrf()
-			.disable()
-			.httpBasic()
-			.disable()
-			.authorizeRequests()
-			.antMatchers("/auth/**", "/h2-console/**").permitAll()
-			.anyRequest()
-			.authenticated()
-			.and()
-			.headers().frameOptions().disable() // h2 db 접속때문에 설정한것 //TODO: H2-DB 테스트 이후 삭제할것
-			.and()
-			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-			.addFilterBefore(tokenExceptionHandlerFilter, JwtAuthenticationFilter.class);
+				.and()
+				.headers().frameOptions().disable() // h2 db 접속때문에 설정한것 //TODO: H2-DB 테스트 이후 삭제할것
+				.and()
+				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(tokenExceptionHandlerFilter, JwtAuthenticationFilter.class);
 	}
 
 	@Bean

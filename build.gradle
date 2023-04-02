@@ -23,11 +23,11 @@ dependencies {
 
     // lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
-<<<<<<< HEAD
+//<<<<<<< HEAD
     annotationProcessor 'org.projectlombok:lombok'
-=======
+//=======
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
->>>>>>> dafe32c1bafaf93bae23d367f5693c755327c50a
+//>>>>>>> dafe32c1bafaf93bae23d367f5693c755327c50a
 
     // jwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
