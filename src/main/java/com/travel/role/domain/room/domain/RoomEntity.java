@@ -22,7 +22,7 @@ public class RoomEntity extends BaseTime{
 
     @Id //식별자
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 자동생성 => DB에 위임 (AUTO_INCREMENT)
-    private Long id;
+    private Long roomId;
 
     @Column(nullable = false, length=100)
     private String roomName;
