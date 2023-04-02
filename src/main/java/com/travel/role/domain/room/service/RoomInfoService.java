@@ -6,12 +6,12 @@ import com.travel.role.domain.room.domain.RoomEntity;
 import com.travel.role.domain.room.exception.NullEntityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static com.travel.role.domain.room.exception.RoomExceptionMessage.*;
 
 
-import static com.travel.role.domain.room.exception.NullEntityExceptionMessage.*;
+
 import java.util.List;
 
 @Slf4j
@@ -19,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomInfoService {
     private final RoomRepository roomRepository;
+
 
     public List<RoomEntity> create(final RoomEntity entity){
 
