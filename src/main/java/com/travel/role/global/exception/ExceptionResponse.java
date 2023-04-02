@@ -1,5 +1,7 @@
 package com.travel.role.global.exception;
 
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 
 import lombok.AllArgsConstructor;
@@ -7,15 +9,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ExceptionFilterResponse {
-<<<<<<< HEAD
-    private String message;
-    private HttpStatus httpStatus;
-    private String time;
-}
-=======
+public class ExceptionResponse {
 	private String message;
 	private HttpStatus httpStatus;
-	private String time;
+	private LocalDateTime time;
 }
->>>>>>> dafe32c1bafaf93bae23d367f5693c755327c50a

@@ -23,12 +23,20 @@ dependencies {
 
     // lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
+<<<<<<< HEAD
     annotationProcessor 'org.projectlombok:lombok'
+=======
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
+>>>>>>> dafe32c1bafaf93bae23d367f5693c755327c50a
 
     // jwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+
+    // objectMapper jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 tasks.named('test') {

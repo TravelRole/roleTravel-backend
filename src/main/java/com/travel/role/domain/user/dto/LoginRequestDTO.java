@@ -1,11 +1,9 @@
-package com.travel.role.global.auth.dto;
+package com.travel.role.domain.user.dto;
 
 import lombok.Data;
 
 @Data
-public class SignInRequestDTO {
-
+public class LoginRequestDTO {
 	private String email;
-
 	private String password;
 }

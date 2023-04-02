@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dto;
+package com.travel.role.global.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

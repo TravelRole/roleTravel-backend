@@ -1,7 +1,7 @@
 package com.travel.role.domain.room.controller;
 
 import com.travel.role.domain.room.domain.RoomEntity;
-import com.travel.role.domain.room.dto.ResponseDTO;
+import com.travel.role.global.auth.dto.ResponseDTO;
 import com.travel.role.domain.room.dto.RoomInfoDTO;
 import com.travel.role.domain.room.exception.NullEntityException;
 import com.travel.role.domain.room.service.RoomInfoService;
