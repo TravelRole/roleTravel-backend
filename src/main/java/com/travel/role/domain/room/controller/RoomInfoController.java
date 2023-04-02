@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import static com.travel.role.domain.room.exception.NullEntityExceptionMessage.ENTITY_IS_NULL;
 
 @RestController
-@RequestMapping("/")
+//@RequestMapping("/")
 public class RoomInfoController {
     private RoomInfoService roomInfoService;
     public RoomInfoController(RoomInfoService roomInfoService){
@@ -23,7 +23,6 @@ public class RoomInfoController {
 
     @PostMapping("/room-info/create")
     public ResponseEntity<?> createRoom(@RequestBody RoomInfoDTO dto) {
-        try {
             RoomEntity entity = RoomInfoDTO.toEntity(dto);
 
             List<RoomEntity> entities = roomInfoService.create(entity);
@@ -36,14 +35,6 @@ public class RoomInfoController {
 
             return ResponseEntity.ok().body(response);
 
-
-        } catch (NullEntityException e) {
-            throw new NullEntityException(ENTITY_IS_NULL);
-        } catch (Exception e) {
-            String error = e.getMessage();
-            ResponseDTO<RoomInfoDTO> response = ResponseDTO.<RoomInfoDTO>builder().error(error).build();
-            return ResponseEntity.badRequest().body(response);
-        }
     }
     @GetMapping("/room-info")
     public ResponseEntity<?> readRoomInfoList(){

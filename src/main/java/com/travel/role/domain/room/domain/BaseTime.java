@@ -16,6 +16,6 @@ public class BaseTime {
 
 	@CreatedDate
 	@Column(updatable = false, name = "created_at")
-	private LocalDateTime createDate;
+	private LocalDateTime created_at;
 
 }
