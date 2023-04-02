@@ -4,6 +4,7 @@ import com.travel.role.domain.room.domain.RoomEntity;
 import com.travel.role.global.auth.dto.ResponseDTO;
 import com.travel.role.domain.room.dto.RoomInfoDTO;
 import com.travel.role.domain.room.service.RoomInfoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,12 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 //@RequestMapping("/")
 public class RoomInfoController {
-    private RoomInfoService roomInfoService;
-    public RoomInfoController(RoomInfoService roomInfoService){
-        this.roomInfoService = roomInfoService;
-    }
+    private final RoomInfoService roomInfoService;
 
     @PostMapping("/room-info/create")
     public ResponseEntity<?> createRoom(@RequestBody RoomInfoDTO dto) {
