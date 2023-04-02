@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.travel.role.domain.room.exception.RoomExceptionMessage.*;
 
 
-
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -24,8 +24,7 @@ public class RoomInfoService {
     public List<RoomEntity> create(final RoomEntity entity){
 
         validate(entity);
-        roomRepository.save(entity);
-        return roomRepository.findAll();
+        return Collections.singletonList(roomRepository.save(entity));
     }
 
     @Transactional(readOnly=true)
