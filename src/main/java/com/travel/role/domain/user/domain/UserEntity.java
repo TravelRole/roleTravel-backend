@@ -67,6 +67,11 @@ public class UserEntity extends BaseTime{
 		}
 	}
 
+	public void updatePassword(String password) {
+		if (!password.isEmpty())
+			this.password = password;
+	}
+
 	public static UserEntity toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
 		return UserEntity.builder()
 			.name(signUpRequestDTO.getName())

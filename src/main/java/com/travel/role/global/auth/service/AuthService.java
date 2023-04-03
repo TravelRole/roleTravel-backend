@@ -2,8 +2,10 @@ package com.travel.role.global.auth.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +23,7 @@ import com.travel.role.domain.user.dto.CheckIdRequest;
 import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
+import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
 import com.travel.role.domain.user.dto.SignUpResponseDTO;
 import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.domain.user.dto.LoginRequestDTO;
@@ -28,6 +31,7 @@ import com.travel.role.domain.user.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.auth.service.mail.MailService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.dto.ApiResponse;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
@@ -44,6 +48,7 @@ public class AuthService {
 	private final TokenProvider tokenProvider;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final MailService mailService;
 
 	private static final String SUCCESS_SIGN_UP = "회원가입에 성공하셨습니다";
 
@@ -169,5 +174,34 @@ public class AuthService {
 	public CheckIdResponse confirmId(CheckIdRequest checkIdRequest) {
 		boolean result = userRepository.existsByEmail(checkIdRequest.getEmail());
 		return new CheckIdResponse(result);
+	}
+
+	@Transactional
+	public void changePassword(NewPasswordRequestDTO newPasswordRequestDTO) {
+		UserEntity userEntity = checkValidateUser(newPasswordRequestDTO);
+
+		String randomPassword = generateRandomPassword(20);
+		userEntity.updatePassword(passwordEncoder.encode(randomPassword));
+
+		mailService.sendPasswordMail(randomPassword, userEntity.getEmail());
+	}
+
+	private UserEntity checkValidateUser(NewPasswordRequestDTO dto) {
+		return userRepository.findByNameAndBirthAndEmail(dto.getName(), dto.getBirth(), dto.getEmail())
+			.orElseThrow(RuntimeException::new);
+	}
+
+	private String generateRandomPassword(int len) {
+		final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+		SecureRandom random = new SecureRandom();
+		StringBuffer sb = new StringBuffer();
+
+		for (int i = 0; i < len; i++) {
+			int index = random.nextInt(chars.length());
+			sb.append(chars.charAt(index));
+		}
+
+		return sb.toString();
 	}
 }

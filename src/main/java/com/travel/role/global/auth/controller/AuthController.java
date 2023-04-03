@@ -19,6 +19,7 @@ import com.travel.role.domain.user.dto.CheckIdRequest;
 import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
+import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
 import com.travel.role.domain.user.dto.SignUpResponseDTO;
 import com.travel.role.global.auth.dto.AccessTokenRequestDTO;
 import com.travel.role.global.auth.dto.TokenResponse;
@@ -88,5 +89,15 @@ public class AuthController {
 	public ResponseEntity<CheckIdResponse> confirmId(@RequestBody CheckIdRequest checkIdRequest) {
 		CheckIdResponse result = authService.confirmId(checkIdRequest);
 		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("/new-password")
+	public ResponseEntity<?> newPassword(@RequestBody NewPasswordRequestDTO dto) {
+		try {
+			authService.changePassword(dto);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (RuntimeException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 }
