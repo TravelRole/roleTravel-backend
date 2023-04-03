@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
 import com.travel.role.domain.user.dto.SignUpResponseDTO;
@@ -23,6 +24,8 @@ import com.travel.role.domain.user.dto.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.auth.token.UserPrincipal;
+import com.travel.role.global.dto.ApiResponse;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -121,5 +124,32 @@ public class AuthService {
 			findUser.get().deleteRefreshToken();
 			throw new InvalidTokenException(e.getMessage());
 		}
+	}
+
+	@Transactional
+	public ApiResponse logout(String refreshToken, UserPrincipal userPrincipal) {
+		UserEntity user = validateLogout(refreshToken, userPrincipal);
+		user.deleteRefreshToken();
+
+		return new ApiResponse("로그아웃에 성공하셨습니다.", LocalDateTime.now());
+	}
+
+	private UserEntity validateLogout(String refreshToken, UserPrincipal userPrincipal) {
+		try {
+			tokenProvider.validateToken(refreshToken);
+		} catch (Exception e) {
+			throw new InvalidTokenException(INVALID_USER);
+		}
+
+		UserEntity findTokenUser = userRepository.findByRefreshToken(refreshToken)
+			.orElseThrow(() -> new InvalidTokenException(INVALID_USER));
+
+		UserEntity findEmailUser = userRepository.findByEmail(userPrincipal.getEmail())
+			.orElseThrow(() -> new InvalidTokenException(INVALID_USER));
+
+		if (!findTokenUser.getEmail().equals(findEmailUser.getEmail())) {
+			throw new InvalidTokenException(INVALID_USER);
+		}
+		return findTokenUser;
 	}
 }
