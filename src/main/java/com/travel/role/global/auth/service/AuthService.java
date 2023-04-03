@@ -5,6 +5,7 @@ import static com.travel.role.global.exception.ExceptionMessage.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,9 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
+import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.SignUpResponseDTO;
 import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.domain.user.dto.LoginRequestDTO;
@@ -151,5 +153,14 @@ public class AuthService {
 			throw new InvalidTokenException(INVALID_USER);
 		}
 		return findTokenUser;
+	}
+
+	@Transactional(readOnly = true)
+	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO confirmUserRequestDTO) {
+		UserEntity userEntity = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
+				confirmUserRequestDTO.getBirth())
+			.orElseThrow(RuntimeException::new);
+
+		return new ConfirmUserResponseDTO("성공하셨습니다.", HttpStatus.OK, userEntity.getEmail());
 	}
 }

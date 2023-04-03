@@ -14,7 +14,7 @@ public class SignUpRequestDTO {
 	private String name;
 	private String email;
 	private String password;
-	@DateTimeFormat(pattern = "yyyyMMdd")
+	@JsonFormat(pattern = "yyyyMMdd")
 	private LocalDate birth;
 	private String profile;
 	private String expiration;

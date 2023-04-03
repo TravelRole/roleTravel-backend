@@ -3,6 +3,7 @@ package com.travel.role.global.auth.controller;
 import static com.travel.role.global.auth.service.RefreshTokenCookieProvider.*;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.travel.role.domain.user.dao.UserRepository;
+import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
+import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.SignUpResponseDTO;
 import com.travel.role.global.auth.dto.AccessTokenRequestDTO;
 import com.travel.role.global.auth.dto.TokenResponse;
@@ -65,5 +69,15 @@ public class AuthController {
 		return ResponseEntity.ok()
 			.header(HttpHeaders.SET_COOKIE, cookie.toString())
 			.body(response);
+	}
+
+	@PostMapping("/find-id")
+	public ResponseEntity<ConfirmUserResponseDTO> confirmId(@RequestBody ConfirmUserRequestDTO confirmUserRequestDTO) {
+		try {
+			ConfirmUserResponseDTO result = authService.findId(confirmUserRequestDTO);
+			return ResponseEntity.ok().body(result);
+		} catch (RuntimeException e) {
+			return ResponseEntity.badRequest().body(new ConfirmUserResponseDTO("실패하셨습니다", HttpStatus.BAD_REQUEST, null));
+		}
 	}
 }
