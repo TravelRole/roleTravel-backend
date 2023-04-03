@@ -37,6 +37,9 @@ dependencies {
     // java for mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // oauth
+    implementation 'org.springframework.security:spring-security-oauth2-client'
 }
 
 tasks.named('test') {

@@ -14,11 +14,15 @@ public class RefreshTokenCookieProvider {
 
 	public ResponseCookie createCookie(final String refreshToken) {
 		return ResponseCookie.from(REFRESH_TOKEN, refreshToken)
-			.httpOnly(true)
-			// .secure(true) //TODO: HTTPS로 변경 이후, 속성 변경
 			.path("/") // 모든 경로일 때
 			.maxAge(EXPIRED_TIME)
-			.sameSite(Cookie.SameSite.NONE.attributeValue()) // sameSite 이전 상태로 기술
+			.build();
+	}
+
+	public ResponseCookie logout() {
+		return ResponseCookie.from(REFRESH_TOKEN, "")
+			.maxAge(0)
+			.path("/")
 			.build();
 	}
 }

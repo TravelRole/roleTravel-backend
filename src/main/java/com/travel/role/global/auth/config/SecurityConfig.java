@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -19,7 +20,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.travel.role.global.auth.exception.TokenExceptionHandlerFilter;
 import com.travel.role.global.auth.service.CustomAuthProvider;
+import com.travel.role.global.auth.service.CustomOAuth2UserService;
 import com.travel.role.global.auth.service.CustomUserDetailService;
+import com.travel.role.global.auth.service.handler.OAuth2FailureHandler;
+import com.travel.role.global.auth.service.handler.OAuth2SuccessHandler;
 import com.travel.role.global.auth.token.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 	private final TokenExceptionHandlerFilter tokenExceptionHandlerFilter;
+
+	private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
+	private final OAuth2FailureHandler oAuth2FailureHandler;
+
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	@Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -72,12 +82,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic()
 			.disable()
 			.authorizeRequests()
-			.antMatchers("/auth/**", "/h2-console/**").permitAll()
+			.antMatchers("/auth/**", "/h2-console/**", "/oauth2/**").permitAll()
 			.anyRequest()
 			.authenticated()
 			.and()
 			.headers().frameOptions().disable() // h2 db 접속때문에 설정한것 //TODO: H2-DB 테스트 이후 삭제할것
 			.and()
+				.oauth2Login()
+				.redirectionEndpoint()
+				.baseUri("/oauth2/callback/*")
+			.and()
+				.userInfoEndpoint().userService(customOAuth2UserService)
+			.and()
+				.successHandler(oAuth2SuccessHandler)
+				.failureHandler(oAuth2FailureHandler)
+			.and()
+				.exceptionHandling()
+					.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+
+		http
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(tokenExceptionHandlerFilter, JwtAuthenticationFilter.class);
 	}

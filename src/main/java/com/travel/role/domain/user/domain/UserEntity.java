@@ -12,7 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import com.travel.role.domain.user.dto.SignUpRequestDTO;
+import com.travel.role.global.auth.oauth.OAuth2UserInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +41,6 @@ public class UserEntity extends BaseTime{
 	@Column(nullable = false)
 	private String email;
 
-	@Column(nullable = false)
 	private String password;
 
 	@Enumerated(EnumType.STRING)
@@ -49,6 +52,10 @@ public class UserEntity extends BaseTime{
 	private String profile;
 
 	private LocalDate birth;
+	@Enumerated(EnumType.STRING)
+	private Provider provider;
+	private String providerId;
+
 
 	public void updateRefreshToken(final String refreshToken) {
 		this.refreshToken = refreshToken;
@@ -67,7 +74,20 @@ public class UserEntity extends BaseTime{
 			.password(password)
 			.birth(signUpRequestDTO.getBirth())
 			.profile(signUpRequestDTO.getProfile())
+			.provider(Provider.local)
 			.role(Role.USER)
+			.build();
+	}
+
+	public static UserEntity toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
+		return UserEntity.builder()
+			.name(oAuth2UserInfo.getName())
+			.email(oAuth2UserInfo.getEmail())
+			.role(Role.USER)
+			.profile(oAuth2UserInfo.getImageUrl())
+			.providerId(oAuth2UserInfo.getId())
+			.password(oAuth2UserInfo.getId())
+			.provider(provider)
 			.build();
 	}
 }
