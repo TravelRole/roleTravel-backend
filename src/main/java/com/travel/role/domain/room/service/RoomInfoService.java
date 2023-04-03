@@ -4,7 +4,6 @@ package com.travel.role.domain.room.service;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.RoomEntity;
 import com.travel.role.domain.room.dto.RoomInfoDTO;
-import com.travel.role.domain.room.exception.NullEntityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,9 +22,6 @@ public class RoomInfoService {
 
 
     public RoomInfoDTO create(final RoomEntity entity){
-
-        validate(entity);
-
         roomRepository.save(entity);
 
         RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
@@ -44,9 +40,4 @@ public class RoomInfoService {
         return roomRepository.findAll();
     }
 
-    private void validate(final RoomEntity entity){
-        if(entity == null){
-            throw new NullEntityException(ENTITY_IS_NULL);
-        }
-    }
 }

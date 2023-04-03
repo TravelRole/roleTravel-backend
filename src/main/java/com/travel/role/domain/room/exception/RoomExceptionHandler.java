@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class RoomExceptionHandler  {
 
-    @ExceptionHandler(NullEntityException.class)
+    @ExceptionHandler(StartdateBiggerException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse nullEntityHandler(Exception e) {
+    public ExceptionResponse StartdateBiggerHandler(Exception e) {
         return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
     }
 

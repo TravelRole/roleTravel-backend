@@ -2,7 +2,12 @@ package com.travel.role.domain.room.controller;
 
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.dto.RoomInfoDTO;
+import com.travel.role.domain.room.exception.RoomExceptionMessage;
+import com.travel.role.domain.room.exception.StartdateBiggerException;
 import com.travel.role.domain.room.service.RoomInfoService;
+import com.travel.role.domain.user.dto.SignUpRequestDTO;
+import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.user.AlreadyExistUserException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +22,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -57,9 +65,33 @@ class RoomInfoControllerTest {
     @Test
     public void 방_조회_테스트() throws Exception{
         mockMvc.perform(
-                        get("/room-info"))
+                        get("/room-info/read"))
                 .andExpect(status().isOk())
                 .andDo(print());
 
     }
+
+    @Test
+    public void 시작날짜가_종료날짜보다_큰경우_예외_발생() {
+        // given
+        RoomInfoDTO roomInfoDTO = createErrorRequestDTO();
+
+        // when, then
+        assertThatThrownBy(() -> roomInfoController.createRoom(roomInfoDTO))
+                .isInstanceOf(StartdateBiggerException.class)
+                .hasMessageContaining(RoomExceptionMessage.STARTDATE_IS_BIGGER);
+    }
+
+    private RoomInfoDTO createErrorRequestDTO() {
+        RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
+        roomInfoDTO.setRoomName("부산으로떠나요!");
+        roomInfoDTO.setTravelStartDate(LocalDateTime.parse("2023-04-30T06:59:20"));
+        roomInfoDTO.setTravelEndDate(LocalDateTime.parse("2023-03-24T06:34:20"));
+        roomInfoDTO.setRoomImage("verygoodimage.png");
+        roomInfoDTO.setTotalParticipants("6");
+        roomInfoDTO.setRoomPassword("4242");
+        return roomInfoDTO;
+    }
+
+
 }
