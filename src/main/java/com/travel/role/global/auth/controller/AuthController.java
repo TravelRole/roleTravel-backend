@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.travel.role.domain.user.dao.UserRepository;
+import com.travel.role.domain.user.dto.CheckIdRequest;
+import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.SignUpResponseDTO;
@@ -73,11 +75,18 @@ public class AuthController {
 
 	@PostMapping("/find-id")
 	public ResponseEntity<ConfirmUserResponseDTO> confirmId(@RequestBody ConfirmUserRequestDTO confirmUserRequestDTO) {
+		//TODO: 이후, PUll 당겼을때, Exception Handler 적용시 코드 변경할것
 		try {
 			ConfirmUserResponseDTO result = authService.findId(confirmUserRequestDTO);
 			return ResponseEntity.ok().body(result);
 		} catch (RuntimeException e) {
 			return ResponseEntity.badRequest().body(new ConfirmUserResponseDTO("실패하셨습니다", HttpStatus.BAD_REQUEST, null));
 		}
+	}
+
+	@PostMapping("/confirm-id")
+	public ResponseEntity<CheckIdResponse> confirmId(@RequestBody CheckIdRequest checkIdRequest) {
+		CheckIdResponse result = authService.confirmId(checkIdRequest);
+		return ResponseEntity.ok(result);
 	}
 }

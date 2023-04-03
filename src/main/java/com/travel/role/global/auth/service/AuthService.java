@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.dto.CheckIdRequest;
+import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.SignUpResponseDTO;
@@ -162,5 +164,10 @@ public class AuthService {
 			.orElseThrow(RuntimeException::new);
 
 		return new ConfirmUserResponseDTO("성공하셨습니다.", HttpStatus.OK, userEntity.getEmail());
+	}
+
+	public CheckIdResponse confirmId(CheckIdRequest checkIdRequest) {
+		boolean result = userRepository.existsByEmail(checkIdRequest.getEmail());
+		return new CheckIdResponse(result);
 	}
 }
