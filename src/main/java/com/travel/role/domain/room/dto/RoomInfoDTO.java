@@ -29,16 +29,4 @@ public class RoomInfoDTO {
         this.totalParticipants=entity.getTotalParticipants();
         this.roomPassword=entity.getRoomPassword();
     }
-
-
-    public static RoomEntity toEntity(final RoomInfoDTO dto){
-        return RoomEntity.builder()
-                .roomName(dto.getRoomName())
-                .travelStartDate(dto.getTravelStartDate())
-                .travelEndDate(dto.getTravelEndDate())
-                .roomImage(dto.getRoomImage())
-                .totalParticipants(dto.getTotalParticipants())
-                .roomPassword(dto.getRoomPassword())
-                .build();
-    }
 }

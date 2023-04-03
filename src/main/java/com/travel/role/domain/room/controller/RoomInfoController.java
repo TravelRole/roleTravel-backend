@@ -1,13 +1,14 @@
 package com.travel.role.domain.room.controller;
 
 import com.travel.role.domain.room.domain.RoomEntity;
-import com.travel.role.global.auth.dto.ResponseDTO;
+import com.travel.role.global.dto.ResponseDTO;
 import com.travel.role.domain.room.dto.RoomInfoDTO;
 import com.travel.role.domain.room.service.RoomInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,18 +20,18 @@ public class RoomInfoController {
 
     @PostMapping("/room-info/create")
     public ResponseEntity<?> createRoom(@RequestBody RoomInfoDTO dto) {
-            RoomEntity entity = RoomInfoDTO.toEntity(dto);
+            RoomEntity entity = RoomEntity.toEntity(dto);
 
-            List<RoomEntity> entities = roomInfoService.create(entity);
+            RoomInfoDTO roomInfoDTO = roomInfoService.create(entity);
 
-            List<RoomInfoDTO> dtos = entities.stream().map(RoomInfoDTO::new)
-                    .collect(Collectors.toList());
+            List<RoomInfoDTO> dtos = new ArrayList<RoomInfoDTO>();
+            dtos.add(roomInfoDTO);
 
             ResponseDTO<RoomInfoDTO> response = ResponseDTO.<RoomInfoDTO>builder()
                     .data(dtos).build();
 
-            return ResponseEntity.ok().body(response);
 
+            return ResponseEntity.ok().body(response);
     }
     @GetMapping("/room-info")
     public ResponseEntity<?> readRoomInfoList(){

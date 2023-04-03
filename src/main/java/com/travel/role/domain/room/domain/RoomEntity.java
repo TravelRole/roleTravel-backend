@@ -2,6 +2,7 @@ package com.travel.role.domain.room.domain;
 
 import javax.persistence.*;
 
+import com.travel.role.domain.room.dto.RoomInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,4 +45,14 @@ public class RoomEntity extends BaseTime{
     @Column(nullable = false, length=20)
     private String roomPassword;
 
+    public static RoomEntity toEntity(final RoomInfoDTO dto){
+        return RoomEntity.builder()
+                .roomName(dto.getRoomName())
+                .travelStartDate(dto.getTravelStartDate())
+                .travelEndDate(dto.getTravelEndDate())
+                .roomImage(dto.getRoomImage())
+                .totalParticipants(dto.getTotalParticipants())
+                .roomPassword(dto.getRoomPassword())
+                .build();
+    }
 }

@@ -3,6 +3,7 @@ package com.travel.role.domain.room.service;
 
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.RoomEntity;
+import com.travel.role.domain.room.dto.RoomInfoDTO;
 import com.travel.role.domain.room.exception.NullEntityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +22,21 @@ public class RoomInfoService {
     private final RoomRepository roomRepository;
 
 
-    public List<RoomEntity> create(final RoomEntity entity){
+    public RoomInfoDTO create(final RoomEntity entity){
 
         validate(entity);
-        return Collections.singletonList(roomRepository.save(entity));
+
+        roomRepository.save(entity);
+
+        RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
+        roomInfoDTO.setRoomName(entity.getRoomName());
+        roomInfoDTO.setTravelStartDate(entity.getTravelStartDate());
+        roomInfoDTO.setTravelEndDate(entity.getTravelEndDate());
+        roomInfoDTO.setRoomImage(entity.getRoomImage());
+        roomInfoDTO.setTotalParticipants(entity.getTotalParticipants());
+        roomInfoDTO.setRoomPassword(entity.getRoomPassword());
+
+        return roomInfoDTO;
     }
 
     @Transactional(readOnly=true)
