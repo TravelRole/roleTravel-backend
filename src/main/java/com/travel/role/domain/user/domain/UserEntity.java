@@ -86,14 +86,13 @@ public class UserEntity extends BaseTime{
 			.build();
 	}
 
-	public static UserEntity toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo, String token) {
+	public static UserEntity toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
 		return UserEntity.builder()
 			.name(oAuth2UserInfo.getName())
 			.email(oAuth2UserInfo.getEmail())
 			.role(Role.USER)
 			.profile(oAuth2UserInfo.getImageUrl())
 			.providerId(oAuth2UserInfo.getId())
-			.providerToken(token)
 			.password(oAuth2UserInfo.getId())
 			.provider(provider)
 			.build();
