@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.travel.role.global.auth.exception.TokenExceptionHandlerFilter;
+import com.travel.role.global.auth.oauth.filter.CustomOAuth2LogoutHandler;
 import com.travel.role.global.auth.service.CustomAuthProvider;
 import com.travel.role.global.auth.service.CustomOAuth2UserService;
 import com.travel.role.global.auth.service.CustomUserDetailService;
@@ -44,6 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final OAuth2FailureHandler oAuth2FailureHandler;
 
 	private final CustomOAuth2UserService customOAuth2UserService;
+
+	private final CustomOAuth2LogoutHandler logoutHandler;
 
 	@Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -98,7 +101,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.failureHandler(oAuth2FailureHandler)
 			.and()
 				.exceptionHandling()
-					.authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+					.authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+			.and()
+				.logout()
+					.logoutUrl("/auth/logout")
+						.invalidateHttpSession(true)
+							.clearAuthentication(true)
+								.deleteCookies("JSESSIONID", "refreshToken")
+			.addLogoutHandler(logoutHandler)
+									;
 
 		http
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

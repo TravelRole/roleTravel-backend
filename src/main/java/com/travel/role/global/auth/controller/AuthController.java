@@ -56,14 +56,4 @@ public class AuthController {
 		@RequestBody AccessTokenRequestDTO token) {
 		return authService.refresh(refreshToken, token.getAccessToken());
 	}
-
-	@GetMapping("/logout")
-	public ResponseEntity<ApiResponse> logout(@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@CookieValue(value = REFRESH_TOKEN, required = false) String token) {
-		ApiResponse response = authService.logout(token, userPrincipal);
-		ResponseCookie cookie = refreshTokenCookieProvider.logout();
-		return ResponseEntity.ok()
-			.header(HttpHeaders.SET_COOKIE, cookie.toString())
-			.body(response);
-	}
 }

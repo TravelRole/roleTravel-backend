@@ -55,6 +55,7 @@ public class UserEntity extends BaseTime{
 	@Enumerated(EnumType.STRING)
 	private Provider provider;
 	private String providerId;
+	private String providerToken;
 
 
 	public void updateRefreshToken(final String refreshToken) {
@@ -65,6 +66,10 @@ public class UserEntity extends BaseTime{
 		if (refreshToken != null) {
 			refreshToken = null;
 		}
+	}
+
+	public void updateProviderToken(final String providerToken) {
+		this.providerToken = providerToken;
 	}
 
 	public static UserEntity toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
