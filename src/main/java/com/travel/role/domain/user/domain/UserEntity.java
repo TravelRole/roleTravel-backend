@@ -56,6 +56,9 @@ public class UserEntity extends BaseTime{
 	private Provider provider;
 	private String providerId;
 
+	@Column(name = "provider_token")
+	private String providerToken;
+
 
 	public void updateRefreshToken(final String refreshToken) {
 		this.refreshToken = refreshToken;
@@ -65,6 +68,10 @@ public class UserEntity extends BaseTime{
 		if (refreshToken != null) {
 			refreshToken = null;
 		}
+	}
+
+	public void updateProviderToken(final String providerToken) {
+		this.providerToken = providerToken;
 	}
 
 	public static UserEntity toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
@@ -79,13 +86,14 @@ public class UserEntity extends BaseTime{
 			.build();
 	}
 
-	public static UserEntity toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
+	public static UserEntity toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo, String token) {
 		return UserEntity.builder()
 			.name(oAuth2UserInfo.getName())
 			.email(oAuth2UserInfo.getEmail())
 			.role(Role.USER)
 			.profile(oAuth2UserInfo.getImageUrl())
 			.providerId(oAuth2UserInfo.getId())
+			.providerToken(token)
 			.password(oAuth2UserInfo.getId())
 			.provider(provider)
 			.build();

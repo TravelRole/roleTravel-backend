@@ -6,12 +6,15 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.Provider;
@@ -30,6 +33,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	private final UserRepository userRepository;
 
 	@Override
+	@Transactional
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		DefaultOAuth2UserService defaultOAuth2UserService = new DefaultOAuth2UserService();
 		OAuth2User oAuth2User = defaultOAuth2UserService.loadUser(userRequest);
@@ -42,24 +46,24 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		OAuthAttributes newAttributes = OAuthAttributes.of(Provider.google, userNameAttributeName, attributes);
 
-		UserEntity user = checkAndSaveUser(newAttributes);
+		UserEntity user = checkAndSaveUser(newAttributes, userRequest.getAccessToken().getTokenValue());
 
 		return new UserPrincipal(user.getId(), user.getEmail(), user.getProviderId(),
 			Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleValue())));
 	}
 
-	private UserEntity checkAndSaveUser(OAuthAttributes attributes) {
+	private UserEntity checkAndSaveUser(OAuthAttributes attributes, String token) {
 		return userRepository.findByProviderAndProviderId(Provider.google,
 			attributes.getOAuth2UserInfo().getId())
 			.orElseGet(() -> {
 				if (!userRepository.existsByEmail(attributes.getOAuth2UserInfo().getEmail()))
-					return saveUser(Provider.google, attributes.getOAuth2UserInfo());
+					return saveUser(Provider.google, attributes.getOAuth2UserInfo(), token);
 				throw new AlreadyExistUserException(ALREADY_EXIST_USER);
 			});
 	}
 
-	private UserEntity saveUser(Provider provider, OAuth2UserInfo userInfo) {
-		UserEntity newUser = UserEntity.toEntity(provider, userInfo);
+	private UserEntity saveUser(Provider provider, OAuth2UserInfo userInfo, String token) {
+		UserEntity newUser = UserEntity.toEntity(provider, userInfo, token);
 		return userRepository.save(newUser);
 	}
 }

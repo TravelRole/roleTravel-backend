@@ -22,7 +22,6 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 	private String email;
 	private String password;
 	private Collection<? extends GrantedAuthority> authorities;
-
 	private Map<String, Object> attributes;
 
 	public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
@@ -44,6 +43,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 		);
 	}
 
+
 	public Long getId() {
 		return id;
 	}
@@ -51,7 +51,6 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 	public String getEmail() {
 		return email;
 	}
-
 	@Override
 	public Map<String, Object> getAttributes() {
 		return attributes;
