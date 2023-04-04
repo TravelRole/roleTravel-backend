@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@Validated
 public class AuthController {
 
 	private final AuthService authService;
@@ -43,12 +45,12 @@ public class AuthController {
 
 
 	@PostMapping("/signup")
-	public SignUpResponseDTO signUp(@RequestBody SignUpRequestDTO signUpRequestDTO) {
+	public SignUpResponseDTO signUp(@RequestBody @Validated SignUpRequestDTO signUpRequestDTO) {
 		return authService.signUp(signUpRequestDTO);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<AccessTokenRequestDTO> signIn(@RequestBody LoginRequestDTO loginRequestDTO) {
+	public ResponseEntity<AccessTokenRequestDTO> signIn(@RequestBody @Validated LoginRequestDTO loginRequestDTO) {
 		TokenMapping tokenResult = authService.signIn(loginRequestDTO);
 		ResponseCookie cookie = refreshTokenCookieProvider.createCookie(tokenResult.getRefreshToken());
 
@@ -60,7 +62,7 @@ public class AuthController {
 	@PostMapping("/refresh")
 	public TokenResponse refresh(
 		@CookieValue(value = REFRESH_TOKEN, required = false) String refreshToken,
-		@RequestBody AccessTokenRequestDTO token) {
+		@RequestBody @Validated AccessTokenRequestDTO token) {
 		return authService.refresh(refreshToken, token.getAccessToken());
 	}
 
@@ -75,7 +77,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/find-id")
-	public ResponseEntity<ConfirmUserResponseDTO> confirmId(@RequestBody ConfirmUserRequestDTO confirmUserRequestDTO) {
+	public ResponseEntity<ConfirmUserResponseDTO> confirmId(@RequestBody @Validated ConfirmUserRequestDTO confirmUserRequestDTO) {
 		//TODO: 이후, PUll 당겼을때, Exception Handler 적용시 코드 변경할것
 		try {
 			ConfirmUserResponseDTO result = authService.findId(confirmUserRequestDTO);
@@ -86,7 +88,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/confirm-id")
-	public ResponseEntity<CheckIdResponse> confirmId(@RequestBody CheckIdRequest checkIdRequest) {
+	public ResponseEntity<CheckIdResponse> confirmId(@RequestBody @Validated CheckIdRequest checkIdRequest) {
 		CheckIdResponse result = authService.confirmId(checkIdRequest);
 		return ResponseEntity.ok(result);
 	}
