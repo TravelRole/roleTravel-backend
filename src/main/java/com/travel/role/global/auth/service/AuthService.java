@@ -14,13 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
-import com.travel.role.domain.user.dto.SignUpResponseDTO;
+import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
 import com.travel.role.global.auth.dto.TokenResponse;
-import com.travel.role.domain.user.dto.LoginRequestDTO;
-import com.travel.role.domain.user.dto.SignUpRequestDTO;
+import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
+import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;

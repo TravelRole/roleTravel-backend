@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.Role;
 import com.travel.role.domain.user.domain.UserEntity;
-import com.travel.role.domain.user.dto.SignUpRequestDTO;
+import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
