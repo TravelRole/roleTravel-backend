@@ -19,7 +19,7 @@ import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.exception.ExceptionMessage;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
+import com.travel.role.domain.user.exception.AlreadyExistUserException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {

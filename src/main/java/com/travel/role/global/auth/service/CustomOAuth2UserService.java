@@ -19,7 +19,7 @@ import com.travel.role.domain.user.domain.UserEntity;
 import com.travel.role.global.auth.oauth.OAuth2UserInfo;
 import com.travel.role.global.auth.oauth.OAuthAttributes;
 import com.travel.role.global.auth.token.UserPrincipal;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
+import com.travel.role.domain.user.exception.AlreadyExistUserException;
 
 import lombok.RequiredArgsConstructor;
 

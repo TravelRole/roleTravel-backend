@@ -25,7 +25,7 @@ import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.dto.ApiResponse;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
+import com.travel.role.domain.user.exception.AlreadyExistUserException;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
