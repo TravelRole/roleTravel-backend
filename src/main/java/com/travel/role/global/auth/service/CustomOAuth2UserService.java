@@ -46,26 +46,24 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		OAuthAttributes newAttributes = OAuthAttributes.of(Provider.google, userNameAttributeName, attributes);
 
-		UserEntity user = checkAndSaveUser(newAttributes);
-
-		user.updateProviderToken(userRequest.getAccessToken().getTokenValue());
+		UserEntity user = checkAndSaveUser(newAttributes, userRequest.getAccessToken().getTokenValue());
 
 		return new UserPrincipal(user.getId(), user.getEmail(), user.getProviderId(),
 			Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleValue())));
 	}
 
-	private UserEntity checkAndSaveUser(OAuthAttributes attributes) {
+	private UserEntity checkAndSaveUser(OAuthAttributes attributes, String token) {
 		return userRepository.findByProviderAndProviderId(Provider.google,
 			attributes.getOAuth2UserInfo().getId())
 			.orElseGet(() -> {
 				if (!userRepository.existsByEmail(attributes.getOAuth2UserInfo().getEmail()))
-					return saveUser(Provider.google, attributes.getOAuth2UserInfo());
+					return saveUser(Provider.google, attributes.getOAuth2UserInfo(), token);
 				throw new AlreadyExistUserException(ALREADY_EXIST_USER);
 			});
 	}
 
-	private UserEntity saveUser(Provider provider, OAuth2UserInfo userInfo) {
-		UserEntity newUser = UserEntity.toEntity(provider, userInfo);
+	private UserEntity saveUser(Provider provider, OAuth2UserInfo userInfo, String token) {
+		UserEntity newUser = UserEntity.toEntity(provider, userInfo, token);
 		return userRepository.save(newUser);
 	}
 }

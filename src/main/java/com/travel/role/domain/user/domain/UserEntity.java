@@ -55,6 +55,8 @@ public class UserEntity extends BaseTime{
 	@Enumerated(EnumType.STRING)
 	private Provider provider;
 	private String providerId;
+
+	@Column(name = "provider_token")
 	private String providerToken;
 
 
@@ -84,13 +86,14 @@ public class UserEntity extends BaseTime{
 			.build();
 	}
 
-	public static UserEntity toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
+	public static UserEntity toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo, String token) {
 		return UserEntity.builder()
 			.name(oAuth2UserInfo.getName())
 			.email(oAuth2UserInfo.getEmail())
 			.role(Role.USER)
 			.profile(oAuth2UserInfo.getImageUrl())
 			.providerId(oAuth2UserInfo.getId())
+			.providerToken(token)
 			.password(oAuth2UserInfo.getId())
 			.provider(provider)
 			.build();
