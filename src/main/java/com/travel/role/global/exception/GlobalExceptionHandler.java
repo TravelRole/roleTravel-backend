@@ -7,6 +7,7 @@ import javax.mail.SendFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -59,5 +60,12 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse userInfoNotFoundHandler(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse methodArgumentNotValidHandler(MethodArgumentNotValidException e) {
+		return new ExceptionResponse(e.getBindingResult().getAllErrors().get(0).getDefaultMessage()
+			, HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
