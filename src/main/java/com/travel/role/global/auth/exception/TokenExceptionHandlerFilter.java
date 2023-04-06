@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travel.role.global.exception.ExceptionFilterResponse;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
+import com.travel.role.domain.user.exception.AlreadyExistUserException;
 
 import lombok.extern.slf4j.Slf4j;
 

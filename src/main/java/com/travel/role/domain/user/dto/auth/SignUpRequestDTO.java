@@ -1,7 +1,6 @@
-package com.travel.role.domain.user.dto;
+package com.travel.role.domain.user.dto.auth;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

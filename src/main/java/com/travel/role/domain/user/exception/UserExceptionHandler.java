@@ -1,4 +1,4 @@
-package com.travel.role.global.exception.user;
+package com.travel.role.domain.user.exception;
 
 import java.time.LocalDateTime;
 
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.travel.role.global.exception.ExceptionResponse;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 @RestControllerAdvice
 public class UserExceptionHandler {

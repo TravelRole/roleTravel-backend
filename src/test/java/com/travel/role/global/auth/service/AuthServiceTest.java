@@ -5,6 +5,8 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
+import javax.swing.text.html.Option;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,12 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.Role;
 import com.travel.role.domain.user.domain.UserEntity;
-import com.travel.role.domain.user.dto.SignUpRequestDTO;
+import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.exception.ExceptionMessage;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
+import com.travel.role.domain.user.exception.AlreadyExistUserException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -94,11 +96,8 @@ class AuthServiceTest {
 		final String refreshToken = "refreshToken";
 		final String accessToken = "accessToken";
 
-		given(userRepository.findByRefreshToken(anyString()))
-			.willReturn(Optional.of(createUser()));
-
-		given(tokenProvider.getTokenExpiration(accessToken))
-			.willReturn(-20L);
+		doReturn(Optional.of(createUser())).when(userRepository)
+				.findByRefreshToken(refreshToken);
 
 		given(tokenProvider.getTokenExpiration(refreshToken))
 			.willReturn(-20L);

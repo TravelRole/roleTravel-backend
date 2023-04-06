@@ -12,10 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-
-import com.travel.role.domain.user.dto.SignUpRequestDTO;
+import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.oauth.OAuth2UserInfo;
 
 import lombok.AllArgsConstructor;
@@ -56,6 +53,9 @@ public class UserEntity extends BaseTime{
 	private Provider provider;
 	private String providerId;
 
+	@Column(name = "provider_token")
+	private String providerToken;
+
 
 	public void updateRefreshToken(final String refreshToken) {
 		this.refreshToken = refreshToken;
@@ -70,6 +70,10 @@ public class UserEntity extends BaseTime{
 	public void updatePassword(String password) {
 		if (!password.isEmpty())
 			this.password = password;
+	}
+
+	public void updateProviderToken(final String providerToken) {
+		this.providerToken = providerToken;
 	}
 
 	public static UserEntity toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
