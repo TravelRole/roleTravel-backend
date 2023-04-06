@@ -2,9 +2,13 @@ package com.travel.role.global.auth.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.mail.SendFailedException;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,16 +20,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.dto.CheckIdRequest;
+import com.travel.role.domain.user.dto.CheckIdResponse;
+import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
+import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
+import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
+import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.auth.service.mail.MailService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.dto.ApiResponse;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
+import com.travel.role.global.exception.ExceptionMessage;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +51,10 @@ public class AuthService {
 	private final TokenProvider tokenProvider;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final MailService mailService;
 
 	private static final String SUCCESS_SIGN_UP = "회원가입에 성공하셨습니다";
+	private static final String SUCCESS_MESSAGE = "성공하셨습니다.";
 
 	@Transactional
 	public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
@@ -125,30 +139,46 @@ public class AuthService {
 		}
 	}
 
-	@Transactional
-	public ApiResponse logout(String refreshToken, UserPrincipal userPrincipal) {
-		UserEntity user = validateLogout(refreshToken, userPrincipal);
-		user.deleteRefreshToken();
+	@Transactional(readOnly = true)
+	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO confirmUserRequestDTO) {
+		UserEntity userEntity = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
+				confirmUserRequestDTO.getBirth())
+			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
 
-		return new ApiResponse("로그아웃에 성공하셨습니다.", LocalDateTime.now());
+		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, userEntity.getEmail());
 	}
 
-	private UserEntity validateLogout(String refreshToken, UserPrincipal userPrincipal) {
-		try {
-			tokenProvider.validateToken(refreshToken);
-		} catch (Exception e) {
-			throw new InvalidTokenException(INVALID_USER);
+	public CheckIdResponse confirmId(CheckIdRequest checkIdRequest) {
+		boolean result = userRepository.existsByEmail(checkIdRequest.getEmail());
+		return new CheckIdResponse(result);
+	}
+
+	@Transactional
+	public void changePassword(NewPasswordRequestDTO newPasswordRequestDTO) throws SendFailedException {
+		UserEntity userEntity = checkValidateUser(newPasswordRequestDTO);
+
+		String randomPassword = generateRandomPassword(20);
+		userEntity.updatePassword(passwordEncoder.encode(randomPassword));
+
+		mailService.sendPasswordMail(randomPassword, userEntity.getEmail());
+	}
+
+	private UserEntity checkValidateUser(NewPasswordRequestDTO dto) {
+		return userRepository.findByNameAndBirthAndEmail(dto.getName(), dto.getBirth(), dto.getEmail())
+			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
+	}
+
+	private String generateRandomPassword(int len) {
+		final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+		SecureRandom random = new SecureRandom();
+		StringBuffer sb = new StringBuffer();
+
+		for (int i = 0; i < len; i++) {
+			int index = random.nextInt(chars.length());
+			sb.append(chars.charAt(index));
 		}
 
-		UserEntity findTokenUser = userRepository.findByRefreshToken(refreshToken)
-			.orElseThrow(() -> new InvalidTokenException(INVALID_USER));
-
-		UserEntity findEmailUser = userRepository.findByEmail(userPrincipal.getEmail())
-			.orElseThrow(() -> new InvalidTokenException(INVALID_USER));
-
-		if (!findTokenUser.getEmail().equals(findEmailUser.getEmail())) {
-			throw new InvalidTokenException(INVALID_USER);
-		}
-		return findTokenUser;
+		return sb.toString();
 	}
 }

@@ -1,8 +1,11 @@
 package com.travel.role.global.auth.service;
 
+import static com.travel.role.global.exception.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.swing.text.html.Option;
@@ -12,12 +15,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.Role;
 import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
+import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.exception.ExceptionMessage;
@@ -105,6 +111,18 @@ class AuthServiceTest {
 		assertThatThrownBy(() -> authService.refresh(refreshToken, accessToken))
 			.isInstanceOf(InvalidTokenException.class)
 			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
+	}
+
+	@Test
+	void 회원정보가_없는_회원의_아이디를_찾을경우_예외_발생() {
+		// given
+		given(userRepository.findByNameAndBirth(anyString(), any()))
+			.willReturn(Optional.empty());
+
+		// when, then
+		assertThatThrownBy(() -> authService.findId(new ConfirmUserRequestDTO("test", LocalDate.now())))
+			.isInstanceOf(UserInfoNotFoundException.class)
+			.hasMessageContaining(USERNAME_NOT_FOUND);
 	}
 
 	private SignUpRequestDTO createSignUpRequestDTO() {

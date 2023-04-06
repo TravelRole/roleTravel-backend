@@ -67,6 +67,11 @@ public class UserEntity extends BaseTime{
 		}
 	}
 
+	public void updatePassword(String password) {
+		if (!password.isEmpty())
+			this.password = password;
+	}
+
 	public void updateProviderToken(final String providerToken) {
 		this.providerToken = providerToken;
 	}
@@ -77,7 +82,6 @@ public class UserEntity extends BaseTime{
 			.email(signUpRequestDTO.getEmail())
 			.password(password)
 			.birth(signUpRequestDTO.getBirth())
-			.profile(signUpRequestDTO.getProfile())
 			.provider(Provider.local)
 			.role(Role.USER)
 			.build();
