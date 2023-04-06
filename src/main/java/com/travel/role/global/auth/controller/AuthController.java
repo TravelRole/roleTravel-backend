@@ -66,16 +66,6 @@ public class AuthController {
 		return authService.refresh(refreshToken, token.getAccessToken());
 	}
 
-	@GetMapping("/logout")
-	public ResponseEntity<ApiResponse> logout(@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@CookieValue(value = REFRESH_TOKEN, required = false) String token) {
-		ApiResponse response = authService.logout(token, userPrincipal);
-		ResponseCookie cookie = refreshTokenCookieProvider.logout();
-		return ResponseEntity.ok()
-			.header(HttpHeaders.SET_COOKIE, cookie.toString())
-			.body(response);
-	}
-
 	@PostMapping("/find-id")
 	public ResponseEntity<ConfirmUserResponseDTO> confirmId(@RequestBody @Validated ConfirmUserRequestDTO confirmUserRequestDTO) {
 		//TODO: 이후, PUll 당겼을때, Exception Handler 적용시 코드 변경할것

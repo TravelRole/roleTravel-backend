@@ -136,33 +136,6 @@ public class AuthService {
 		}
 	}
 
-	@Transactional
-	public ApiResponse logout(String refreshToken, UserPrincipal userPrincipal) {
-		UserEntity user = validateLogout(refreshToken, userPrincipal);
-		user.deleteRefreshToken();
-
-		return new ApiResponse(SUCCESS_LOGOUT, LocalDateTime.now());
-	}
-
-	private UserEntity validateLogout(String refreshToken, UserPrincipal userPrincipal) {
-		try {
-			tokenProvider.validateToken(refreshToken);
-		} catch (Exception e) {
-			throw new InvalidTokenException(INVALID_USER);
-		}
-
-		UserEntity findTokenUser = userRepository.findByRefreshToken(refreshToken)
-			.orElseThrow(() -> new InvalidTokenException(INVALID_USER));
-
-		UserEntity findEmailUser = userRepository.findByEmail(userPrincipal.getEmail())
-			.orElseThrow(() -> new InvalidTokenException(INVALID_USER));
-
-		if (!findTokenUser.getEmail().equals(findEmailUser.getEmail())) {
-			throw new InvalidTokenException(INVALID_USER);
-		}
-		return findTokenUser;
-	}
-
 	@Transactional(readOnly = true)
 	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO confirmUserRequestDTO) {
 		UserEntity userEntity = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
