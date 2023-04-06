@@ -24,7 +24,7 @@ import com.travel.role.global.auth.service.CustomAuthProvider;
 import com.travel.role.global.auth.service.CustomOAuth2UserService;
 import com.travel.role.global.auth.service.CustomUserDetailService;
 import com.travel.role.global.auth.service.handler.OAuth2FailureHandler;
-import com.travel.role.global.auth.service.handler.OAuth2SuccessHandler
+import com.travel.role.global.auth.service.handler.OAuth2SuccessHandler;
 import com.travel.role.global.auth.token.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
