@@ -1,5 +1,8 @@
 package com.travel.role.global.auth.service.mail;
 
+import static com.travel.role.global.exception.ExceptionMessage.*;
+
+import javax.mail.SendFailedException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,7 +22,7 @@ public class MailService {
 
 	private final JavaMailSender javaMailSender;
 
-	public void sendPasswordMail(String password, String email) {
+	public void sendPasswordMail(String password, String email) throws SendFailedException{
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		try {
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
@@ -29,6 +32,7 @@ public class MailService {
 			javaMailSender.send(mimeMessage);
 		} catch (Exception e) {
 			log.info("메일을 보내는데 실패하였습니다 {}", e.getMessage());
+			throw new SendFailedException(MAIL_SEND_FAILD_ERROR);
 		}
 	}
 }

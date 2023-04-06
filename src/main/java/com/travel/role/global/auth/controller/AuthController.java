@@ -2,6 +2,7 @@ package com.travel.role.global.auth.controller;
 
 import static com.travel.role.global.auth.service.RefreshTokenCookieProvider.*;
 
+import javax.mail.SendFailedException;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -78,12 +79,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/new-password")
-	public ResponseEntity<?> newPassword(@RequestBody NewPasswordRequestDTO dto) {
-		try {
-			authService.changePassword(dto);
-			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (RuntimeException e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<?> newPassword(@RequestBody NewPasswordRequestDTO dto) throws SendFailedException {
+		authService.changePassword(dto);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

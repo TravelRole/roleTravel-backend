@@ -6,6 +6,8 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.mail.SendFailedException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +26,7 @@ import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
+import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
@@ -140,7 +143,7 @@ public class AuthService {
 	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO confirmUserRequestDTO) {
 		UserEntity userEntity = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
 				confirmUserRequestDTO.getBirth())
-			.orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
+			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
 
 		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, userEntity.getEmail());
 	}
@@ -151,7 +154,7 @@ public class AuthService {
 	}
 
 	@Transactional
-	public void changePassword(NewPasswordRequestDTO newPasswordRequestDTO) {
+	public void changePassword(NewPasswordRequestDTO newPasswordRequestDTO) throws SendFailedException {
 		UserEntity userEntity = checkValidateUser(newPasswordRequestDTO);
 
 		String randomPassword = generateRandomPassword(20);
@@ -162,7 +165,7 @@ public class AuthService {
 
 	private UserEntity checkValidateUser(NewPasswordRequestDTO dto) {
 		return userRepository.findByNameAndBirthAndEmail(dto.getName(), dto.getBirth(), dto.getEmail())
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
 	}
 
 	private String generateRandomPassword(int len) {

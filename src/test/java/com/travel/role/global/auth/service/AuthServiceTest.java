@@ -23,6 +23,7 @@ import com.travel.role.domain.user.domain.UserEntity;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
+import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.exception.ExceptionMessage;
@@ -120,7 +121,7 @@ class AuthServiceTest {
 
 		// when, then
 		assertThatThrownBy(() -> authService.findId(new ConfirmUserRequestDTO("test", LocalDate.now())))
-			.isInstanceOf(UsernameNotFoundException.class)
+			.isInstanceOf(UserInfoNotFoundException.class)
 			.hasMessageContaining(USERNAME_NOT_FOUND);
 	}
 
