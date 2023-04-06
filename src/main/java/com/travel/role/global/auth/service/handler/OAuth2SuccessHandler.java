@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -25,9 +27,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
+@PropertySource("classpath:application-oauth.yml")
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	private final TokenProvider tokenProvider;
-	private static final String redirectPath = "http://localhost:3000/landing/social";
+
+	@Value("${redirectPath}")
+	private String redirectPath;
 	private final UserRepository userRepository;
 	private final RefreshTokenCookieProvider refreshTokenCookieProvider;
 
