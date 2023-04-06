@@ -50,6 +50,8 @@ public class AuthService {
 	private final MailService mailService;
 
 	private static final String SUCCESS_SIGN_UP = "회원가입에 성공하셨습니다";
+	private static final String SUCCESS_LOGOUT = "로그아웃에 성공하셨습니다.";
+	private static final String SUCCESS_MESSAGE = "성공하셨습니다.";
 
 	@Transactional
 	public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
@@ -139,7 +141,7 @@ public class AuthService {
 		UserEntity user = validateLogout(refreshToken, userPrincipal);
 		user.deleteRefreshToken();
 
-		return new ApiResponse("로그아웃에 성공하셨습니다.", LocalDateTime.now());
+		return new ApiResponse(SUCCESS_LOGOUT, LocalDateTime.now());
 	}
 
 	private UserEntity validateLogout(String refreshToken, UserPrincipal userPrincipal) {
@@ -167,7 +169,7 @@ public class AuthService {
 				confirmUserRequestDTO.getBirth())
 			.orElseThrow(RuntimeException::new);
 
-		return new ConfirmUserResponseDTO("성공하셨습니다.", HttpStatus.OK, userEntity.getEmail());
+		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, userEntity.getEmail());
 	}
 
 	public CheckIdResponse confirmId(CheckIdRequest checkIdRequest) {
