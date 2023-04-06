@@ -7,9 +7,11 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ConfirmUserRequestDTO {
 
 	@NotBlank(message = "값이 비어있으면 안됩니다.")
