@@ -19,6 +19,6 @@ public class UserController {
 
 	@GetMapping("/basic-profile")
 	public UserProfileResponseDTO basicProfile(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		return userService.getBasicProfile(userPrincipal);
+		return userService.getBasicProfile(userPrincipal.getEmail());
 	}
 }

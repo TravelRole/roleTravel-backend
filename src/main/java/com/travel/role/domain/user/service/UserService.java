@@ -20,8 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	private final UserRepository userRepository;
 
-	public UserProfileResponseDTO getBasicProfile(UserPrincipal userPrincipal) {
-		UserEntity findUser = userRepository.findByEmail(userPrincipal.getEmail())
+	public UserProfileResponseDTO getBasicProfile(String email) {
+		UserEntity findUser = userRepository.findByEmail(email)
 			.orElseThrow(() -> new UsernameNotFoundException(
 				USERNAME_NOT_FOUND));
 
