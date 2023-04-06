@@ -34,6 +34,7 @@ import com.travel.role.global.auth.service.mail.MailService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.dto.ApiResponse;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
+import com.travel.role.global.exception.ExceptionMessage;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,6 @@ public class AuthService {
 	private final MailService mailService;
 
 	private static final String SUCCESS_SIGN_UP = "회원가입에 성공하셨습니다";
-	private static final String SUCCESS_LOGOUT = "로그아웃에 성공하셨습니다.";
 	private static final String SUCCESS_MESSAGE = "성공하셨습니다.";
 
 	@Transactional
@@ -140,7 +140,7 @@ public class AuthService {
 	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO confirmUserRequestDTO) {
 		UserEntity userEntity = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
 				confirmUserRequestDTO.getBirth())
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
 
 		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, userEntity.getEmail());
 	}

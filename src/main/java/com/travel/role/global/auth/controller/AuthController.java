@@ -68,13 +68,8 @@ public class AuthController {
 
 	@PostMapping("/find-id")
 	public ResponseEntity<ConfirmUserResponseDTO> confirmId(@RequestBody @Validated ConfirmUserRequestDTO confirmUserRequestDTO) {
-		//TODO: 이후, PUll 당겼을때, Exception Handler 적용시 코드 변경할것
-		try {
-			ConfirmUserResponseDTO result = authService.findId(confirmUserRequestDTO);
-			return ResponseEntity.ok().body(result);
-		} catch (RuntimeException e) {
-			return ResponseEntity.badRequest().body(new ConfirmUserResponseDTO("실패하셨습니다", HttpStatus.BAD_REQUEST, null));
-		}
+		ConfirmUserResponseDTO result = authService.findId(confirmUserRequestDTO);
+		return ResponseEntity.ok().body(result);
 	}
 
 	@PostMapping("/confirm-id")
