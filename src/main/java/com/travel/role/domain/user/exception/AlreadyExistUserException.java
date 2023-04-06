@@ -1,4 +1,4 @@
-package com.travel.role.global.exception.user;
+package com.travel.role.domain.user.exception;
 
 import lombok.NoArgsConstructor;
 

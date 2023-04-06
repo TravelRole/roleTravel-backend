@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.user.dto.SignUpResponseDTO;
+import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
 import com.travel.role.global.auth.dto.AccessTokenRequestDTO;
 import com.travel.role.global.auth.dto.TokenResponse;
-import com.travel.role.domain.user.dto.LoginRequestDTO;
-import com.travel.role.domain.user.dto.SignUpRequestDTO;
+import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
+import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.service.AuthService;
 import com.travel.role.global.auth.service.RefreshTokenCookieProvider;
