@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -25,7 +24,4 @@ public class SignUpRequestDTO {
 	private String password;
 	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate birth;
-	private String profile;
-	private String expiration;
-	private UserCheckDTO check;
 }
