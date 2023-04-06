@@ -5,6 +5,8 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
+import javax.swing.text.html.Option;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -94,11 +96,8 @@ class AuthServiceTest {
 		final String refreshToken = "refreshToken";
 		final String accessToken = "accessToken";
 
-		given(userRepository.findByRefreshToken(anyString()))
-			.willReturn(Optional.of(createUser()));
-
-		given(tokenProvider.getTokenExpiration(accessToken))
-			.willReturn(-20L);
+		doReturn(Optional.of(createUser())).when(userRepository)
+				.findByRefreshToken(refreshToken);
 
 		given(tokenProvider.getTokenExpiration(refreshToken))
 			.willReturn(-20L);
