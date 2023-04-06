@@ -24,6 +24,7 @@ public class RefreshTokenCookieProvider {
 		return ResponseCookie.from(REFRESH_TOKEN, refreshToken)
 			.path("/") // 모든 경로일 때
 			.domain(COOKIE_DOMAIN)
+			.httpOnly(true)
 			.maxAge(EXPIRED_TIME)
 			.build();
 	}
