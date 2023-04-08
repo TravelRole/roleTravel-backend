@@ -16,9 +16,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.domain.User;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.service.RefreshTokenCookieProvider;
 import com.travel.role.global.auth.service.TokenProvider;
@@ -55,7 +54,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	}
 
 	private void saveUser(TokenMapping token) {
-		Optional<UserEntity> user = userRepository.findByEmail(token.getUserEmail());
+		Optional<User> user = userRepository.findByEmail(token.getUserEmail());
 
 		if (user.isEmpty())
 			return;

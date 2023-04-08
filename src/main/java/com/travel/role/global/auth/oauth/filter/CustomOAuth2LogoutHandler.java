@@ -1,8 +1,6 @@
 package com.travel.role.global.auth.oauth.filter;
 
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Optional;
 
@@ -13,12 +11,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -28,9 +23,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.domain.User;
 import com.travel.role.global.auth.service.TokenProvider;
-import com.travel.role.global.auth.token.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,7 +40,7 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 	@Transactional
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		UsernamePasswordAuthenticationToken auth = getUserAuthentication(getJwtFromRequest(request));
-		UserEntity userInfo = getUserInfo(auth);
+		User userInfo = getUserInfo(auth);
 
 		if (userInfo == null) {
 			response.setStatus(HttpStatus.FORBIDDEN.value());
@@ -82,10 +76,10 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 	private UsernamePasswordAuthenticationToken getUserAuthentication(String jwt) {
 		return tokenProvider.getAuthenticationById(jwt);
 	}
-	private UserEntity getUserInfo(UsernamePasswordAuthenticationToken authentication) {
+	private User getUserInfo(UsernamePasswordAuthenticationToken authentication) {
 		String email = authentication.getName();
 
-		Optional<UserEntity> userInfo = userRepository.findByEmail(email);
+		Optional<User> userInfo = userRepository.findByEmail(email);
 		return userInfo.orElse(null);
 	}
 }

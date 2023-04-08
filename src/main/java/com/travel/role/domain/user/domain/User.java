@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserEntity extends BaseTime{
+public class User extends BaseTime{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,8 +76,8 @@ public class UserEntity extends BaseTime{
 		this.providerToken = providerToken;
 	}
 
-	public static UserEntity toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
-		return UserEntity.builder()
+	public static User toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
+		return User.builder()
 			.name(signUpRequestDTO.getName())
 			.email(signUpRequestDTO.getEmail())
 			.password(password)
@@ -87,8 +87,8 @@ public class UserEntity extends BaseTime{
 			.build();
 	}
 
-	public static UserEntity toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
-		return UserEntity.builder()
+	public static User toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
+		return User.builder()
 			.name(oAuth2UserInfo.getName())
 			.email(oAuth2UserInfo.getEmail())
 			.role(Role.USER)

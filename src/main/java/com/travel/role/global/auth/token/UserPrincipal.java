@@ -9,12 +9,10 @@ import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.domain.User;
 
 public class UserPrincipal implements UserDetails, OAuth2User {
 
@@ -31,7 +29,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 		this.authorities = authorities;
 	}
 
-	public static UserPrincipal create(UserEntity user) {
+	public static UserPrincipal create(User user) {
 		List<SimpleGrantedAuthority> authorities = Collections.singletonList(
 			new SimpleGrantedAuthority(user.getRole().getRoleValue()));
 

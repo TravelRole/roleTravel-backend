@@ -5,21 +5,17 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
-
-import javax.swing.text.html.Option;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.Role;
-import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
@@ -133,8 +129,8 @@ class AuthServiceTest {
 		return signUpRequestDTO;
 	}
 
-	private UserEntity createUser() {
-		return UserEntity.builder()
+	private User createUser() {
+		return User.builder()
 			.id(1L)
 			.email("chan@naver.com")
 			.name("김철수")

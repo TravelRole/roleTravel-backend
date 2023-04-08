@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.CheckIdRequest;
 import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
@@ -34,10 +34,7 @@ import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.auth.service.mail.MailService;
-import com.travel.role.global.auth.token.UserPrincipal;
-import com.travel.role.global.dto.ApiResponse;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
-import com.travel.role.global.exception.ExceptionMessage;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +59,7 @@ public class AuthService {
 			throw new AlreadyExistUserException(ALREADY_EXIST_USER);
 		}
 
-		UserEntity newUser = UserEntity.toEntity(signUpRequestDTO,
+		User newUser = User.toEntity(signUpRequestDTO,
 			passwordEncoder.encode(signUpRequestDTO.getPassword()));
 		userRepository.save(newUser);
 
@@ -88,7 +85,7 @@ public class AuthService {
 
 	@Transactional
 	public void updateToken(TokenMapping tokenMapping) {
-		UserEntity findUser = userRepository.findByEmail(tokenMapping.getUserEmail()).orElseThrow(
+		User findUser = userRepository.findByEmail(tokenMapping.getUserEmail()).orElseThrow(
 			() -> new UsernameNotFoundException(USERNAME_NOT_FOUND)
 		);
 		findUser.updateRefreshToken(tokenMapping.getRefreshToken());
@@ -97,7 +94,7 @@ public class AuthService {
 	public TokenResponse refresh(final String refreshToken, String accessToken) {
 		validateToken(refreshToken, accessToken);
 
-		UserEntity findUser = userRepository.findByRefreshToken(refreshToken)
+		User findUser = userRepository.findByRefreshToken(refreshToken)
 			.orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
 		UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationByEmail(
 			findUser.getEmail());
@@ -111,7 +108,7 @@ public class AuthService {
 			throw new NotExistTokenException(NOT_EXISTS_TOKEN);
 		}
 
-		Optional<UserEntity> findUser = userRepository.findByRefreshToken(refreshToken);
+		Optional<User> findUser = userRepository.findByRefreshToken(refreshToken);
 
 		if (findUser.isEmpty()) {
 			throw new InvalidTokenException(INVALID_TOKEN);
@@ -141,11 +138,11 @@ public class AuthService {
 
 	@Transactional(readOnly = true)
 	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO confirmUserRequestDTO) {
-		UserEntity userEntity = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
+		User user = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
 				confirmUserRequestDTO.getBirth())
 			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
 
-		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, userEntity.getEmail());
+		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, user.getEmail());
 	}
 
 	public CheckIdResponse confirmId(CheckIdRequest checkIdRequest) {
@@ -155,15 +152,15 @@ public class AuthService {
 
 	@Transactional
 	public void changePassword(NewPasswordRequestDTO newPasswordRequestDTO) throws SendFailedException {
-		UserEntity userEntity = checkValidateUser(newPasswordRequestDTO);
+		User user = checkValidateUser(newPasswordRequestDTO);
 
 		String randomPassword = generateRandomPassword(20);
-		userEntity.updatePassword(passwordEncoder.encode(randomPassword));
+		user.updatePassword(passwordEncoder.encode(randomPassword));
 
-		mailService.sendPasswordMail(randomPassword, userEntity.getEmail());
+		mailService.sendPasswordMail(randomPassword, user.getEmail());
 	}
 
-	private UserEntity checkValidateUser(NewPasswordRequestDTO dto) {
+	private User checkValidateUser(NewPasswordRequestDTO dto) {
 		return userRepository.findByNameAndBirthAndEmail(dto.getName(), dto.getBirth(), dto.getEmail())
 			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
 	}
