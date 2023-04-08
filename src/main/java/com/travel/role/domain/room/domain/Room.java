@@ -1,13 +1,17 @@
 package com.travel.role.domain.room.domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedAttributeNode;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +28,7 @@ import lombok.NoArgsConstructor;
 public class Room {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "room_id")
 	private Long id;
 
 	@Column(name = "room_name", nullable = false)
@@ -43,4 +48,7 @@ public class Room {
 
 	@Column(name = "room_password")
 	private String roomPassword;
+
+	@OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<RoomParticipant> roomParticipants = new ArrayList<>();
 }
