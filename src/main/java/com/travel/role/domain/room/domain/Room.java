@@ -51,6 +51,6 @@ public class Room extends BaseCreateTime {
 	@Column(name = "room_password")
 	private String roomPassword;
 
-	@OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
 	private List<RoomParticipant> roomParticipants = new ArrayList<>();
 }

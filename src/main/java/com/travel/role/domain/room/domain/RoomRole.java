@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum RoomRole {
 	ADMIN("ADMIN"),
-	SCHEDULE("SECHDULE"),
+	SCHEDULE("SCHEDULE"),
 	ACCOUNTING("ACCOUNTING"),
 	RESERVATION("RESERVATION"),
 	NONE("NONE");

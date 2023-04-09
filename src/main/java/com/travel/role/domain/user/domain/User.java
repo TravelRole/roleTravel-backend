@@ -64,7 +64,7 @@ public class User extends BaseTime {
 	@Column(name = "provider_token")
 	private String providerToken;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<RoomParticipant> roomParticipants = new ArrayList<>();
 
 	public void updateRefreshToken(final String refreshToken) {
