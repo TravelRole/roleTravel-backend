@@ -1,4 +1,4 @@
-package com.travel.role.global.encrypt.config;
+package com.travel.role.global.config.encrypt;
 
 import lombok.RequiredArgsConstructor;
 import org.jasypt.encryption.StringEncryptor;
