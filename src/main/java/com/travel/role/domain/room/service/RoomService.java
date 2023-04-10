@@ -70,7 +70,7 @@ public class RoomService {
 	}
 
 	private User findUser(UserPrincipal userPrincipal) {
-		return userRepository.findByEmail(userPrincipal.getName())
+		return userRepository.findByEmail(userPrincipal.getEmail())
 			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
 	}
 
