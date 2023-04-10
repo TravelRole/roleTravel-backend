@@ -43,8 +43,14 @@ dependencies {
 
     // validator
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // jasypt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+
+    // 설정한 VM Options 를 TEST에 적용
+    systemProperties System.properties
 }
