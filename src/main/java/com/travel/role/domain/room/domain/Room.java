@@ -36,21 +36,22 @@ public class Room extends BaseCreateTime {
 	@Column(name = "room_name", nullable = false)
 	private String roomName;
 
-	@Column(name = "tarvel_start_date")
+	@Column(name = "tarvel_start_date", nullable = false)
 	private LocalDate travelStartDate;
 
-	@Column(name = "travel_end_date")
+	@Column(name = "travel_end_date", nullable = false)
 	private LocalDate travelEndDate;
 
 	@Column(name = "room_image")
 	private String roomImage;
 
-	@Column(name = "total_participants")
+	@Column(name = "total_participants", nullable = false)
 	private Integer totalParticipants;
 
-	@Column(name = "room_password")
+	@Column(name = "room_password", nullable = false)
 	private String roomPassword;
 
+	@Column(nullable = false)
 	private String location;
 
 	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
