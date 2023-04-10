@@ -2,6 +2,7 @@ package com.travel.role.domain.room.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.domain.RoomRole;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
+import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
@@ -36,6 +38,8 @@ public class RoomService {
 	private final ParticipantRoleRepository participantRoleRepository;
 
 	public void makeRoom(UserPrincipal userPrincipal, MakeRoomRequestDTO makeRoomRequestDTO) {
+		validateDate(makeRoomRequestDTO);
+
 		String randomPassword = PasswordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
 
 		User user = findUser(userPrincipal);
@@ -68,5 +72,13 @@ public class RoomService {
 	private User findUser(UserPrincipal userPrincipal) {
 		return userRepository.findByEmail(userPrincipal.getName())
 			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
+	}
+
+	private void validateDate(MakeRoomRequestDTO makeRoomRequestDTO) {
+		LocalDate start = makeRoomRequestDTO.getTravelStartDate();
+		LocalDate end = makeRoomRequestDTO.getTravelEndDate();
+
+		if (start.isAfter(end))
+			throw new InvalidLocalDateException(INVALID_DATE_ERROR);
 	}
 }
