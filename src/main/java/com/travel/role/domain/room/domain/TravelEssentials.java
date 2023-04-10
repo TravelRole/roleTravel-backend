@@ -9,13 +9,13 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
-@Table(name = "PREPARATION")
+@Table(name = "travel_essentials")
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Preparation {
+public class TravelEssentials {
 
     @Id
     @Column(name = "travel_essentials_id")
@@ -35,10 +35,10 @@ public class Preparation {
 
     @Column(name = "is_checked")
     @ColumnDefault("false")
-    private Boolean check;
+    private Boolean isChecked;
 
     @Column(name = "item_name", length = 100, nullable = false)
-    private String item;
+    private String itemName;
 }
 
 
