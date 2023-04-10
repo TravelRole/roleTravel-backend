@@ -1,0 +1,20 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(BOY0pJfJAS/FWMg/xrxh+NAcBJi3Ny1f6llUjAn91Mmgu3sXXkAgB4VD4lQ+ddhihbPmMIYkpqXbQeAvmZQIajxBCcHphplMscLDAN54/iOVmYCX85V17Q==)
+            client-secret: ENC(/M5KAZAMC0VsKVsHeY27PYbJMzYMJSfEZK8WVYY9nqRgBgTeK82lrZtgy+rutP5A)
+            redirect-uri: http://localhost:8080/oauth2/callback/google
+            scope: profile,email
+
+redirectPath: ENC(7N68zXaBj/kb/rVagCl6jC1WSkvDOC2HUnn2V2mR2VUI3rNFd/MphmEPtjyXhdM6)
+
+# 60 * 60 * 24 * 14
+cookieExpireTime: 1209600
+cookieDomain: ENC(OjvqE2GrGoSfr0yBBXr/71QAkzhFML6o)
+
+secretKey: ENC(nGmivbDHDjs+9lRnOwPFWDhN8X5HeWUeMeJSuf4BWNfxjieC1wXqjfyVe9CXte5WrqCNdi4jTcNRPJ10lqp6cEfV8QYWDobyZmf25cROhlQb+My3a5wpFwLWz6RWgJg2X1nCAtTD+uT/5auYIbv7RhGZy3kY2MOpIamUqLaPcBM=)
+accessTokenExpireTime: 10000
+refreshTokenExpireTime: 21600000
