@@ -2,5 +2,7 @@ package com.travel.role.domain.room.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ParticipantRole extends JpaRepository<ParticipantRole, Long> {
+import com.travel.role.domain.room.domain.ParticipantRole;
+
+public interface ParticipantRoleRepository extends JpaRepository<ParticipantRole, Long> {
 }

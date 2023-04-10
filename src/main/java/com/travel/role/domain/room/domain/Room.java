@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.global.domain.BaseCreateTime;
 
 import lombok.AllArgsConstructor;
@@ -56,4 +57,14 @@ public class Room extends BaseCreateTime {
 
 	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
 	private List<RoomParticipant> roomParticipants = new ArrayList<>();
+
+	public static Room toEntity(MakeRoomRequestDTO makeRoomRequestDTO, String password) {
+		return Room.builder()
+			.location(makeRoomRequestDTO.getLocation())
+			.roomName(makeRoomRequestDTO.getRoomName())
+			.roomPassword(password)
+			.travelEndDate(makeRoomRequestDTO.getTravelEndDate())
+			.travelStartDate(makeRoomRequestDTO.getTravelStartDate())
+			.build();
+	}
 }
