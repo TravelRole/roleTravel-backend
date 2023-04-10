@@ -51,6 +51,8 @@ public class Room extends BaseCreateTime {
 	@Column(name = "room_password")
 	private String roomPassword;
 
+	private String location;
+
 	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
 	private List<RoomParticipant> roomParticipants = new ArrayList<>();
 }
