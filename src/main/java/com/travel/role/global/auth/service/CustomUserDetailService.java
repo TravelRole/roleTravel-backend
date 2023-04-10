@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.domain.user.domain.User;
 import com.travel.role.global.auth.token.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-		UserEntity user = userRepository.findByEmail(email)
+		User user = userRepository.findByEmail(email)
 			.orElseThrow(() ->
 				new UsernameNotFoundException(USERNAME_NOT_FOUND));
 
@@ -34,7 +34,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
 	@Transactional
 	public UserDetails loadUserById(Long id) {
-		Optional<UserEntity> user = userRepository.findById(id);
+		Optional<User> user = userRepository.findById(id);
 		if (user.isEmpty()) {
 			throw new UsernameNotFoundException(USERNAME_NOT_FOUND);
 		}

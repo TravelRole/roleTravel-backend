@@ -1,4 +1,4 @@
-package com.travel.role.domain.user.domain;
+package com.travel.role.global.domain;
 
 import java.time.LocalDateTime;
 
