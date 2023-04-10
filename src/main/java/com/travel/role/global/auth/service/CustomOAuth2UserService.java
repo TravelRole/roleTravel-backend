@@ -63,7 +63,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	}
 
 	private User saveUser(Provider provider, OAuth2UserInfo userInfo) {
-		User newUser = User.toEntity(provider, userInfo);
+		User newUser = User.of(provider, userInfo);
 		return userRepository.save(newUser);
 	}
 }

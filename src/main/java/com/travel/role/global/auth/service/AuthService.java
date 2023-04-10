@@ -2,7 +2,6 @@ package com.travel.role.global.auth.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -60,7 +59,7 @@ public class AuthService {
 			throw new AlreadyExistUserException(ALREADY_EXIST_USER);
 		}
 
-		User newUser = User.toEntity(signUpRequestDTO,
+		User newUser = User.of(signUpRequestDTO,
 			passwordEncoder.encode(signUpRequestDTO.getPassword()));
 		userRepository.save(newUser);
 

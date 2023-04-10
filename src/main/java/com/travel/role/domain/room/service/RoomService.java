@@ -43,7 +43,7 @@ public class RoomService {
 		String randomPassword = PasswordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
 
 		User user = findUser(userPrincipal);
-		Room room = roomRepository.save(Room.toEntity(makeRoomRequestDTO, randomPassword));
+		Room room = roomRepository.save(Room.of(makeRoomRequestDTO, randomPassword));
 		RoomParticipant roomParticipant = saveNewRoomParticipant(user, room);
 		ParticipantRole participantRole = saveNewParticipantRole(roomParticipant);
 	}
