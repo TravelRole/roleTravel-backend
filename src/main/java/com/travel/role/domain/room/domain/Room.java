@@ -65,6 +65,7 @@ public class Room extends BaseCreateTime {
 			.roomPassword(password)
 			.travelEndDate(makeRoomRequestDTO.getTravelEndDate())
 			.travelStartDate(makeRoomRequestDTO.getTravelStartDate())
+			.totalParticipants(makeRoomRequestDTO.getTotalParticipants())
 			.build();
 	}
 }
