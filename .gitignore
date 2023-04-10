@@ -36,7 +36,3 @@ out/
 ### VS Code ###
 .vscode/
 
-### properties ###
-application-oauth.yml
-application-mail.yml
-
