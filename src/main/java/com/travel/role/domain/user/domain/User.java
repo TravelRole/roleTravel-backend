@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.travel.role.domain.room.domain.Preparation;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.oauth.OAuth2UserInfo;
@@ -67,6 +68,8 @@ public class User extends BaseTime {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<RoomParticipant> roomParticipants = new ArrayList<>();
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Preparation> preparations = new ArrayList<>();
 	public void updateRefreshToken(final String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
@@ -88,24 +91,24 @@ public class User extends BaseTime {
 
 	public static User toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
 		return User.builder()
-			.name(signUpRequestDTO.getName())
-			.email(signUpRequestDTO.getEmail())
-			.password(password)
-			.birth(signUpRequestDTO.getBirth())
-			.provider(Provider.local)
-			.role(Role.USER)
-			.build();
+				.name(signUpRequestDTO.getName())
+				.email(signUpRequestDTO.getEmail())
+				.password(password)
+				.birth(signUpRequestDTO.getBirth())
+				.provider(Provider.local)
+				.role(Role.USER)
+				.build();
 	}
 
 	public static User toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
 		return User.builder()
-			.name(oAuth2UserInfo.getName())
-			.email(oAuth2UserInfo.getEmail())
-			.role(Role.USER)
-			.profile(oAuth2UserInfo.getImageUrl())
-			.providerId(oAuth2UserInfo.getId())
-			.password(oAuth2UserInfo.getId())
-			.provider(provider)
-			.build();
+				.name(oAuth2UserInfo.getName())
+				.email(oAuth2UserInfo.getEmail())
+				.role(Role.USER)
+				.profile(oAuth2UserInfo.getImageUrl())
+				.providerId(oAuth2UserInfo.getId())
+				.password(oAuth2UserInfo.getId())
+				.provider(provider)
+				.build();
 	}
 }
