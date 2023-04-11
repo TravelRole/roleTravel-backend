@@ -23,17 +23,17 @@ public class TravelEssentials {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(length = 20, nullable = false)
     private String category;
 
-    @Column(name = "is_checked")
+    @Column(name = "is_checked", nullable = false)
     @ColumnDefault("false")
     private Boolean isChecked;
 
