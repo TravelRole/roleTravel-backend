@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -18,7 +19,7 @@ public class NewPasswordRequestDTO {
 	@Email(message = "이메일 형식이 아닙니다.")
 	private String email;
 
-	@NotBlank(message = "값이 비어있으면 안됩니다.")
+	@NotNull(message = "값이 비어있으면 안됩니다.")
 	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate birth;
 }
