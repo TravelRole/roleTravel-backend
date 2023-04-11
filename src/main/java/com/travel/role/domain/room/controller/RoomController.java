@@ -22,7 +22,7 @@ public class RoomController {
 	private final RoomService roomService;
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/v1/room")
+	@PostMapping("/room")
 	public void makeRoom(@AuthenticationPrincipal UserPrincipal userPrincipal,@RequestBody MakeRoomRequestDTO dto) {
 		roomService.makeRoom(userPrincipal, dto);
 	}
