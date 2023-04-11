@@ -2,7 +2,6 @@ package com.travel.role.global.auth.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -35,6 +34,7 @@ import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.auth.service.mail.MailService;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
+import com.travel.role.global.util.PasswordGenerator;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +59,7 @@ public class AuthService {
 			throw new AlreadyExistUserException(ALREADY_EXIST_USER);
 		}
 
-		User newUser = User.toEntity(signUpRequestDTO,
+		User newUser = User.of(signUpRequestDTO,
 			passwordEncoder.encode(signUpRequestDTO.getPassword()));
 		userRepository.save(newUser);
 
@@ -154,7 +154,7 @@ public class AuthService {
 	public void changePassword(NewPasswordRequestDTO newPasswordRequestDTO) throws SendFailedException {
 		User user = checkValidateUser(newPasswordRequestDTO);
 
-		String randomPassword = generateRandomPassword(20);
+		String randomPassword = PasswordGenerator.generateRandomPassword(20);
 		user.updatePassword(passwordEncoder.encode(randomPassword));
 
 		mailService.sendPasswordMail(randomPassword, user.getEmail());
@@ -163,19 +163,5 @@ public class AuthService {
 	private User checkValidateUser(NewPasswordRequestDTO dto) {
 		return userRepository.findByNameAndBirthAndEmail(dto.getName(), dto.getBirth(), dto.getEmail())
 			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
-	}
-
-	private String generateRandomPassword(int len) {
-		final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-		SecureRandom random = new SecureRandom();
-		StringBuffer sb = new StringBuffer();
-
-		for (int i = 0; i < len; i++) {
-			int index = random.nextInt(chars.length());
-			sb.append(chars.charAt(index));
-		}
-
-		return sb.toString();
 	}
 }

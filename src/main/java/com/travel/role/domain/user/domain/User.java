@@ -89,7 +89,7 @@ public class User extends BaseTime {
         this.providerToken = providerToken;
     }
 
-    public static User toEntity(SignUpRequestDTO signUpRequestDTO, String password) {
+    public static User of(SignUpRequestDTO signUpRequestDTO, String password) {
         return User.builder()
                 .name(signUpRequestDTO.getName())
                 .email(signUpRequestDTO.getEmail())
@@ -100,7 +100,7 @@ public class User extends BaseTime {
                 .build();
     }
 
-    public static User toEntity(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
+    public static User of(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
         return User.builder()
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())
