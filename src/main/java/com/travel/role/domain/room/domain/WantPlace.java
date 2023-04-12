@@ -25,21 +25,25 @@ public class WantPlace {
     @Column(name = "place_address", length = 100, nullable = false)
     private String placeAddress;
 
+    @Column(name = "place_number", length =20)
+    private String placeNumber;
+
     @Column(nullable = false)
     private Double latitude;
 
     @Column(nullable = false)
     private Double longitude;
 
-    private WantPlace(Room room, String placeName, String placeAddress, Double latitude, Double longitude) {
+    private WantPlace(Room room, String placeName, String placeAddress, String placeNumber, Double latitude, Double longitude) {
         this.room = room;
         this.placeName = placeName;
         this.placeAddress = placeAddress;
+        this.placeNumber = placeNumber;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public static WantPlace of(Room room, String placeName, String placeAddress, Double latitude, Double longitude) {
-        return new WantPlace(room, placeName, placeAddress, latitude, longitude);
+    public static WantPlace of(Room room, String placeName, String placeAddress, String placeNumber, Double latitude, Double longitude) {
+        return new WantPlace(room, placeName, placeAddress, placeNumber, latitude, longitude);
     }
 }
