@@ -142,7 +142,7 @@ public class AuthService {
 				confirmUserRequestDTO.getBirth())
 			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
 
-		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, user.getEmail());
+		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, user.getEmail(), user.getCreateDate().toLocalDate());
 	}
 
 	public CheckIdResponse confirmId(CheckIdRequest checkIdRequest) {
