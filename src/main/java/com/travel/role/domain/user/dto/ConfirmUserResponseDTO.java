@@ -1,7 +1,6 @@
 package com.travel.role.domain.user.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 
