@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +18,12 @@ import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.RoomResponseDTO;
+import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
+import com.travel.role.global.auth.token.UserPrincipal;
 
 @SpringBootTest
 @Transactional
@@ -32,6 +36,9 @@ class RoomTest {
 
 	@Autowired
 	private RoomParticipantRepository roomParticipantRepository;
+
+	@Autowired
+	private RoomService roomService;
 
 	@BeforeEach
 	void before() {
@@ -54,7 +61,7 @@ class RoomTest {
 			LocalDate.of(2023, 1, 3),
 			3, "광양");
 
-		MakeRoomRequestDTO makeRoom2 = new MakeRoomRequestDTO("2번방입니다!!", LocalDate.of(2023, 1, 5),
+		MakeRoomRequestDTO makeRoom2 = new MakeRoomRequestDTO("room2", LocalDate.of(2023, 1, 5),
 			LocalDate.of(2023, 1, 10),
 			3, "스울");
 
@@ -88,5 +95,20 @@ class RoomTest {
 		assertThat(userResult.size()).isEqualTo(4);
 		assertThat(roomResult.size()).isEqualTo(2);
 		assertThat(roomParticipantResult.size()).isEqualTo(5);
+	}
+
+	@Test
+	void 방의_정보를_제대로_불러오는지() {
+		// given
+		UserPrincipal userPrincipal = new UserPrincipal(1L, "haechan@naver.com", "1234", null);
+
+		// when
+		HashMap<Long, RoomResponseDTO> roomList = roomService.getRoomList(userPrincipal);
+
+		// then
+		assertThat(roomList.get(1L).getRoomName()).isEqualTo("room1");
+		assertThat(roomList.get(1L).getMembers().size()).isEqualTo(3);
+		assertThat(roomList.get(2L).getRoomName()).isEqualTo("room2");
+		assertThat(roomList.get(2L).getMembers().size()).isEqualTo(2);
 	}
 }
