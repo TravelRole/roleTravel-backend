@@ -16,5 +16,5 @@ cookieExpireTime: 1209600
 cookieDomain: ENC(OjvqE2GrGoSfr0yBBXr/71QAkzhFML6o)
 
 secretKey: ENC(nGmivbDHDjs+9lRnOwPFWDhN8X5HeWUeMeJSuf4BWNfxjieC1wXqjfyVe9CXte5WrqCNdi4jTcNRPJ10lqp6cEfV8QYWDobyZmf25cROhlQb+My3a5wpFwLWz6RWgJg2X1nCAtTD+uT/5auYIbv7RhGZy3kY2MOpIamUqLaPcBM=)
-accessTokenExpireTime: 10000
+accessTokenExpireTime: 3600000
 refreshTokenExpireTime: 21600000
