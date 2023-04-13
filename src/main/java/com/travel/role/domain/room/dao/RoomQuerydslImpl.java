@@ -37,6 +37,7 @@ public class RoomQuerydslImpl implements RoomQuerydsl {
 					.join(findParticipant.room, room)
 					.join(findParticipant.user, user)
 					.where(user.email.eq(email))
-			)).fetch();
+			)).orderBy(room.createDate.desc())
+			.fetch();
 	}
 }
