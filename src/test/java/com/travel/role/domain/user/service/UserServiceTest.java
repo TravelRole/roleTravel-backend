@@ -36,7 +36,7 @@ class UserServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             userService.getBasicProfile("haechan@naver.com");
-        }).isInstanceOf(UsernameNotFoundException.class)
+        }).isInstanceOf(UserInfoNotFoundException.class)
                 .hasMessageContaining(USERNAME_NOT_FOUND);
     }
 
