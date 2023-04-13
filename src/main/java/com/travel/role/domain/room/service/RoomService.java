@@ -60,8 +60,7 @@ public class RoomService {
 				List<MemberDTO> members = new ArrayList<>();
 				members.add(new MemberDTO(user.getName(), user.getProfile()));
 
-				hash.put(room.getId(), new RoomResponseDTO(room.getRoomName(), room.getTravelStartDate(),
-					room.getTravelEndDate(), room.getLocation(), room.getTotalParticipants(), members));
+				hash.put(room.getId(), RoomResponseDTO.of(room, members));
 			}
 		}
 
