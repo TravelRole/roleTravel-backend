@@ -16,5 +16,5 @@ public class RoomResponseDTO {
 	private LocalDate endDate;
 	private String location;
 	private Integer totalNumber;
-	private List<RoomResponseDTO> members;
+	private List<MemberDTO> members;
 }
