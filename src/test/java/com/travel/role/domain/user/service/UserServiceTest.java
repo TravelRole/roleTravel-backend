@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.user.dao.UserRepository;
+import com.travel.role.domain.user.domain.Provider;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
@@ -50,6 +51,7 @@ class UserServiceTest {
 			.email(email)
 			.birth(LocalDate.of(2000, 10, 10))
 			.profile("imageUrl")
+			.provider(Provider.local)
 			.build();
 		given(userRepository.findByEmail(email))
 			.willReturn(Optional.of(user));
@@ -63,6 +65,7 @@ class UserServiceTest {
 		assertThat(resDTO.getEmail()).isEqualTo(user.getEmail());
 		assertThat(resDTO.getBirth()).isEqualTo(user.getBirth());
 		assertThat(resDTO.getProfile()).isEqualTo(user.getProfile());
+		assertThat(resDTO.getProvider()).isEqualTo(user.getProvider().name());
 	}
 
 	@Test
@@ -85,6 +88,7 @@ class UserServiceTest {
 		User user = User.builder()
 			.name("name")
 			.birth(LocalDate.of(2000, 10, 10))
+			.provider(Provider.local)
 			.build();
 
 		UserProfileModifyReqDTO reqDTO = new UserProfileModifyReqDTO(

@@ -22,6 +22,8 @@ public class UserProfileDetailResDTO {
 
     private String profile;
 
+    private String provider;
+
     public static UserProfileDetailResDTO fromUser(User user) {
 
         return new UserProfileDetailResDTO(
@@ -29,7 +31,8 @@ public class UserProfileDetailResDTO {
                 user.getEmail(),
                 user.getName(),
                 user.getBirth(),
-                user.getProfile()
+                user.getProfile(),
+                user.getProvider().name()
         );
     }
 }
