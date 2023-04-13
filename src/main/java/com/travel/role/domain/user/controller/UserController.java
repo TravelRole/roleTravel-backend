@@ -20,8 +20,11 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/basic-profile")
-    public UserProfileResponseDTO basicProfile(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        return userService.getBasicProfile(userPrincipal.getEmail());
+    public ResponseEntity<UserProfileResponseDTO> basicProfile(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+
+        UserProfileResponseDTO resDTO = userService.getBasicProfile(userPrincipal.getEmail());
+
+        return ResponseEntity.ok(resDTO);
     }
 
     @GetMapping("/users")
