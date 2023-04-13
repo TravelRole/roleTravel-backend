@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,7 +103,7 @@ class RoomTest {
 		UserPrincipal userPrincipal = new UserPrincipal(1L, "haechan@naver.com", "1234", null);
 
 		// when
-		HashMap<Long, RoomResponseDTO> roomList = roomService.getRoomList(userPrincipal);
+		Map<Long, RoomResponseDTO> roomList = roomService.getRoomList(userPrincipal);
 
 		// then
 		assertThat(roomList.get(1L).getRoomName()).isEqualTo("room1");

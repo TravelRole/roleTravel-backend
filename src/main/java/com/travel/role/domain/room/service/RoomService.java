@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +44,10 @@ public class RoomService {
 	private final RoomParticipantRepository roomParticipantRepository;
 	private final ParticipantRoleRepository participantRoleRepository;
 
-	public HashMap<Long, RoomResponseDTO> getRoomList(UserPrincipal userPrincipal) {
+	public Map<Long, RoomResponseDTO> getRoomList(UserPrincipal userPrincipal) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(userPrincipal.getEmail());
 
-		HashMap<Long, RoomResponseDTO> hash = new HashMap<>();
+		Map<Long, RoomResponseDTO> hash = new HashMap<>();
 		for (Tuple tuple : findRoomInfo) {
 			Room room = tuple.get(0, Room.class);
 			User user = tuple.get(1, User.class);
