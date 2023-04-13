@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dao;
+package com.travel.role.domain.room;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.travel.role.domain.room.dao.RoomParticipantRepository;
+import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
@@ -21,7 +23,7 @@ import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
 @SpringBootTest
 @Transactional
-class RoomRepositoryTest {
+class RoomTest {
 	@Autowired
 	private UserRepository userRepository;
 
@@ -77,10 +79,12 @@ class RoomRepositoryTest {
 
 	@Test
 	void before_each의_정보가_제대로_들어갔는지() {
+		//given
 		List<User> userResult = userRepository.findAll();
 		List<Room> roomResult = roomRepository.findAll();
 		List<RoomParticipant> roomParticipantResult = roomParticipantRepository.findAll();
 
+		//when, then
 		assertThat(userResult.size()).isEqualTo(4);
 		assertThat(roomResult.size()).isEqualTo(2);
 		assertThat(roomParticipantResult.size()).isEqualTo(5);
