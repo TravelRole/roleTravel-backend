@@ -1,6 +1,7 @@
 package com.travel.role.domain.user.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.travel.role.global.exception.ExceptionMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,13 +10,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignUpRequestDTO {
 
-    @NotBlank(message = "유저이름 값이 비어있으면 안됩니다.")
-    private String name;
+	@NotBlank(message = ExceptionMessage.USERNAME_NOT_EMPTY)
+	private String name;
 
     @NotBlank(message = "이메일 값이 비어있으면 안됩니다.")
     @Email(message = "이메일 형식이 아닙니다.")

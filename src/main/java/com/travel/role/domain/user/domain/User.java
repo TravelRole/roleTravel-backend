@@ -35,80 +35,86 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User extends BaseTime {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
+	private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String name;
+	@Column(nullable = false, length = 20)
+	private String name;
 
-    @Column(nullable = false)
-    private String email;
+	@Column(nullable = false)
+	private String email;
 
-    private String password;
+	private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
-    @Column(name = "refresh_token")
-    private String refreshToken;
+	@Column(name = "refresh_token")
+	private String refreshToken;
 
-    private String profile;
+	private String profile;
 
-    private LocalDate birth;
-    @Enumerated(EnumType.STRING)
-    private Provider provider;
-    private String providerId;
+	private LocalDate birth;
+	@Enumerated(EnumType.STRING)
+	private Provider provider;
+	private String providerId;
 
-    @Column(name = "provider_token")
-    private String providerToken;
+	@Column(name = "provider_token")
+	private String providerToken;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<RoomParticipant> roomParticipants = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<RoomParticipant> roomParticipants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<TravelEssentials> preparations = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<TravelEssentials> preparations = new ArrayList<>();
 
-    public void updateRefreshToken(final String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
+	public void updateRefreshToken(final String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
 
-    public void deleteRefreshToken() {
-        if (refreshToken != null) {
-            refreshToken = null;
-        }
-    }
+	public void deleteRefreshToken() {
+		if (refreshToken != null) {
+			refreshToken = null;
+		}
+	}
 
-    public void updatePassword(String password) {
-        if (!password.isEmpty())
-            this.password = password;
-    }
+	public void updatePassword(String password) {
+		if (!password.isEmpty())
+			this.password = password;
+	}
 
-    public void updateProviderToken(final String providerToken) {
-        this.providerToken = providerToken;
-    }
+	public void updateProviderToken(final String providerToken) {
+		this.providerToken = providerToken;
+	}
 
-    public static User of(SignUpRequestDTO signUpRequestDTO, String password) {
-        return User.builder()
-                .name(signUpRequestDTO.getName())
-                .email(signUpRequestDTO.getEmail())
-                .password(password)
-                .birth(signUpRequestDTO.getBirth())
-                .provider(Provider.local)
-                .role(Role.USER)
-                .build();
-    }
+	public static User of(SignUpRequestDTO signUpRequestDTO, String password) {
+		return User.builder()
+			.name(signUpRequestDTO.getName())
+			.email(signUpRequestDTO.getEmail())
+			.password(password)
+			.birth(signUpRequestDTO.getBirth())
+			.provider(Provider.local)
+			.role(Role.USER)
+			.build();
+	}
 
-    public static User of(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
-        return User.builder()
-                .name(oAuth2UserInfo.getName())
-                .email(oAuth2UserInfo.getEmail())
-                .role(Role.USER)
-                .profile(oAuth2UserInfo.getImageUrl())
-                .providerId(oAuth2UserInfo.getId())
-                .password(oAuth2UserInfo.getId())
-                .provider(provider)
-                .build();
-    }
+	public static User of(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
+		return User.builder()
+			.name(oAuth2UserInfo.getName())
+			.email(oAuth2UserInfo.getEmail())
+			.role(Role.USER)
+			.profile(oAuth2UserInfo.getImageUrl())
+			.providerId(oAuth2UserInfo.getId())
+			.password(oAuth2UserInfo.getId())
+			.provider(provider)
+			.build();
+	}
+
+	public void update(String name, LocalDate birth) {
+
+		this.name = name;
+		this.birth = birth;
+	}
 }

@@ -4,6 +4,7 @@ import static com.travel.role.global.exception.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -11,9 +12,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.travel.role.domain.user.dao.UserRepository;
+import com.travel.role.domain.user.domain.Provider;
+import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
+import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
+import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -32,7 +37,84 @@ class UserServiceTest {
 		// when, then
 		assertThatThrownBy(() -> {
 			userService.getBasicProfile("haechan@naver.com");
-		}).isInstanceOf(UsernameNotFoundException.class)
+		}).isInstanceOf(UserInfoNotFoundException.class)
 			.hasMessageContaining(USERNAME_NOT_FOUND);
 	}
+
+	@Test
+	void 회원정보_상세조회_성공() {
+		// given
+		String email = "email@naver.com";
+		User user = User.builder()
+			.id(1L)
+			.name("name")
+			.email(email)
+			.birth(LocalDate.of(2000, 10, 10))
+			.profile("imageUrl")
+			.provider(Provider.local)
+			.build();
+		given(userRepository.findByEmail(email))
+			.willReturn(Optional.of(user));
+
+		// when
+		UserProfileDetailResDTO resDTO = userService.getUserProfile(email);
+
+		// then
+		assertThat(resDTO.getUserId()).isEqualTo(user.getId());
+		assertThat(resDTO.getName()).isEqualTo(user.getName());
+		assertThat(resDTO.getEmail()).isEqualTo(user.getEmail());
+		assertThat(resDTO.getBirth()).isEqualTo(user.getBirth());
+		assertThat(resDTO.getProfile()).isEqualTo(user.getProfile());
+		assertThat(resDTO.getProvider()).isEqualTo(user.getProvider().name());
+	}
+
+	@Test
+	void 회원정보_상세조회시_회원이_존재하지_않을때() {
+		// given
+		String email = "aaaa@naver.com";
+		given(userRepository.findByEmail(email)).willReturn(Optional.empty());
+
+		// when & then
+		assertThatThrownBy(() -> {
+			userService.getUserProfile(email);
+		}).isInstanceOf(UserInfoNotFoundException.class)
+			.hasMessage(USERNAME_NOT_FOUND);
+	}
+
+	@Test
+	void 회원_프로필_수정_성공() {
+		// given
+		String email = "aaaa@naver.com";
+		User user = User.builder()
+			.name("name")
+			.birth(LocalDate.of(2000, 10, 10))
+			.provider(Provider.local)
+			.build();
+
+		UserProfileModifyReqDTO reqDTO = new UserProfileModifyReqDTO(
+			"modified", "2000/10/10"
+		);
+		given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
+
+		// when
+		UserProfileDetailResDTO resDTO = userService.modifyUserProfile(email, reqDTO);
+
+		// then
+		assertThat(resDTO.getName()).isEqualTo(reqDTO.getName());
+		assertThat(resDTO.getBirth()).isEqualTo(reqDTO.getBirth());
+	}
+
+	@Test
+	void 회원_프로필_수정시_회원이_존재하지_않을때() {
+		// given
+		String email = "aaaa@naver.com";
+		given(userRepository.findByEmail(email)).willReturn(Optional.empty());
+
+		// when & then
+		assertThatThrownBy(() -> {
+			userService.modifyUserProfile(email, any(UserProfileModifyReqDTO.class));
+		}).isInstanceOf(UserInfoNotFoundException.class)
+			.hasMessage(USERNAME_NOT_FOUND);
+	}
+
 }
