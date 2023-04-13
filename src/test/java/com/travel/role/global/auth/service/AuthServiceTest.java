@@ -126,6 +126,7 @@ class AuthServiceTest {
 		signUpRequestDTO.setEmail("chan@naver.com");
 		signUpRequestDTO.setName("김철수");
 		signUpRequestDTO.setPassword("12342");
+		signUpRequestDTO.setBirth(LocalDate.now());
 		return signUpRequestDTO;
 	}
 
