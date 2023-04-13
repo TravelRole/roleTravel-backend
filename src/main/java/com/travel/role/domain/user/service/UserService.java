@@ -4,7 +4,7 @@ import static com.travel.role.global.exception.ExceptionMessage.*;
 
 import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 import com.travel.role.domain.user.dao.UserRepository;
@@ -12,6 +12,7 @@ import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.UserProfileResponseDTO;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -19,29 +20,28 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
-    @Transactional(readOnly = true)
-    public UserProfileResponseDTO getBasicProfile(String email) {
-        User findUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        USERNAME_NOT_FOUND));
+	@Transactional(readOnly = true)
+	public UserProfileResponseDTO getBasicProfile(String email) {
 
-        return new UserProfileResponseDTO(findUser.getName(), findUser.getEmail(), findUser.getProfile());
-    }
+		User findUser = findUserByEmailOrElseThrow(email);
 
-    @Transactional(readOnly = true)
-    public UserProfileDetailResDTO getUserProfile(String email) {
+		return new UserProfileResponseDTO(findUser.getName(), findUser.getEmail(), findUser.getProfile());
+	}
 
-        User findUser = findUserByEmailOrElseThrow(email);
+	@Transactional(readOnly = true)
+	public UserProfileDetailResDTO getUserProfile(String email) {
 
-        return UserProfileDetailResDTO.fromUser(findUser);
-    }
+		User findUser = findUserByEmailOrElseThrow(email);
 
-    private User findUserByEmailOrElseThrow(String email) {
+		return UserProfileDetailResDTO.fromUser(findUser);
+	}
 
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserInfoNotFoundException(
-                        USERNAME_NOT_FOUND));
-    }
+	private User findUserByEmailOrElseThrow(String email) {
+
+		return userRepository.findByEmail(email)
+			.orElseThrow(() -> new UserInfoNotFoundException(
+				USERNAME_NOT_FOUND));
+	}
 }
