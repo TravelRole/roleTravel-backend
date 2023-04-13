@@ -44,7 +44,7 @@ public class RoomService {
 	private final RoomParticipantRepository roomParticipantRepository;
 	private final ParticipantRoleRepository participantRoleRepository;
 
-	public Map<Long, RoomResponseDTO> getRoomList(UserPrincipal userPrincipal) {
+	public List<RoomResponseDTO> getRoomList(UserPrincipal userPrincipal) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(userPrincipal.getEmail());
 
 		Map<Long, RoomResponseDTO> hash = new HashMap<>();
@@ -65,7 +65,7 @@ public class RoomService {
 			}
 		}
 
-		return hash;
+		return new ArrayList<>(hash.values());
 	}
 
 	public void makeRoom(UserPrincipal userPrincipal, MakeRoomRequestDTO makeRoomRequestDTO) {

@@ -1,6 +1,6 @@
 package com.travel.role.domain.room.controller;
 
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,7 +32,7 @@ public class RoomController {
 	}
 
 	@GetMapping("/room")
-	public Map<Long, RoomResponseDTO> getRoomList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+	public List<RoomResponseDTO> getRoomList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		return roomService.getRoomList(userPrincipal);
 	}
 }

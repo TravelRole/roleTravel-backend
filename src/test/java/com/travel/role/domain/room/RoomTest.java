@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,12 +102,12 @@ class RoomTest {
 		UserPrincipal userPrincipal = new UserPrincipal(1L, "haechan@naver.com", "1234", null);
 
 		// when
-		Map<Long, RoomResponseDTO> roomList = roomService.getRoomList(userPrincipal);
+		List<RoomResponseDTO> roomList = roomService.getRoomList(userPrincipal);
 
 		// then
-		assertThat(roomList.get(1L).getRoomName()).isEqualTo("room1");
-		assertThat(roomList.get(1L).getMembers().size()).isEqualTo(3);
-		assertThat(roomList.get(2L).getRoomName()).isEqualTo("room2");
-		assertThat(roomList.get(2L).getMembers().size()).isEqualTo(2);
+		assertThat(roomList.get(0).getRoomName()).isEqualTo("room1");
+		assertThat(roomList.get(0).getMembers().size()).isEqualTo(3);
+		assertThat(roomList.get(1).getRoomName()).isEqualTo("room2");
+		assertThat(roomList.get(1).getMembers().size()).isEqualTo(2);
 	}
 }
