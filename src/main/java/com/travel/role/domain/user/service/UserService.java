@@ -2,7 +2,10 @@ package com.travel.role.domain.user.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
+import java.time.LocalDate;
+
 import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
+import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -36,6 +39,15 @@ public class UserService {
 		User findUser = findUserByEmailOrElseThrow(email);
 
 		return UserProfileDetailResDTO.fromUser(findUser);
+	}
+
+	public void modifyUserProfile(String email, UserProfileModifyReqDTO reqDTO){
+
+		User findUser = findUserByEmailOrElseThrow(email);
+
+		String name = reqDTO.getName();
+		LocalDate birth = reqDTO.getBirth();
+		findUser.update(name, birth);
 	}
 
 	private User findUserByEmailOrElseThrow(String email) {
