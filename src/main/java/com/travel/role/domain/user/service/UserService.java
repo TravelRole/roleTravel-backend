@@ -41,13 +41,15 @@ public class UserService {
 		return UserProfileDetailResDTO.fromUser(findUser);
 	}
 
-	public void modifyUserProfile(String email, UserProfileModifyReqDTO reqDTO){
+	public UserProfileDetailResDTO modifyUserProfile(String email, UserProfileModifyReqDTO reqDTO) {
 
 		User findUser = findUserByEmailOrElseThrow(email);
 
 		String name = reqDTO.getName();
 		LocalDate birth = reqDTO.getBirth();
 		findUser.update(name, birth);
+
+		return UserProfileDetailResDTO.fromUser(findUser);
 	}
 
 	private User findUserByEmailOrElseThrow(String email) {

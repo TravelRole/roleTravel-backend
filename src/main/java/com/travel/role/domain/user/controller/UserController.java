@@ -43,11 +43,12 @@ public class UserController {
 	}
 
 	@PutMapping("/users")
-	public ResponseEntity<Void> modifyUserProfile(@AuthenticationPrincipal UserPrincipal userPrincipal,
+	public ResponseEntity<UserProfileDetailResDTO> modifyUserProfile(
+		@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@RequestBody @Valid UserProfileModifyReqDTO reqDTO) {
 
-		userService.modifyUserProfile(userPrincipal.getEmail(), reqDTO);
+		UserProfileDetailResDTO resDTO = userService.modifyUserProfile(userPrincipal.getEmail(), reqDTO);
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(resDTO);
 	}
 }
