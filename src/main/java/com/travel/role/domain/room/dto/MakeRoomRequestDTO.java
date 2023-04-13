@@ -20,7 +20,5 @@ public class MakeRoomRequestDTO {
 	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate travelEndDate;
 
-	private Integer totalParticipants;
-
 	private String location;
 }

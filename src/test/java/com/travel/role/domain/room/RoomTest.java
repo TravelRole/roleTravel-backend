@@ -58,11 +58,11 @@ class RoomTest {
 
 		MakeRoomRequestDTO makeRoom1 = new MakeRoomRequestDTO("room1", LocalDate.of(2023, 1, 1),
 			LocalDate.of(2023, 1, 3),
-			3, "광양");
+			"광양");
 
 		MakeRoomRequestDTO makeRoom2 = new MakeRoomRequestDTO("room2", LocalDate.of(2023, 1, 5),
 			LocalDate.of(2023, 1, 10),
-			3, "스울");
+			"스울");
 
 		Room room1 = Room.of(makeRoom1, "1234");
 		Room room2 = Room.of(makeRoom2, "1234");
