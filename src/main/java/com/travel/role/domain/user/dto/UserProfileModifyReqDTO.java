@@ -8,6 +8,11 @@ import javax.validation.constraints.Pattern;
 import com.travel.role.global.exception.ExceptionMessage;
 import com.travel.role.global.util.FormatterUtil;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class UserProfileModifyReqDTO {
 
 	@NotBlank(message = ExceptionMessage.USERNAME_NOT_EMPTY)
