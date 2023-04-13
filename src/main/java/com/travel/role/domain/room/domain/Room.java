@@ -54,9 +54,6 @@ public class Room extends BaseCreateTime {
 	@Column(nullable = false)
 	private String location;
 
-	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-	private List<RoomParticipant> roomParticipants = new ArrayList<>();
-
 	public static Room of(MakeRoomRequestDTO makeRoomRequestDTO, String password) {
 		return Room.builder()
 			.location(makeRoomRequestDTO.getLocation())

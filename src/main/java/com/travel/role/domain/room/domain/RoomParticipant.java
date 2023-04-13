@@ -20,10 +20,12 @@ import com.travel.role.domain.user.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name = "ROOM_PARTICIPANT_INFO")
 @Entity
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -47,6 +49,4 @@ public class RoomParticipant {
 	@JoinColumn(name = "room_id")
 	private Room room;
 
-	@OneToMany(mappedBy = "roomParticipant", cascade = CascadeType.ALL)
-	private List<ParticipantRole> role = new ArrayList<>();
 }

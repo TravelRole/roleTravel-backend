@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberDTO {
 	private String name;
-	private String profileUrl;
+	private String profile;
 }
