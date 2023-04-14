@@ -36,7 +36,7 @@ public class WantPlaceService {
 
         for (RoomParticipant participant : participants) {
             User user = participant.getUser();
-            if (loginUser.getId().equals(user.getId())){
+            if (loginUser.getId().equals(user.getId())) {
                 wantPlaceRepository.save(WantPlace.of(room, wantPlaceRequestDTO));
             }
         }

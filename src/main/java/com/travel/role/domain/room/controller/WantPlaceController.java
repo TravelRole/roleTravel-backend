@@ -22,7 +22,7 @@ public class WantPlaceController {
 
     @PostMapping("/want-place")
     public ResponseEntity<Void> addWantPlace(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody @Valid WantPlaceRequestDTO wantPlaceRequestDTO) {
-        wantPlaceService.addWantPlace(userPrincipal,wantPlaceRequestDTO);
+        wantPlaceService.addWantPlace(userPrincipal, wantPlaceRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 }

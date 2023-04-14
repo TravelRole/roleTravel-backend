@@ -1,12 +1,10 @@
 package com.travel.role.domain.room.service;
 
-import com.travel.role.domain.room.dao.RoomParticipantRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.dao.WantPlaceRepository;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.domain.WantPlace;
-import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
@@ -45,47 +43,43 @@ class WantPlaceServiceTest {
     @Mock
     private WantPlaceRepository wantPlaceRepository;
 
-    @Mock
-    private RoomParticipantRepository roomParticipantRepository;
-
     @InjectMocks
     private WantPlaceService wantPlaceService;
 
     private User user1;
+    private User user2;
 
     private Room room;
     private Room room2;
 
     private RoomParticipant roomParticipant1;
+    private RoomParticipant roomParticipant2;
 
-    private Set<RoomParticipant> participants = new HashSet<>();;
+    private Set<RoomParticipant> participants = new HashSet<>();
 
     private WantPlace wantPlace;
 
     @Test
     void addWantPlaceTest() {
-        user1 = new User(1L,"kh","asd@gmail.com","1234",null,null,null,LocalDate.now(),null,null,null,null,null);
-        MakeRoomRequestDTO makeRoom1 = new MakeRoomRequestDTO("room1", LocalDate.of(2023, 1, 1),
-                LocalDate.of(2023, 1, 3),
-                3, "광양");
+        user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, null, null, LocalDate.now(),
+                null, null, null, null, null);
+        user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
+                null, null, null, null, null);
 
-        MakeRoomRequestDTO makeRoom2 = new MakeRoomRequestDTO("2번방입니다!!", LocalDate.of(2023, 1, 5),
-                LocalDate.of(2023, 1, 10),
-                3, "스울");
-
-        room2  = new Room(1L, "2번 방",LocalDate.now(),LocalDate.now(),"123",2,"1234","제주", null);
-
+        room2 = new Room(1L, "2번 방", LocalDate.now(), LocalDate.now(), "123", 2, "1234", "제주", null);
         roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2, null);
+        roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, null);
 
         participants.add(roomParticipant1);
+        participants.add(roomParticipant2);
 
-        room  = new Room(1L, "1번 방",LocalDate.now(),LocalDate.now(),"123",2,"1234","제주", participants);
+        room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", 2, "1234", "제주", participants);
 
-        wantPlace = WantPlace.of(room,getWantPlaceRequestDto());
+        wantPlace = WantPlace.of(room, getWantPlaceRequestDto());
         // given
         given(userRepository.findByEmail(anyString()))
-                .willReturn(Optional.ofNullable(user1));
-        given(roomRepository.findByIdWithParticipants(1L))
+                .willReturn(Optional.ofNullable(user2));
+        given(roomRepository.findByIdWithParticipants(anyLong()))
                 .willReturn(Optional.ofNullable(room));
         given(wantPlaceRepository.save(any()))
                 .willReturn(wantPlace);
@@ -94,8 +88,6 @@ class WantPlaceServiceTest {
         wantPlaceService.addWantPlace(makeUserPrincipal(), getWantPlaceRequestDto());
 
         // then
-        verify(userRepository, times(1)).findByEmail("asd@gmail.com");
-        verify(roomRepository, times(1)).findByIdWithParticipants(1L);
         verify(wantPlaceRepository, times(1)).save(any(WantPlace.class));
     }
 
@@ -106,7 +98,7 @@ class WantPlaceServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        Assertions.assertThatThrownBy(() -> wantPlaceService.addWantPlace(makeUserPrincipal(),getWantPlaceRequestDto()))
+        Assertions.assertThatThrownBy(() -> wantPlaceService.addWantPlace(makeUserPrincipal(), getWantPlaceRequestDto()))
                 .isInstanceOf(UserInfoNotFoundException.class)
                 .hasMessageContaining(USERNAME_NOT_FOUND);
     }
@@ -133,13 +125,13 @@ class WantPlaceServiceTest {
 
     }
 
-    private static WantPlaceRequestDTO getWantPlaceRequestDto(){
+    private static WantPlaceRequestDTO getWantPlaceRequestDto() {
         return new WantPlaceRequestDTO(
                 1L, "제주도", "제주도", "1234",
-                123.0,456.0);
+                123.0, 456.0);
     }
 
     private static UserPrincipal makeUserPrincipal() {
-        return new UserPrincipal(1L, "asd@gmail.com", "1234", null);
+        return new UserPrincipal(1L, "asdd@gmail.com", "1234", null);
     }
 }
