@@ -37,6 +37,4 @@ public class RoomParticipant {
 	@JoinColumn(name = "room_id")
 	private Room room;
 
-	@OneToMany(mappedBy = "roomParticipant", cascade = CascadeType.ALL)
-	private List<ParticipantRole> role = new ArrayList<>();
 }

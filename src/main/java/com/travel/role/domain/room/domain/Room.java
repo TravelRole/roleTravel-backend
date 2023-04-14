@@ -36,9 +36,6 @@ public class Room extends BaseCreateTime {
 	@Column(name = "room_image")
 	private String roomImage;
 
-	@Column(name = "total_participants", nullable = false)
-	private Integer totalParticipants;
-
 	@Column(name = "room_password", nullable = false)
 	private String roomPassword;
 
@@ -55,7 +52,6 @@ public class Room extends BaseCreateTime {
 			.roomPassword(password)
 			.travelEndDate(makeRoomRequestDTO.getTravelEndDate())
 			.travelStartDate(makeRoomRequestDTO.getTravelStartDate())
-			.totalParticipants(makeRoomRequestDTO.getTotalParticipants())
 			.build();
 	}
 }

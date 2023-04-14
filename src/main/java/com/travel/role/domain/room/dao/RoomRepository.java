@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface RoomRepository extends JpaRepository<Room, Long> {
+public interface RoomRepository extends JpaRepository<Room, Long>, RoomQuerydsl {
     @Query("SELECT r FROM Room r JOIN FETCH r.roomParticipants rp JOIN FETCH rp.user WHERE r.id = :roomId")
     Optional<Room> findByIdWithParticipants(@Param("roomId") Long roomId);
 }

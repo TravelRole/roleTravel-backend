@@ -14,13 +14,11 @@ import lombok.NoArgsConstructor;
 public class MakeRoomRequestDTO {
 	private String roomName;
 
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate travelStartDate;
 
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate travelEndDate;
-
-	private Integer totalParticipants;
 
 	private String location;
 }
