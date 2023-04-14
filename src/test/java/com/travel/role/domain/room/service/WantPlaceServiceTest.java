@@ -62,18 +62,18 @@ class WantPlaceServiceTest {
     @Test
     void addWantPlaceTest() {
         user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, null, null, LocalDate.now(),
-                null, null, null, null, null);
+                null, null, null);
         user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
-                null, null, null, null, null);
+                null, null, null);
 
-        room2 = new Room(1L, "2번 방", LocalDate.now(), LocalDate.now(), "123", 2, "1234", "제주", null);
-        roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2, null);
-        roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, null);
+        room2 = new Room(1L, "2번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
+        roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2);
+        roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
 
         participants.add(roomParticipant1);
         participants.add(roomParticipant2);
 
-        room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", 2, "1234", "제주", participants);
+        room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", participants);
 
         wantPlace = WantPlace.of(room, getWantPlaceRequestDto());
         // given
@@ -81,8 +81,6 @@ class WantPlaceServiceTest {
                 .willReturn(Optional.ofNullable(user2));
         given(roomRepository.findByIdWithParticipants(anyLong()))
                 .willReturn(Optional.ofNullable(room));
-        given(wantPlaceRepository.save(any()))
-                .willReturn(wantPlace);
 
         // when
         wantPlaceService.addWantPlace(makeUserPrincipal(), getWantPlaceRequestDto());
