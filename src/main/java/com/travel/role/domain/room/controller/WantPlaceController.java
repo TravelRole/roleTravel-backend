@@ -4,7 +4,6 @@ import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
 import com.travel.role.domain.room.service.WantPlaceService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +22,6 @@ public class WantPlaceController {
     @PostMapping("/want-place")
     public ResponseEntity<Void> addWantPlace(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody @Valid WantPlaceRequestDTO wantPlaceRequestDTO) {
         wantPlaceService.addWantPlace(userPrincipal, wantPlaceRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok().build();
     }
 }
