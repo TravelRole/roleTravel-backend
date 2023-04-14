@@ -1,10 +1,7 @@
 package com.travel.role.domain.user.domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,12 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.travel.role.domain.room.domain.TravelEssentials;
-import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.oauth.OAuth2UserInfo;
 import com.travel.role.global.domain.BaseTime;
@@ -63,12 +57,6 @@ public class User extends BaseTime {
 
 	@Column(name = "provider_token")
 	private String providerToken;
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<RoomParticipant> roomParticipants = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<TravelEssentials> preparations = new ArrayList<>();
 
 	public void updateRefreshToken(final String refreshToken) {
 		this.refreshToken = refreshToken;
