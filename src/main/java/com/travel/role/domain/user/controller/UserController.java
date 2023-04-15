@@ -51,4 +51,20 @@ public class UserController {
 
 		return ResponseEntity.ok(resDTO);
 	}
+
+	@GetMapping("/users/image/presigned-url")
+	public ResponseEntity<String> getProfileImagePreSignedUrl(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+
+		String preSignedUrl = userService.getPreSignedUrlForProfileImage(userPrincipal.getEmail());
+
+		return ResponseEntity.ok(preSignedUrl);
+	}
+
+	@PutMapping("/users/image")
+	public ResponseEntity<Void> modifyProfileImageUrl(@AuthenticationPrincipal UserPrincipal userPrincipal){
+
+		userService.modifyProfileImageUrl(userPrincipal.getEmail());
+
+		return ResponseEntity.ok().build();
+	}
 }
