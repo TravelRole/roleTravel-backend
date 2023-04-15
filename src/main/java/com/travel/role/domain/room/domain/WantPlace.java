@@ -26,8 +26,8 @@ public class WantPlace {
     @Column(name = "place_address", length = 100, nullable = false)
     private String placeAddress;
 
-    @Column(name = "place_number", length =20)
-    private String placeNumber;
+    @Column(name = "phone_number", length =20)
+    private String phoneNumber;
 
     @Column(nullable = false)
     private Double latitude;
@@ -39,7 +39,7 @@ public class WantPlace {
         this.room = room;
         this.placeName = wantPlaceRequestDTO.getPlaceName();
         this.placeAddress = wantPlaceRequestDTO.getPlaceAddress();
-        this.placeNumber = wantPlaceRequestDTO.getPlaceNumber();
+        this.phoneNumber = wantPlaceRequestDTO.getPhoneNumber();
         this.latitude = wantPlaceRequestDTO.getLatitude();
         this.longitude = wantPlaceRequestDTO.getLongitude();
     }
