@@ -13,6 +13,8 @@ public final class ExceptionMessage {
 	public static final String USERNAME_NOT_EMPTY = "이름은 필수값 입니다.";
 	public static final String BIRTH_PATTERN = "생년월일을 1900 ~ 2099 년 사이의 XXXX/XX/XX 형식으로 입력해 주세요";
 	public static final String ROOM_NOT_FOUND = "해당하는 방이 존재하지 않습니다.";
+	public static final String VALUE_NOT_EMPTY = "값이 비어있으면 안됩니다.";
+	public static final String USER_NOT_PARTICIPATE_ROOM = "사용자는 방에 참여하지 않았습니다";
 
 	// Room
 	public static final String INVALID_DATE_ERROR = "시작 날짜의 크기는 종료 날짜의 크기보다 클 수 없습니다.";
