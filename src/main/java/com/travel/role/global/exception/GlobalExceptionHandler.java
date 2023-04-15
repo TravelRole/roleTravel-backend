@@ -1,10 +1,7 @@
 package com.travel.role.global.exception;
 
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
-import com.travel.role.domain.user.exception.AlreadyExistUserException;
-import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
+import com.travel.role.domain.user.exception.*;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import org.springframework.http.HttpStatus;
@@ -87,4 +84,11 @@ public class GlobalExceptionHandler {
     public ExceptionResponse userNotParticipateRoomHandler(Exception e) {
         return new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED, LocalDateTime.now());
     }
+
+    @ExceptionHandler(InputValueNotMatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse inputValueNotMatchException(InputValueNotMatchException e) {
+        return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+    }
+
 }

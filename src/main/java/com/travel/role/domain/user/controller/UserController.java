@@ -2,6 +2,7 @@ package com.travel.role.domain.user.controller;
 
 import javax.validation.Valid;
 
+import com.travel.role.domain.user.dto.UserPasswordModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 
 import org.springframework.http.ResponseEntity;
@@ -50,5 +51,12 @@ public class UserController {
 		UserProfileDetailResDTO resDTO = userService.modifyUserProfile(userPrincipal.getEmail(), reqDTO);
 
 		return ResponseEntity.ok(resDTO);
+	}
+
+	@PutMapping("/users/password")
+	public void modifyPassword(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@RequestBody @Valid UserPasswordModifyReqDTO reqDTO) {
+
+		userService.modifyPassword(userPrincipal.getEmail(), reqDTO);
 	}
 }

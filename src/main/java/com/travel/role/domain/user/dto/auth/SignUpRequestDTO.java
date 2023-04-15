@@ -15,14 +15,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class SignUpRequestDTO {
 
-	@NotBlank(message = ExceptionMessage.USERNAME_NOT_EMPTY)
-	private String name;
+    @NotBlank(message = ExceptionMessage.USERNAME_NOT_EMPTY)
+    private String name;
 
     @NotBlank(message = "이메일 값이 비어있으면 안됩니다.")
     @Email(message = "이메일 형식이 아닙니다.")
     private String email;
 
-    @NotBlank(message = "비밀번호 값이 비어있으면 안됩니다.")
+    @NotBlank(message = ExceptionMessage.PASSWORD_NOT_EMPTY)
     private String password;
 
     @JsonFormat(pattern = "yyyy/MM/dd")
