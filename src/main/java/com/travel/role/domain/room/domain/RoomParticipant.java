@@ -1,15 +1,10 @@
 package com.travel.role.domain.room.domain;
 
 import com.travel.role.domain.user.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(name = "ROOM_PARTICIPANT_INFO")
 @Entity
@@ -17,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(callSuper = false)
 public class RoomParticipant {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
