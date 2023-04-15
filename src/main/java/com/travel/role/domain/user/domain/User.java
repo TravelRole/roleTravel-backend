@@ -105,4 +105,9 @@ public class User extends BaseTime {
 		this.name = name;
 		this.birth = birth;
 	}
+
+	public void updateProfileImageUrl(String profileUrl) {
+
+		this.profile = profileUrl;
+	}
 }
