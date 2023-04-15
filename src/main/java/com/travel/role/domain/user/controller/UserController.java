@@ -54,11 +54,9 @@ public class UserController {
 	}
 
 	@PutMapping("/users/password")
-	public ResponseEntity<Void> modifyPassword(@AuthenticationPrincipal UserPrincipal userPrincipal,
+	public void modifyPassword(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@RequestBody @Valid UserPasswordModifyReqDTO reqDTO) {
 
 		userService.modifyPassword(userPrincipal.getEmail(), reqDTO);
-
-		return ResponseEntity.ok().build();
 	}
 }
