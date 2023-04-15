@@ -12,7 +12,7 @@ public final class ExceptionMessage {
 	public static final String MAIL_SEND_FAILD_ERROR = "서버가 메일을 보내는데 실패하였습니다.";
 	public static final String USERNAME_NOT_EMPTY = "이름은 필수값 입니다.";
 	public static final String BIRTH_PATTERN = "생년월일을 1900 ~ 2099 년 사이의 XXXX/XX/XX 형식으로 입력해 주세요";
-
+	public static final String IMAGE_NOT_FOUND_IN_S3 = "%s 이미지가 s3에 존재하지 않습니다.";
 	// Room
 	public static final String INVALID_DATE_ERROR = "시작 날짜의 크기는 종료 날짜의 크기보다 클 수 없습니다.";
 }
