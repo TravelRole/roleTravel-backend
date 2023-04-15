@@ -10,6 +10,7 @@ import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static com.travel.role.global.exception.ExceptionMessage.ROOM_NOT_FOUND;
-import static com.travel.role.global.exception.ExceptionMessage.USERNAME_NOT_FOUND;
+import static com.travel.role.global.exception.ExceptionMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,14 +32,11 @@ public class WantPlaceService {
     public void addWantPlace(UserPrincipal userPrincipal, WantPlaceRequestDTO wantPlaceRequestDTO) {
         User loginUser = findUser(userPrincipal);
         Room room = findRoom(wantPlaceRequestDTO.getRoomId());
-        Set<RoomParticipant> participants = room.getRoomParticipants();
-
-        for (RoomParticipant participant : participants) {
-            User user = participant.getUser();
-            if (loginUser.getId().equals(user.getId())) {
-                wantPlaceRepository.save(WantPlace.of(room, wantPlaceRequestDTO));
-            }
-        }
+        boolean isParticipant = checkParticipant(loginUser, room.getRoomParticipants());
+        if (isParticipant)
+            wantPlaceRepository.save(WantPlace.of(room, wantPlaceRequestDTO));
+        else
+            throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
     }
 
     private Room findRoom(Long id) {
@@ -50,5 +47,14 @@ public class WantPlaceService {
     private User findUser(UserPrincipal userPrincipal) {
         return userRepository.findByEmail(userPrincipal.getEmail())
                 .orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
+    }
+
+    private boolean checkParticipant(User loginUser, Set<RoomParticipant> participants) {
+        for (RoomParticipant participant : participants) {
+            if (loginUser.getId().equals(participant.getUser().getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
