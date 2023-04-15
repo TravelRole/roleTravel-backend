@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.amazonaws.SdkClientException;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
@@ -74,5 +75,17 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse invalidLocalDateException(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(SdkClientException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public ExceptionResponse sdkClientException(SdkClientException e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(S3ImageNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ExceptionResponse s3ImageNotFoundException(S3ImageNotFoundException e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
 	}
 }
