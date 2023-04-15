@@ -10,6 +10,7 @@ import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 import static com.travel.role.global.exception.ExceptionMessage.ROOM_NOT_FOUND;
 import static com.travel.role.global.exception.ExceptionMessage.USERNAME_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -46,47 +48,66 @@ class WantPlaceServiceTest {
     @InjectMocks
     private WantPlaceService wantPlaceService;
 
-    private User user1;
-    private User user2;
-
-    private Room room;
-    private Room room2;
-
-    private RoomParticipant roomParticipant1;
-    private RoomParticipant roomParticipant2;
-
-    private Set<RoomParticipant> participants = new HashSet<>();
-
-    private WantPlace wantPlace;
-
     @Test
     void addWantPlaceTest() {
-        user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, null, null, LocalDate.now(),
+        // given
+        User user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, null, null, LocalDate.now(),
                 null, null, null);
-        user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
+        User user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
                 null, null, null);
 
-        room2 = new Room(1L, "2번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
-        roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2);
-        roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
+        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2);
+        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
 
+        Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);
         participants.add(roomParticipant2);
 
-        room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", participants);
+        Room room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", participants);
 
-        wantPlace = WantPlace.of(room, getWantPlaceRequestDto());
-        // given
+        WantPlace wantPlace = WantPlace.of(room, getWantPlaceRequestDto());
+
         given(userRepository.findByEmail(anyString()))
-                .willReturn(Optional.ofNullable(user2));
+                .willReturn(Optional.of(user2));
         given(roomRepository.findByIdWithParticipants(anyLong()))
-                .willReturn(Optional.ofNullable(room));
+                .willReturn(Optional.of(room));
 
         // when
         wantPlaceService.addWantPlace(makeUserPrincipal(), getWantPlaceRequestDto());
 
         // then
+        Assertions.assertThat(wantPlace.getPlaceName()).isEqualTo("제주도");
+        Assertions.assertThat(wantPlace.getPhoneNumber()).isEqualTo("1234");
+        Assertions.assertThat(wantPlace.getRoom()).isEqualTo(room);
+        Assertions.assertThat(wantPlace.getLatitude()).isEqualTo(123.0);
+        Assertions.assertThat(wantPlace.getLongitude()).isEqualTo(456.0);
         verify(wantPlaceRepository, times(1)).save(any(WantPlace.class));
+    }
+
+    @Test
+    void 방에_참여하지_않은_사용자가_해당_api_호출했을_경우() {
+        // given
+        User user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, null, null, LocalDate.now(),
+                null, null, null);
+        User user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
+                null, null, null);
+
+        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
+
+        Set<RoomParticipant> participants = new HashSet<>();
+        participants.add(roomParticipant1);
+
+        Room room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", participants);
+
+        given(userRepository.findByEmail(anyString()))
+                .willReturn(Optional.of(user1));
+        given(roomRepository.findByIdWithParticipants(anyLong()))
+                .willReturn(Optional.of(room));
+
+        // when, then
+        assertThrows(UserNotParticipateRoomException.class, () -> wantPlaceService.addWantPlace(makeUserPrincipal(), getWantPlaceRequestDto()));
     }
 
     @Test
