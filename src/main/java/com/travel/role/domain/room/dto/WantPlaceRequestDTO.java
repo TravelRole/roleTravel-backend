@@ -1,5 +1,6 @@
 package com.travel.role.domain.room.dto;
 
+import com.travel.role.global.exception.ExceptionMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,21 +12,20 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WantPlaceRequestDTO {
-
-    @NotNull(message = "값이 비어있으면 안됩니다")
+    @NotNull(message = ExceptionMessage.VALUE_NOT_EMPTY)
     private Long roomId;
 
-    @NotBlank(message = "값이 비어있으면 안됩니다")
+    @NotBlank(message = ExceptionMessage.VALUE_NOT_EMPTY)
     private String placeName;
 
-    @NotBlank(message = "값이 비어있으면 안됩니다")
+    @NotBlank(message = ExceptionMessage.VALUE_NOT_EMPTY)
     private String placeAddress;
 
-    private String placeNumber;
+    private String phoneNumber;
 
-    @NotNull(message = "값이 비어있으면 안됩니다")
+    @NotNull(message = ExceptionMessage.VALUE_NOT_EMPTY)
     private Double latitude;
 
-    @NotNull(message = "값이 비어있으면 안됩니다")
+    @NotNull(message = ExceptionMessage.VALUE_NOT_EMPTY)
     private Double longitude;
 }
