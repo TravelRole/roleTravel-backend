@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.UserProfileResponseDTO;
+import com.travel.role.global.s3.S3Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final S3Service s3Service;
 
 	@Transactional(readOnly = true)
 	public UserProfileResponseDTO getBasicProfile(String email) {
@@ -50,6 +52,25 @@ public class UserService {
 		findUser.update(name, birth);
 
 		return UserProfileDetailResDTO.fromUser(findUser);
+	}
+
+	@Transactional(readOnly = true)
+	public String getPreSignedUrlForProfileImage(String email) {
+
+		User findUser = findUserByEmailOrElseThrow(email);
+
+		return s3Service.getPreSignedUrl(S3Service.USER_PROFILE_IMAGE_PATH, findUser.getId().toString());
+	}
+
+	public void modifyProfileImageUrl(String email) {
+
+		User findUser = findUserByEmailOrElseThrow(email);
+
+		String key = S3Service.USER_PROFILE_IMAGE_PATH + findUser.getId();
+		s3Service.checkObjectExistsOrElseThrow(key, "회원 프로필");
+		String profileImageUrl = s3Service.getObjectUrl(key);
+
+		findUser.updateProfileImageUrl(profileImageUrl);
 	}
 
 	private User findUserByEmailOrElseThrow(String email) {
