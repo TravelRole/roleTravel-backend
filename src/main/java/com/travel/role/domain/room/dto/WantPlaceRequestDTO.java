@@ -12,20 +12,20 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WantPlaceRequestDTO {
-    @NotNull(message = ExceptionMessage.VALUE_NOT_EMPTY)
+    @NotNull(message = ExceptionMessage.ROOM_ID_VALUE_NOT_EMPTY)
     private Long roomId;
 
-    @NotBlank(message = ExceptionMessage.VALUE_NOT_EMPTY)
+    @NotBlank(message = ExceptionMessage.PLACE_NAME_VALUE_NOT_EMPTY)
     private String placeName;
 
-    @NotBlank(message = ExceptionMessage.VALUE_NOT_EMPTY)
+    @NotBlank(message = ExceptionMessage.PLACE_ADDRESS_VALUE_NOT_EMPTY)
     private String placeAddress;
 
     private String phoneNumber;
 
-    @NotNull(message = ExceptionMessage.VALUE_NOT_EMPTY)
+    @NotNull(message = ExceptionMessage.LATITUDE_VALUE_NOT_EMPTY)
     private Double latitude;
 
-    @NotNull(message = ExceptionMessage.VALUE_NOT_EMPTY)
+    @NotNull(message = ExceptionMessage.LONGITUDE_NOT_EMPTY)
     private Double longitude;
 }
