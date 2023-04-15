@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
+import com.travel.role.domain.user.exception.InputValueNotMatchException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
@@ -73,6 +74,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(InvalidLocalDateException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse invalidLocalDateException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(InputValueNotMatchException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse inputValueNotMatchException(InputValueNotMatchException e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
