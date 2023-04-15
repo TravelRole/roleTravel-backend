@@ -3,21 +3,24 @@ package com.travel.role.domain.user.service;
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
-import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.dto.UserPasswordModifyReqDTO;
+import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
+import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileResponseDTO;
 import com.travel.role.global.s3.S3Service;
+import com.travel.role.domain.user.exception.InputValueNotMatchException;
+import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 	private final S3Service s3Service;
 
 	@Transactional(readOnly = true)
@@ -52,6 +56,32 @@ public class UserService {
 		findUser.update(name, birth);
 
 		return UserProfileDetailResDTO.fromUser(findUser);
+	}
+
+	public void modifyPassword(String email, UserPasswordModifyReqDTO reqDTO) {
+
+		User findUser = findUserByEmailOrElseThrow(email);
+
+		String newPassword = reqDTO.getNewPassword();
+
+		checkInputPasswordMatch(newPassword, reqDTO.getNewPasswordCheck());
+		checkPassword(findUser.getPassword(), reqDTO.getPassword());
+
+		findUser.updatePassword(passwordEncoder.encode(newPassword));
+	}
+
+	private void checkInputPasswordMatch(String password, String passwordCheck) {
+
+		if (!Objects.equals(password, passwordCheck)) {
+			throw new InputValueNotMatchException("비밀번호", "비밀번호 확인");
+		}
+	}
+
+	private void checkPassword(String encodedPassword, String inputPassword) {
+
+		if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
+			throw new BadCredentialsException(INVALID_PASSWORD);
+		}
 	}
 
 	@Transactional(readOnly = true)
