@@ -1,17 +1,5 @@
 package com.travel.role.domain.room;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.travel.role.domain.room.dao.RoomParticipantRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
@@ -23,6 +11,17 @@ import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.token.UserPrincipal;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -70,11 +69,11 @@ class RoomTest {
 		room1 = roomRepository.save(room1);
 		room2 = roomRepository.save(room2);
 
-		RoomParticipant roomParticipant1 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room1);
-		RoomParticipant roomParticipant2 = new RoomParticipant(null, LocalDateTime.now(), true, user2, room1);
-		RoomParticipant roomParticipant3 = new RoomParticipant(null, LocalDateTime.now(), true, user3, room1);
-		RoomParticipant roomParticipant4 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room2);
-		RoomParticipant roomParticipant5 = new RoomParticipant(null, LocalDateTime.now(), true, user4, room2);
+		RoomParticipant roomParticipant1 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room1,null);
+		RoomParticipant roomParticipant2 = new RoomParticipant(null, LocalDateTime.now(), true, user2, room1,null);
+		RoomParticipant roomParticipant3 = new RoomParticipant(null, LocalDateTime.now(), true, user3, room1,null);
+		RoomParticipant roomParticipant4 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room2,null);
+		RoomParticipant roomParticipant5 = new RoomParticipant(null, LocalDateTime.now(), true, user4, room2,null);
 
 		roomParticipant1 = roomParticipantRepository.save(roomParticipant1);
 		roomParticipant2 = roomParticipantRepository.save(roomParticipant2);
