@@ -69,10 +69,8 @@ public class UserController {
 	}
 
 	@PutMapping("/users/image")
-	public ResponseEntity<Void> modifyProfileImageUrl(@AuthenticationPrincipal UserPrincipal userPrincipal){
+	public void modifyProfileImageUrl(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 
 		userService.modifyProfileImageUrl(userPrincipal.getEmail());
-
-		return ResponseEntity.ok().build();
 	}
 }
