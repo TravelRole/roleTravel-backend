@@ -16,6 +16,7 @@ import com.travel.role.domain.user.dto.UserPasswordModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileResponseDTO;
+import com.travel.role.global.s3.S3Service;
 import com.travel.role.domain.user.exception.InputValueNotMatchException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 
@@ -28,6 +29,7 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final S3Service s3Service;
 
 	@Transactional(readOnly = true)
 	public UserProfileResponseDTO getBasicProfile(String email) {
@@ -80,6 +82,25 @@ public class UserService {
 		if (!passwordEncoder.matches(inputPassword, encodedPassword)) {
 			throw new BadCredentialsException(INVALID_PASSWORD);
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public String getPreSignedUrlForProfileImage(String email) {
+
+		User findUser = findUserByEmailOrElseThrow(email);
+
+		return s3Service.getPreSignedUrl(S3Service.USER_PROFILE_IMAGE_PATH, findUser.getId().toString());
+	}
+
+	public void modifyProfileImageUrl(String email) {
+
+		User findUser = findUserByEmailOrElseThrow(email);
+
+		String key = S3Service.USER_PROFILE_IMAGE_PATH + findUser.getId();
+		s3Service.checkObjectExistsOrElseThrow(key, "회원 프로필");
+		String profileImageUrl = s3Service.getObjectUrl(key);
+
+		findUser.updateProfileImageUrl(profileImageUrl);
 	}
 
 	private User findUserByEmailOrElseThrow(String email) {

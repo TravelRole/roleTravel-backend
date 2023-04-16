@@ -23,7 +23,7 @@ public final class ExceptionMessage {
 	public static final String INPUT_VALUE_NOT_MATCH = "%s 값과 %s 값이 일치하지 않습니다.";
 	public static final String BIRTH_PATTERN = "생년월일을 1900 ~ 2099 년 사이의 XXXX/XX/XX 형식으로 입력해 주세요.";
 	public static final String PASSWORD_PATTERN = "비밀번호는 영문, 숫자, 특수문자(!, -, _)로 구성된 8-16 자로 입력해 주세요.";
-
+	public static final String IMAGE_NOT_FOUND_IN_S3 = "%s 이미지가 s3에 존재하지 않습니다.";
 	// Room
 	public static final String INVALID_DATE_ERROR = "시작 날짜의 크기는 종료 날짜의 크기보다 클 수 없습니다.";
 }
