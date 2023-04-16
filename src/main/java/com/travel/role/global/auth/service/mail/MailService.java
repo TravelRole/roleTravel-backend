@@ -32,7 +32,7 @@ public class MailService {
 			javaMailSender.send(mimeMessage);
 		} catch (Exception e) {
 			log.info("메일을 보내는데 실패하였습니다 {}", e.getMessage());
-			throw new SendFailedException(MAIL_SEND_FAILD_ERROR);
+			throw new SendFailedException(MAIL_SEND_FAILED_ERROR);
 		}
 	}
 }

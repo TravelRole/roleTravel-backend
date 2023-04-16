@@ -1,5 +1,6 @@
 package com.travel.role.domain.room.domain;
 
+import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,8 +26,8 @@ public class WantPlace {
     @Column(name = "place_address", length = 100, nullable = false)
     private String placeAddress;
 
-    @Column(name = "place_number", length =20)
-    private String placeNumber;
+    @Column(name = "phone_number", length =20)
+    private String phoneNumber;
 
     @Column(nullable = false)
     private Double latitude;
@@ -34,16 +35,16 @@ public class WantPlace {
     @Column(nullable = false)
     private Double longitude;
 
-    private WantPlace(Room room, String placeName, String placeAddress, String placeNumber, Double latitude, Double longitude) {
+    private WantPlace(Room room, WantPlaceRequestDTO wantPlaceRequestDTO) {
         this.room = room;
-        this.placeName = placeName;
-        this.placeAddress = placeAddress;
-        this.placeNumber = placeNumber;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.placeName = wantPlaceRequestDTO.getPlaceName();
+        this.placeAddress = wantPlaceRequestDTO.getPlaceAddress();
+        this.phoneNumber = wantPlaceRequestDTO.getPhoneNumber();
+        this.latitude = wantPlaceRequestDTO.getLatitude();
+        this.longitude = wantPlaceRequestDTO.getLongitude();
     }
 
-    public static WantPlace of(Room room, String placeName, String placeAddress, String placeNumber, Double latitude, Double longitude) {
-        return new WantPlace(room, placeName, placeAddress, placeNumber, latitude, longitude);
+    public static WantPlace of(Room room,  WantPlaceRequestDTO wantPlaceRequestDTO) {
+        return new WantPlace(room, wantPlaceRequestDTO);
     }
 }

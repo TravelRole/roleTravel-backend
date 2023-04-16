@@ -1,9 +1,9 @@
 package com.travel.role.global.exception;
 
-import java.time.LocalDateTime;
-
-import javax.mail.SendFailedException;
-
+import com.travel.role.domain.room.exception.InvalidLocalDateException;
+import com.travel.role.domain.user.exception.*;
+import com.travel.role.global.auth.exception.InvalidTokenException;
+import com.travel.role.global.auth.exception.NotExistTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +19,8 @@ import com.travel.role.domain.user.exception.InputValueNotMatchException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
+import javax.mail.SendFailedException;
+import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -78,11 +80,17 @@ public class GlobalExceptionHandler {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 
-	@ExceptionHandler(InputValueNotMatchException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ExceptionResponse inputValueNotMatchException(InputValueNotMatchException e) {
-		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
-	}
+    @ExceptionHandler(UserNotParticipateRoomException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ExceptionResponse userNotParticipateRoomHandler(Exception e) {
+        return new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED, LocalDateTime.now());
+    }
+
+    @ExceptionHandler(InputValueNotMatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse inputValueNotMatchException(InputValueNotMatchException e) {
+        return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+    }
 
 	@ExceptionHandler(SdkClientException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
