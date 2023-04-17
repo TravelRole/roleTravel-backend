@@ -1,5 +1,6 @@
 package com.travel.role.domain.room.dao;
 
+import static com.travel.role.domain.room.domain.QParticipantRole.*;
 import static com.travel.role.domain.room.domain.QRoom.*;
 import static com.travel.role.domain.room.domain.QRoomParticipant.*;
 import static com.travel.role.domain.user.domain.QUser.*;
@@ -11,6 +12,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.travel.role.domain.room.domain.QRoom;
 import com.travel.role.domain.room.domain.QRoomParticipant;
+import com.travel.role.domain.room.domain.RoomRole;
 import com.travel.role.domain.user.domain.QUser;
 
 import lombok.RequiredArgsConstructor;
@@ -40,4 +42,15 @@ public class RoomQuerydslImpl implements RoomQuerydsl {
 			)).orderBy(room.createDate.desc())
 			.fetch();
 	}
+
+	@Override
+	public List<RoomRole> getRoomRole(String email, Long roomId) {
+		return queryFactory
+			.select(participantRole.roomRole)
+			.from(roomParticipant, participantRole)
+			.join(participantRole.roomParticipant, roomParticipant)
+			.where(roomParticipant.user.email.eq(email), roomParticipant.room.id.eq(roomId))
+			.fetch();
+	}
+
 }
