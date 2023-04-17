@@ -98,6 +98,26 @@ class RoomServiceTest {
 		Assertions.assertThat(inviteCode).isEqualTo("1234");
 	}
 
+	@Test
+	void 해당_유저의_코드를_처음_생성해_초대코드를_생성해야_하는_경우() {
+		//given
+		given(passwordGenerator.generateRandomPassword(20))
+			.willReturn("1234");
+		given(roomRepository.getRoomRole(anyString(), anyLong()))
+			.willReturn(List.of(RoomRole.ADMIN));
+		given(roomRepository.findById(anyLong()))
+			.willReturn(Optional.of(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
+				null, "강릉", null, null
+				, null)));
+
+		//when
+		String inviteCode = roomService.makeInviteCode(makeUserPrincipal(), 1L);
+
+		//then
+		Assertions.assertThat(inviteCode).isEqualTo("1234");
+	}
+
+
 	private static MakeRoomRequestDTO getMakeRoomRequestDTO() {
 		return new MakeRoomRequestDTO("여행 가자~", LocalDate.of(2023, 1, 1),
 			LocalDate.of(2023, 1, 3), "강원도 춘천");
