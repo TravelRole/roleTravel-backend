@@ -19,7 +19,7 @@ import com.travel.role.global.auth.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/")
 @RequiredArgsConstructor
 public class RoomController {
 
@@ -34,5 +34,10 @@ public class RoomController {
 	@GetMapping("/room")
 	public List<RoomResponseDTO> getRoomList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 		return roomService.getRoomList(userPrincipal);
+	}
+
+	@GetMapping("/room/invite-code")
+	public String makeInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		return roomService.makeInviteCode(userPrincipal.getEmail());
 	}
 }
