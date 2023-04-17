@@ -54,11 +54,11 @@ class WantPlaceServiceTest {
 
         Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
 
-        ParticipantRole participantRole = new ParticipantRole(1L,RoomRole.SCHEDULE,null);
+        ParticipantRole participantRole = new ParticipantRole(1L, RoomRole.SCHEDULE, null);
         List<ParticipantRole> participantRoles = new ArrayList<>();
         participantRoles.add(participantRole);
-        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2,participantRoles);
-        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2,participantRoles);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2, participantRoles);
+        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, participantRoles);
 
         Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);
@@ -94,7 +94,7 @@ class WantPlaceServiceTest {
                 null, null, null);
 
         Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
-        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2,null);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, null);
 
         Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);
