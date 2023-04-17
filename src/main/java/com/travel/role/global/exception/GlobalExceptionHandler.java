@@ -105,8 +105,8 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(UserHaveNotPrivilegeException.class)
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse userHaveNotPrivilegeException(UserHaveNotPrivilegeException e) {
-		return new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED, LocalDateTime.now());
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
