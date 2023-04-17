@@ -11,6 +11,7 @@ import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
 import com.travel.role.domain.room.dto.WantPlaceResponseDTO;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.exception.PlaceInfoNotFoundException;
 import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
@@ -31,12 +32,20 @@ public class WantPlaceService {
     private final RoomRepository roomRepository;
     private final WantPlaceRepository wantPlaceRepository;
 
+    public void deletePlace(UserPrincipal userPrincipal,Long roomId, Long placeId){
+        User loginUser = findUser(userPrincipal);
+        Room room = findRoom(roomId);
+        checkParticipant(loginUser, room.getRoomParticipants());
+        WantPlace wantPlace = checkPlaceId(placeId);
+        wantPlaceRepository.deleteById(wantPlace.getId());
+    }
+
     public WantPlaceResponseDTO getPlaceList(UserPrincipal userPrincipal, Long roomId) {
         User loginUser = findUser(userPrincipal);
         Room room = findRoom(roomId);
-        RoomParticipant roomParticipant = checkParticipantWithReturnRole(loginUser, room.getRoomParticipants());
+        RoomParticipant roomParticipant = checkParticipant(loginUser, room.getRoomParticipants());
         List<WantPlaceDTO> wantPlaceDTOS = getWantPlaceList(roomId);
-        return WantPlaceResponseDTO.of(wantPlaceDTOS, checkScheduler(roomParticipant.getParticipantRoles()));
+        return WantPlaceResponseDTO.of(wantPlaceDTOS, checkRole(roomParticipant.getParticipantRoles()));
     }
 
     public void addWantPlace(UserPrincipal userPrincipal, WantPlaceRequestDTO wantPlaceRequestDTO) {
@@ -56,7 +65,7 @@ public class WantPlaceService {
                 .orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
     }
 
-    private RoomParticipant checkParticipantWithReturnRole(User loginUser, Set<RoomParticipant> participants) {
+    private RoomParticipant checkParticipant(User loginUser, Set<RoomParticipant> participants) {
         for (RoomParticipant roomParticipant : participants) {
             if (loginUser.getId().equals(roomParticipant.getUser().getId())) {
                 return roomParticipant;
@@ -65,22 +74,19 @@ public class WantPlaceService {
         throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
     }
 
-    private void checkParticipant(User loginUser, Set<RoomParticipant> participants) {
-        for (RoomParticipant roomParticipant : participants) {
-            if (loginUser.getId().equals(roomParticipant.getUser().getId())) {
-                return;
-            }
-        }
-        throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
-    }
-
-    private boolean checkScheduler(List<ParticipantRole> participantRoles) {
+    private boolean checkRole(List<ParticipantRole> participantRoles) {
         for (ParticipantRole participantRole : participantRoles) {
-            if (participantRole.getRoomRole().getValue().equals("SCHEDULE")) {
+            String value = participantRole.getRoomRole().getValue();
+            if (value.equals("ADMIN") || value.equals("SCHEDULE")) {
                 return true;
             }
         }
         return false;
+    }
+
+    private WantPlace checkPlaceId(Long placeId){
+        return wantPlaceRepository.findById(placeId)
+                .orElseThrow(() -> new PlaceInfoNotFoundException(PLACE_NOT_FOUND));
     }
 
     private List<WantPlaceDTO> getWantPlaceList(Long roomId) {
