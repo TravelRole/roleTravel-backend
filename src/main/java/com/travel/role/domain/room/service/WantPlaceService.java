@@ -27,25 +27,23 @@ import static com.travel.role.global.exception.ExceptionMessage.*;
 @RequiredArgsConstructor
 @Transactional
 public class WantPlaceService {
-    private static final String PARTICIPANT = "isParticipant";
-    private static final String SCHEDULE = "isSchedule";
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final WantPlaceRepository wantPlaceRepository;
 
-    public WantPlaceResponseDTO getPlaceList(UserPrincipal userPrincipal, Long id) {
+    public WantPlaceResponseDTO getPlaceList(UserPrincipal userPrincipal, Long roomId) {
         long idx = 1;
         User loginUser = findUser(userPrincipal);
-        Room room = findRoom(id);
-        Map<String, Boolean> map = checkParticipant(loginUser, room.getRoomParticipants());
+        Room room = findRoom(roomId);
+        RoomParticipant roomParticipant = checkParticipant(loginUser, room.getRoomParticipants());
 
-        if (Boolean.TRUE.equals(map.get(PARTICIPANT))) {
-            List<WantPlace> wantPlaces = wantPlaceRepository.findByRoomIdWithRole(id);
+        if (roomParticipant != null) {
+            List<WantPlace> wantPlaces = wantPlaceRepository.findByRoomIdWithRole(roomId);
             List<WantPlaceDTO> wantPlaceDTOS = new ArrayList<>();
             for (WantPlace wantPlace : wantPlaces) {
                 wantPlaceDTOS.add(WantPlaceDTO.of(idx++, wantPlace));
             }
-            return WantPlaceResponseDTO.of(wantPlaceDTOS, map.get(SCHEDULE));
+            return WantPlaceResponseDTO.of(wantPlaceDTOS, checkScheduler(roomParticipant.getParticipantRoles()));
         }
         else
             throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
@@ -54,16 +52,16 @@ public class WantPlaceService {
     public void addWantPlace(UserPrincipal userPrincipal, WantPlaceRequestDTO wantPlaceRequestDTO) {
         User loginUser = findUser(userPrincipal);
         Room room = findRoom(wantPlaceRequestDTO.getRoomId());
-        Map<String, Boolean> map = checkParticipant(loginUser, room.getRoomParticipants());
+        RoomParticipant roomParticipant = checkParticipant(loginUser, room.getRoomParticipants());
 
-        if (Boolean.TRUE.equals(map.get(PARTICIPANT)))
+        if (roomParticipant != null)
             wantPlaceRepository.save(WantPlace.of(room, wantPlaceRequestDTO));
         else
             throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
     }
 
-    private Room findRoom(Long id) {
-        return roomRepository.findByIdWithParticipants(id)
+    private Room findRoom(Long roomId) {
+        return roomRepository.findByIdWithParticipants(roomId)
                 .orElseThrow(() -> new RoomInfoNotFoundException(ROOM_NOT_FOUND));
     }
 
@@ -72,22 +70,22 @@ public class WantPlaceService {
                 .orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
     }
 
-    private Map<String, Boolean> checkParticipant(User loginUser, Set<RoomParticipant> participants) {
-        Map<String, Boolean> map = new HashMap<>();
-        map.put(SCHEDULE, false);
-        map.put(PARTICIPANT, false);
-
+    private RoomParticipant checkParticipant(User loginUser, Set<RoomParticipant> participants) {
         for (RoomParticipant roomParticipant : participants) {
             if (loginUser.getId().equals(roomParticipant.getUser().getId())) {
-                for (ParticipantRole participantRole : roomParticipant.getParticipantRoles()) {
-                    if (participantRole.getRoomRole().getValue().equals("SCHEDULE")) {
-                        map.replace(SCHEDULE, true);
-                    }
-                }
-                map.replace(PARTICIPANT, true);
+                return roomParticipant;
             }
         }
-        return map;
+        return null;
+    }
+
+    private boolean checkScheduler(List<ParticipantRole> participantRoles) {
+        for (ParticipantRole participantRole : participantRoles) {
+            if (participantRole.getRoomRole().getValue().equals("SCHEDULE")) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
