@@ -1,9 +1,24 @@
 package com.travel.role.domain.room;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.travel.role.domain.room.dao.ParticipantRoleRepository;
 import com.travel.role.domain.room.dao.RoomParticipantRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
+import com.travel.role.domain.room.domain.ParticipantRole;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
+import com.travel.role.domain.room.domain.RoomRole;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
@@ -11,17 +26,6 @@ import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.token.UserPrincipal;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -34,6 +38,9 @@ class RoomTest {
 
     @Autowired
     private RoomParticipantRepository roomParticipantRepository;
+
+    @Autowired
+    private ParticipantRoleRepository participantRoleRepository;
 
     @Autowired
     private RoomService roomService;
@@ -80,6 +87,18 @@ class RoomTest {
         roomParticipant3 = roomParticipantRepository.save(roomParticipant3);
         roomParticipant4 = roomParticipantRepository.save(roomParticipant4);
         roomParticipant5 = roomParticipantRepository.save(roomParticipant5);
+
+        ParticipantRole participantRole1 = new ParticipantRole(null, RoomRole.ADMIN, roomParticipant1);
+        ParticipantRole participantRole2 = new ParticipantRole(null, RoomRole.SCHEDULE, roomParticipant2);
+        ParticipantRole participantRole3 = new ParticipantRole(null, RoomRole.RESERVATION, roomParticipant3);
+        ParticipantRole participantRole4 = new ParticipantRole(null, RoomRole.ADMIN, roomParticipant4);
+        ParticipantRole participantRole5 = new ParticipantRole(null, RoomRole.ACCOUNTING, roomParticipant5);
+
+        participantRoleRepository.save(participantRole1);
+        participantRoleRepository.save(participantRole2);
+        participantRoleRepository.save(participantRole3);
+        participantRoleRepository.save(participantRole4);
+        participantRoleRepository.save(participantRole5);
     }
 
     @Test
@@ -108,5 +127,18 @@ class RoomTest {
         assertThat(roomList.get(0).getMembers().size()).isEqualTo(3);
         assertThat(roomList.get(1).getRoomName()).isEqualTo("room2");
         assertThat(roomList.get(1).getMembers().size()).isEqualTo(2);
+    }
+
+    @Test
+    void 제대로_ROLE을_체크하는_쿼리가_작동하는지() {
+        // given
+        UserPrincipal userPrincipal = new UserPrincipal(1L, "haechan@naver.com", "1234", null);
+        Long roomId = 1L;
+
+        // when
+        List<RoomRole> roomRole = roomRepository.getRoomRole(userPrincipal.getEmail(), roomId);
+
+        // then
+        assertThat(roomRole.get(0)).isEqualTo(RoomRole.ADMIN);
     }
 }
