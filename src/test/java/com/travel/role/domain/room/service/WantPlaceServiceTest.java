@@ -2,9 +2,7 @@ package com.travel.role.domain.room.service;
 
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.dao.WantPlaceRepository;
-import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.room.domain.RoomParticipant;
-import com.travel.role.domain.room.domain.WantPlace;
+import com.travel.role.domain.room.domain.*;
 import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
@@ -21,9 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static com.travel.role.global.exception.ExceptionMessage.ROOM_NOT_FOUND;
 import static com.travel.role.global.exception.ExceptionMessage.USERNAME_NOT_FOUND;
@@ -49,7 +45,7 @@ class WantPlaceServiceTest {
     private WantPlaceService wantPlaceService;
 
     @Test
-    void addWantPlaceTest() {
+    void 가고싶은_장소_추가_성공() {
         // given
         User user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, null, null, LocalDate.now(),
                 null, null, null);
@@ -57,8 +53,12 @@ class WantPlaceServiceTest {
                 null, null, null);
 
         Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
-        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2);
-        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
+
+        ParticipantRole participantRole = new ParticipantRole(1L, RoomRole.SCHEDULE, null);
+        List<ParticipantRole> participantRoles = new ArrayList<>();
+        participantRoles.add(participantRole);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2, participantRoles);
+        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, participantRoles);
 
         Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);
@@ -94,7 +94,7 @@ class WantPlaceServiceTest {
                 null, null, null);
 
         Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
-        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, null);
 
         Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);

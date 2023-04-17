@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "ROOM_PARTICIPANT_INFO")
 @Entity
@@ -32,5 +34,9 @@ public class RoomParticipant {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "room_id")
 	private Room room;
+
+	@OneToMany(mappedBy = "roomParticipant", cascade = CascadeType.ALL)
+	List<ParticipantRole> participantRoles = new ArrayList<>();
+
 
 }
