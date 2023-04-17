@@ -69,11 +69,8 @@ public class RoomService {
 
 	public void makeRoom(UserPrincipal userPrincipal, MakeRoomRequestDTO makeRoomRequestDTO) {
 		validateDate(makeRoomRequestDTO);
-
-		String randomPassword = PasswordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
-
 		User user = findUser(userPrincipal);
-		Room room = roomRepository.save(Room.of(makeRoomRequestDTO, randomPassword));
+		Room room = roomRepository.save(Room.of(makeRoomRequestDTO));
 		RoomParticipant roomParticipant = saveNewRoomParticipant(user, room);
 		ParticipantRole participantRole = saveNewParticipantRole(roomParticipant);
 	}
