@@ -64,8 +64,8 @@ class RoomTest {
 			LocalDate.of(2023, 1, 10),
 			"스울");
 
-		Room room1 = Room.of(makeRoom1, "1234");
-		Room room2 = Room.of(makeRoom2, "1234");
+		Room room1 = Room.of(makeRoom1);
+		Room room2 = Room.of(makeRoom2);
 
 		room1 = roomRepository.save(room1);
 		room2 = roomRepository.save(room2);

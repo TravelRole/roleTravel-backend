@@ -28,7 +28,6 @@ import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.token.UserPrincipal;
-import com.travel.role.global.util.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
 

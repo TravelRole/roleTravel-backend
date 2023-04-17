@@ -1,6 +1,7 @@
 package com.travel.role.domain.room.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +48,12 @@ public class Room extends BaseCreateTime {
 
 	@Column(nullable = false)
 	private String location;
+
+	@Column(name = "room_invite_code")
+	private String roomInviteCode;
+
+	@Column(name = "room_invite_time")
+	private LocalDateTime roomInviteTime;
 
 	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
 	private Set<RoomParticipant> roomParticipants = new HashSet<>();
