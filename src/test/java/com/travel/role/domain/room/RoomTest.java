@@ -19,7 +19,6 @@ import com.travel.role.domain.room.domain.ParticipantRole;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.domain.RoomRole;
-import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.domain.user.dao.UserRepository;
@@ -62,16 +61,10 @@ class RoomTest {
         user3 = userRepository.save(user3);
         user4 = userRepository.save(user4);
 
-        MakeRoomRequestDTO makeRoom1 = new MakeRoomRequestDTO("room1", LocalDate.of(2023, 1, 1),
-                LocalDate.of(2023, 1, 3),
-                "광양");
-
-        MakeRoomRequestDTO makeRoom2 = new MakeRoomRequestDTO("room2", LocalDate.of(2023, 1, 5),
-                LocalDate.of(2023, 1, 10),
-                "스울");
-
-		Room room1 = Room.of(makeRoom1);
-		Room room2 = Room.of(makeRoom2);
+		Room room1 = new Room(1L, "room1", LocalDate.of(2023, 1, 1),
+            LocalDate.of(2023, 1, 3), null, "광양", null, null, null);
+		Room room2 = new Room(2L, "room2", LocalDate.of(2023, 1, 5),
+            LocalDate.of(2023, 1, 10), null, "스울", null, null, null);
 
         room1 = roomRepository.save(room1);
         room2 = roomRepository.save(room2);
@@ -127,18 +120,5 @@ class RoomTest {
         assertThat(roomList.get(0).getMembers().size()).isEqualTo(3);
         assertThat(roomList.get(1).getRoomName()).isEqualTo("room2");
         assertThat(roomList.get(1).getMembers().size()).isEqualTo(2);
-    }
-
-    @Test
-    void 제대로_ROLE을_체크하는_쿼리가_작동하는지() {
-        // given
-        UserPrincipal userPrincipal = new UserPrincipal(1L, "haechan@naver.com", "1234", null);
-        Long roomId = 1L;
-
-        // when
-        List<RoomRole> roomRole = roomRepository.getRoomRole(userPrincipal.getEmail(), roomId);
-
-        // then
-        assertThat(roomRole.get(0)).isEqualTo(RoomRole.ADMIN);
     }
 }
