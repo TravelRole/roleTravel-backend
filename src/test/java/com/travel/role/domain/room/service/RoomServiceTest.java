@@ -4,7 +4,9 @@ import static com.travel.role.global.exception.ExceptionMessage.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.room.dao.RoomRepository;
+import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomRole;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
@@ -23,6 +26,7 @@ import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.util.PasswordGenerator;
 
 @ExtendWith(MockitoExtension.class)
 class RoomServiceTest {
@@ -35,6 +39,9 @@ class RoomServiceTest {
 
 	@Mock
 	private RoomRepository roomRepository;
+
+	@Mock
+	private PasswordGenerator passwordGenerator;
 
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
@@ -70,6 +77,25 @@ class RoomServiceTest {
 		Assertions.assertThatThrownBy(() -> roomService.makeInviteCode(makeUserPrincipal(), 1L))
 			.isInstanceOf(UserHaveNotPrivilegeException.class)
 			.hasMessageContaining(USER_HAVE_NOT_PRIVILEGE);
+	}
+
+	@Test
+	void 해당_유저의_코드가_유효기간이_지나_재생성_해야하는_경우() {
+		//given
+		given(passwordGenerator.generateRandomPassword(20))
+			.willReturn("1234");
+		given(roomRepository.getRoomRole(anyString(), anyLong()))
+			.willReturn(List.of(RoomRole.ADMIN));
+		given(roomRepository.findById(anyLong()))
+			.willReturn(Optional.of(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
+				null, "강릉", "12", LocalDateTime.now().minusDays(1L).plusSeconds(1L)
+				, null)));
+
+		//when
+		String inviteCode = roomService.makeInviteCode(makeUserPrincipal(), 1L);
+
+		//then
+		Assertions.assertThat(inviteCode).isEqualTo("1234");
 	}
 
 	private static MakeRoomRequestDTO getMakeRoomRequestDTO() {
