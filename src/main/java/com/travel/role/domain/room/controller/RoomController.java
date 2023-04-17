@@ -38,6 +38,7 @@ public class RoomController {
 
 	@GetMapping("/room/invite-code")
 	public String makeInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		return roomService.makeInviteCode(userPrincipal.getEmail());
+		// return roomService.makeInviteCode(userPrincipal);
+		return null;
 	}
 }

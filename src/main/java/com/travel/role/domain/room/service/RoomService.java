@@ -107,8 +107,4 @@ public class RoomService {
 		if (start.isAfter(end))
 			throw new InvalidLocalDateException(INVALID_DATE_ERROR);
 	}
-
-	public String makeInviteCode(String email) {
-		return null;
-	}
 }
