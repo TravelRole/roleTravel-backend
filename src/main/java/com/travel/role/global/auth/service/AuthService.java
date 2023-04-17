@@ -48,6 +48,7 @@ public class AuthService {
 	private final TokenProvider tokenProvider;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final PasswordGenerator passwordGenerator;
 	private final MailService mailService;
 
 	private static final String SUCCESS_SIGN_UP = "회원가입에 성공하셨습니다";
@@ -154,7 +155,7 @@ public class AuthService {
 	public void changePassword(NewPasswordRequestDTO newPasswordRequestDTO) throws SendFailedException {
 		User user = checkValidateUser(newPasswordRequestDTO);
 
-		String randomPassword = PasswordGenerator.generateRandomPassword(20);
+		String randomPassword = passwordGenerator.generateRandomPassword(16);
 		user.updatePassword(passwordEncoder.encode(randomPassword));
 
 		mailService.sendPasswordMail(randomPassword, user.getEmail());
