@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WantPlaceDTO {
     private Long idx;
+    private Long placeId;
     private String placeName;
     private String placeAddress;
     private String phoneNumber;
@@ -16,6 +17,7 @@ public class WantPlaceDTO {
 
     private WantPlaceDTO(long idx, WantPlace wantPlace) {
         this.idx = idx;
+        this.placeId = wantPlace.getId();
         this.placeName = wantPlace.getPlaceName();
         this.placeAddress = wantPlace.getPlaceAddress();
         this.phoneNumber = wantPlace.getPhoneNumber();
