@@ -1,5 +1,6 @@
 package com.travel.role.domain.room.service;
 
+import com.travel.role.domain.room.dao.RoomParticipantRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.dao.WantPlaceRepository;
 import com.travel.role.domain.room.domain.ParticipantRole;
@@ -17,10 +18,13 @@ import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
@@ -30,17 +34,17 @@ import static com.travel.role.global.exception.ExceptionMessage.*;
 public class WantPlaceService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final RoomParticipantRepository roomParticipantRepository;
     private final WantPlaceRepository wantPlaceRepository;
 
-    public void deletePlace(UserPrincipal userPrincipal,Long roomId, Long placeId){
+    public void deleteWantPlace(UserPrincipal userPrincipal,Long roomId, Long placeId){
         User loginUser = findUser(userPrincipal);
         Room room = findRoom(roomId);
         checkParticipant(loginUser, room.getRoomParticipants());
-        WantPlace wantPlace = checkPlaceId(placeId);
-        wantPlaceRepository.deleteById(wantPlace.getId());
+        deleteWantPlaceById(placeId);
     }
 
-    public WantPlaceResponseDTO getPlaceList(UserPrincipal userPrincipal, Long roomId) {
+    public WantPlaceResponseDTO getWantPlaceList(UserPrincipal userPrincipal, Long roomId) {
         User loginUser = findUser(userPrincipal);
         Room room = findRoom(roomId);
         RoomParticipant roomParticipant = checkParticipant(loginUser, room.getRoomParticipants());
@@ -77,16 +81,19 @@ public class WantPlaceService {
     private boolean checkRole(List<ParticipantRole> participantRoles) {
         for (ParticipantRole participantRole : participantRoles) {
             String value = participantRole.getRoomRole().getValue();
-            if (value.equals("ADMIN") || value.equals("SCHEDULE")) {
+            if ("ADMIN".equals(value) || "SCHEDULE".equals(value)) {
                 return true;
             }
         }
         return false;
     }
 
-    private WantPlace checkPlaceId(Long placeId){
-        return wantPlaceRepository.findById(placeId)
-                .orElseThrow(() -> new PlaceInfoNotFoundException(PLACE_NOT_FOUND));
+    private void deleteWantPlaceById(Long placeId){
+        try{
+            wantPlaceRepository.deleteById(placeId);
+        }catch (EmptyResultDataAccessException e){
+            throw new PlaceInfoNotFoundException(PLACE_NOT_FOUND);
+        }
     }
 
     private List<WantPlaceDTO> getWantPlaceList(Long roomId) {
