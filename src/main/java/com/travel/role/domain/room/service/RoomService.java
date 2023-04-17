@@ -45,6 +45,7 @@ public class RoomService {
 	private final UserRepository userRepository;
 	private final RoomParticipantRepository roomParticipantRepository;
 	private final ParticipantRoleRepository participantRoleRepository;
+	private final PasswordGenerator passwordGenerator;
 
 	public List<RoomResponseDTO> getRoomList(UserPrincipal userPrincipal) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(userPrincipal.getEmail());
@@ -142,10 +143,10 @@ public class RoomService {
 	}
 
 	private String generateInviteCode() {
-		String inviteCode = PasswordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
+		String inviteCode = passwordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
 
 		while (roomRepository.existsByRoomInviteCode(inviteCode)) {
-			inviteCode = PasswordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
+			inviteCode = passwordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
 		}
 
 		return inviteCode;
