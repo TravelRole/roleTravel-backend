@@ -32,32 +32,18 @@ public class WantPlaceService {
     private final WantPlaceRepository wantPlaceRepository;
 
     public WantPlaceResponseDTO getPlaceList(UserPrincipal userPrincipal, Long roomId) {
-        long idx = 1;
         User loginUser = findUser(userPrincipal);
         Room room = findRoom(roomId);
-        RoomParticipant roomParticipant = checkParticipant(loginUser, room.getRoomParticipants());
-
-        if (roomParticipant != null) {
-            List<WantPlace> wantPlaces = wantPlaceRepository.findByRoomIdWithRole(roomId);
-            List<WantPlaceDTO> wantPlaceDTOS = new ArrayList<>();
-            for (WantPlace wantPlace : wantPlaces) {
-                wantPlaceDTOS.add(WantPlaceDTO.of(idx++, wantPlace));
-            }
-            return WantPlaceResponseDTO.of(wantPlaceDTOS, checkScheduler(roomParticipant.getParticipantRoles()));
-        }
-        else
-            throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
+        RoomParticipant roomParticipant = checkParticipantWithReturnRole(loginUser, room.getRoomParticipants());
+        List<WantPlaceDTO> wantPlaceDTOS = getWantPlaceList(roomId);
+        return WantPlaceResponseDTO.of(wantPlaceDTOS, checkScheduler(roomParticipant.getParticipantRoles()));
     }
 
     public void addWantPlace(UserPrincipal userPrincipal, WantPlaceRequestDTO wantPlaceRequestDTO) {
         User loginUser = findUser(userPrincipal);
         Room room = findRoom(wantPlaceRequestDTO.getRoomId());
-        RoomParticipant roomParticipant = checkParticipant(loginUser, room.getRoomParticipants());
-
-        if (roomParticipant != null)
-            wantPlaceRepository.save(WantPlace.of(room, wantPlaceRequestDTO));
-        else
-            throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
+        checkParticipant(loginUser, room.getRoomParticipants());
+        wantPlaceRepository.save(WantPlace.of(room, wantPlaceRequestDTO));
     }
 
     private Room findRoom(Long roomId) {
@@ -70,13 +56,22 @@ public class WantPlaceService {
                 .orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
     }
 
-    private RoomParticipant checkParticipant(User loginUser, Set<RoomParticipant> participants) {
+    private RoomParticipant checkParticipantWithReturnRole(User loginUser, Set<RoomParticipant> participants) {
         for (RoomParticipant roomParticipant : participants) {
             if (loginUser.getId().equals(roomParticipant.getUser().getId())) {
                 return roomParticipant;
             }
         }
-        return null;
+        throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
+    }
+
+    private void checkParticipant(User loginUser, Set<RoomParticipant> participants) {
+        for (RoomParticipant roomParticipant : participants) {
+            if (loginUser.getId().equals(roomParticipant.getUser().getId())) {
+                return;
+            }
+        }
+        throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
     }
 
     private boolean checkScheduler(List<ParticipantRole> participantRoles) {
@@ -86,6 +81,16 @@ public class WantPlaceService {
             }
         }
         return false;
+    }
+
+    private List<WantPlaceDTO> getWantPlaceList(Long roomId) {
+        List<WantPlaceDTO> wantPlaceDTOS = new ArrayList<>();
+        List<WantPlace> wantPlaces = wantPlaceRepository.findByRoomIdWithRole(roomId);
+        long idx = 1;
+        for (WantPlace wantPlace : wantPlaces) {
+            wantPlaceDTOS.add(WantPlaceDTO.of(idx++, wantPlace));
+        }
+        return wantPlaceDTOS;
     }
 
 }
