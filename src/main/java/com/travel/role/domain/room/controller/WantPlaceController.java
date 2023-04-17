@@ -20,8 +20,8 @@ public class WantPlaceController {
     private final WantPlaceService wantPlaceService;
 
     @GetMapping("/want-place")
-    public ResponseEntity<WantPlaceResponseDTO> getRoomList(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("id") Long id) {
-        WantPlaceResponseDTO wantPlaceResponseDTOS = wantPlaceService.getRoomList(userPrincipal, id);
+    public ResponseEntity<WantPlaceResponseDTO> getPlaceList(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("id") Long id) {
+        WantPlaceResponseDTO wantPlaceResponseDTOS = wantPlaceService.getPlaceList(userPrincipal, id);
         return ResponseEntity.ok(wantPlaceResponseDTOS);
     }
 

@@ -33,7 +33,7 @@ public class WantPlaceService {
     private final RoomRepository roomRepository;
     private final WantPlaceRepository wantPlaceRepository;
 
-    public WantPlaceResponseDTO getRoomList(UserPrincipal userPrincipal, Long id) {
+    public WantPlaceResponseDTO getPlaceList(UserPrincipal userPrincipal, Long id) {
         long idx = 1;
         User loginUser = findUser(userPrincipal);
         Room room = findRoom(id);
