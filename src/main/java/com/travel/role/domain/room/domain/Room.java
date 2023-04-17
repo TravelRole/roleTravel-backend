@@ -66,4 +66,9 @@ public class Room extends BaseCreateTime {
 			.travelStartDate(makeRoomRequestDTO.getTravelStartDate())
 			.build();
 	}
+
+	public void updateInviteCode(String inviteCode, LocalDateTime now) {
+		this.roomInviteCode = inviteCode;
+		this.roomInviteTime = now;
+	}
 }

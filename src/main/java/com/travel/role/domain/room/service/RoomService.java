@@ -24,10 +24,13 @@ import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.MemberDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
+import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.token.UserPrincipal;
+import com.travel.role.global.util.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -95,6 +98,11 @@ public class RoomService {
 		return participantRoleRepository.save(newParticipantRole);
 	}
 
+	private Room findRoom(Long id) {
+		return roomRepository.findById(id)
+			.orElseThrow(() -> new RoomInfoNotFoundException(ROOM_NOT_FOUND));
+	}
+
 	private User findUser(UserPrincipal userPrincipal) {
 		return userRepository.findByEmail(userPrincipal.getEmail())
 			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
@@ -106,5 +114,40 @@ public class RoomService {
 
 		if (start.isAfter(end))
 			throw new InvalidLocalDateException(INVALID_DATE_ERROR);
+	}
+
+	public String makeInviteCode(UserPrincipal userPrincipal, Long roomId) {
+		List<RoomRole> roomRoles = roomRepository.getRoomRole(userPrincipal.getEmail(), roomId);
+		validRoomRole(roomRoles, RoomRole.ADMIN);
+
+		Room room = findRoom(roomId);
+
+		String inviteCode = room.getRoomInviteCode();
+		if (room.getRoomInviteCode() == null || room.getRoomInviteTime().plusDays(1L).isAfter(LocalDateTime.now())) {
+			inviteCode = generateInviteCode();
+			room.updateInviteCode(inviteCode, LocalDateTime.now());
+		}
+
+		return inviteCode;
+	}
+
+	private void validRoomRole(List<RoomRole> roomRoles, RoomRole... checkRooms) {
+		for (RoomRole role : roomRoles) {
+			for (RoomRole checkRoom : checkRooms) {
+				if (checkRoom.equals(role))
+					return;
+			}
+		}
+		throw new UserHaveNotPrivilegeException(USER_HAVE_NOT_PRIVILEGE);
+	}
+
+	private String generateInviteCode() {
+		String inviteCode = PasswordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
+
+		while (roomRepository.existsByRoomInviteCode(inviteCode)) {
+			inviteCode = PasswordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
+		}
+
+		return inviteCode;
 	}
 }

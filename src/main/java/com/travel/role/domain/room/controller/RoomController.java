@@ -37,8 +37,7 @@ public class RoomController {
 	}
 
 	@GetMapping("/room/invite-code")
-	public String makeInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		// return roomService.makeInviteCode(userPrincipal);
-		return null;
+	public String getInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal, Long roomId) {
+		return roomService.makeInviteCode(userPrincipal, roomId);
 	}
 }
