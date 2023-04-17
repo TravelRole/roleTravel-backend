@@ -1,9 +1,9 @@
 package com.travel.role.global.exception;
 
-import com.travel.role.domain.room.exception.InvalidLocalDateException;
-import com.travel.role.domain.user.exception.*;
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
+import java.time.LocalDateTime;
+
+import javax.mail.SendFailedException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.amazonaws.SdkClientException;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
+import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
 import com.travel.role.domain.user.exception.InputValueNotMatchException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
-import javax.mail.SendFailedException;
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -102,5 +102,11 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ExceptionResponse s3ImageNotFoundException(S3ImageNotFoundException e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(UserHaveNotPrivilegeException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ExceptionResponse userHaveNotPrivilegeException(UserHaveNotPrivilegeException e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED, LocalDateTime.now());
 	}
 }
