@@ -30,4 +30,10 @@ public class WantPlaceController {
     public void addWantPlace(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody @Valid WantPlaceRequestDTO wantPlaceRequestDTO) {
         wantPlaceService.addWantPlace(userPrincipal, wantPlaceRequestDTO);
     }
+
+    @DeleteMapping("/want-place")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteWantPlace(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("roomId") Long roomId, @RequestParam("placeId") Long placeId) {
+        wantPlaceService.deletePlace(userPrincipal, roomId, placeId);
+    }
 }
