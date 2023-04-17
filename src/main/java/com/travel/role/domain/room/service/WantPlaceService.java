@@ -1,6 +1,5 @@
 package com.travel.role.domain.room.service;
 
-import com.travel.role.domain.room.dao.RoomParticipantRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.dao.WantPlaceRepository;
 import com.travel.role.domain.room.domain.ParticipantRole;
@@ -34,7 +33,6 @@ import static com.travel.role.global.exception.ExceptionMessage.*;
 public class WantPlaceService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
-    private final RoomParticipantRepository roomParticipantRepository;
     private final WantPlaceRepository wantPlaceRepository;
 
     public void deleteWantPlace(UserPrincipal userPrincipal,Long roomId, Long placeId){
