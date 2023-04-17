@@ -1,19 +1,16 @@
 spring:
   profiles:
     include: oauth, mail, cloud
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
 
-  h2:
-    console:
-      enabled: true
-    path: /h2-console
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: ENC(7udf7PA9ds8l4ejCbNfMkA==)
 
   jpa:
-    database: h2
+    database: MYSQL
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: create
     show-sql: true
