@@ -1,6 +1,7 @@
 package com.travel.role.domain.room.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,7 +50,7 @@ class RoomServiceTest {
 			LocalDate.of(2023, 1, 1),  "강원도 춘천");
 
 		// when, then
-		Assertions.assertThatThrownBy(() -> roomService.makeRoom(null, newDto))
+		assertThatThrownBy(() -> roomService.makeRoom(null, newDto))
 			.isInstanceOf(InvalidLocalDateException.class)
 			.hasMessageContaining(ExceptionMessage.INVALID_DATE_ERROR);
 	}
@@ -62,7 +62,7 @@ class RoomServiceTest {
 			.willReturn(Optional.empty());
 
 		// when, then
-		Assertions.assertThatThrownBy(() -> roomService.makeRoom(makeUserPrincipal(), getMakeRoomRequestDTO()))
+		assertThatThrownBy(() -> roomService.makeRoom(makeUserPrincipal(), getMakeRoomRequestDTO()))
 			.isInstanceOf(UserInfoNotFoundException.class)
 			.hasMessageContaining(USERNAME_NOT_FOUND);
 	}
@@ -74,7 +74,7 @@ class RoomServiceTest {
 			.willReturn(new ArrayList<RoomRole>());
 
 		// when
-		Assertions.assertThatThrownBy(() -> roomService.makeInviteCode(makeUserPrincipal(), 1L))
+		assertThatThrownBy(() -> roomService.makeInviteCode(makeUserPrincipal(), 1L))
 			.isInstanceOf(UserHaveNotPrivilegeException.class)
 			.hasMessageContaining(USER_HAVE_NOT_PRIVILEGE);
 	}
@@ -95,7 +95,7 @@ class RoomServiceTest {
 		String inviteCode = roomService.makeInviteCode(makeUserPrincipal(), 1L);
 
 		//then
-		Assertions.assertThat(inviteCode).isEqualTo("1234");
+		assertThat(inviteCode).isEqualTo("1234");
 	}
 
 	@Test
@@ -114,7 +114,7 @@ class RoomServiceTest {
 		String inviteCode = roomService.makeInviteCode(makeUserPrincipal(), 1L);
 
 		//then
-		Assertions.assertThat(inviteCode).isEqualTo("1234");
+		assertThat(inviteCode).isEqualTo("1234");
 	}
 
 
