@@ -40,6 +40,7 @@ public class Comment extends BaseTime {
 	@JoinColumn(name = "parent_id", updatable = false)
 	private Comment parent;
 
+	@Builder
 	public Comment(User user, Room room, Comment parent, String content, Long groupId, Integer depth) {
 		this.content = content;
 		this.groupId = groupId;
