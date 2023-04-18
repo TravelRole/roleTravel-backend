@@ -41,18 +41,20 @@ public class CommentService {
 
 		User loginUser = findUserByEmailOrElseThrow(email);
 		Room room = findRoomByIdOrElseThrow(roomId);
+		Comment newComment;
 
 		checkUserInRoom(loginUser, room);
 
 		if (parentId == null) {
-			Comment newComment = Comment.ofParent(loginUser, room, reqDTO.getContent());
+			newComment = Comment.ofParent(loginUser, room, reqDTO.getContent());
 			newComment = commentRepository.save(newComment);
 			newComment.setGroupId(newComment.getId());
 		} else {
 			Comment parentComment = findCommentByIdOrElseThrow(parentId);
-			Comment newComment = Comment.ofChild(loginUser, room, parentComment, reqDTO.getContent());
-			commentRepository.save(newComment);
+			newComment = Comment.ofChild(loginUser, room, parentComment, reqDTO.getContent());
 		}
+
+		commentRepository.save(newComment);
 	}
 
 	@Transactional(readOnly = true)
