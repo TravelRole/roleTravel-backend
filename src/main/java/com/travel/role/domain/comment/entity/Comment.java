@@ -22,7 +22,7 @@ public class Comment extends BaseTime {
 	@Column(nullable = false)
 	private String content;
 
-	@Column(updatable = false)
+	@Column
 	private Long groupId;
 
 	@Column(nullable = false, updatable = false)
