@@ -1,8 +1,7 @@
 package com.travel.role.domain.user.exception;
 
-import lombok.NoArgsConstructor;
+import com.travel.role.global.exception.ExceptionMessage;
 
-@NoArgsConstructor
 public class UserNotParticipateRoomException extends RuntimeException{
-    public UserNotParticipateRoomException(String msg) {super(msg);}
+    public UserNotParticipateRoomException() {super(ExceptionMessage.USER_NOT_PARTICIPATE_ROOM);}
 }

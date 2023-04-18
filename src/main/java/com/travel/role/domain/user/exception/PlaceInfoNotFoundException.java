@@ -1,8 +1,8 @@
 package com.travel.role.domain.user.exception;
 
-import lombok.NoArgsConstructor;
+import com.travel.role.global.exception.ExceptionMessage;
 
-@NoArgsConstructor
+
 public class PlaceInfoNotFoundException extends RuntimeException{
-    public PlaceInfoNotFoundException(String msg) {super(msg);}
+    public PlaceInfoNotFoundException() {super(ExceptionMessage.PLACE_NOT_FOUND);}
 }

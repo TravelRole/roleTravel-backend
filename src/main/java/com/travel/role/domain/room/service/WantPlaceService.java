@@ -73,7 +73,7 @@ public class WantPlaceService {
                 return roomParticipant;
             }
         }
-        throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
+        throw new UserNotParticipateRoomException();
     }
 
     private boolean checkRole(List<ParticipantRole> participantRoles) {
@@ -90,7 +90,7 @@ public class WantPlaceService {
         try{
             wantPlaceRepository.deleteById(placeId);
         }catch (EmptyResultDataAccessException e){
-            throw new PlaceInfoNotFoundException(PLACE_NOT_FOUND);
+            throw new PlaceInfoNotFoundException();
         }
     }
 
