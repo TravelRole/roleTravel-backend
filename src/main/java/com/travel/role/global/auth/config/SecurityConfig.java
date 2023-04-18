@@ -85,11 +85,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic()
 			.disable()
 			.authorizeRequests()
-			.antMatchers("/auth/**", "/h2-console/**", "/oauth2/**").permitAll()
+			.antMatchers("/auth/**", "/oauth2/**").permitAll()
 			.anyRequest()
 			.authenticated()
-			.and()
-			.headers().frameOptions().disable() // h2 db 접속때문에 설정한것 //TODO: H2-DB 테스트 이후 삭제할것
 			.and()
 				.oauth2Login()
 				.redirectionEndpoint()
