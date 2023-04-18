@@ -1,6 +1,7 @@
 package com.travel.role.domain.room.domain;
 
 import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
+import com.travel.role.global.domain.BaseTime;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WantPlace {
+public class WantPlace extends BaseTime {
 
     @Id
     @Column(name = "place_id")

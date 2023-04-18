@@ -9,7 +9,7 @@ spring:
             redirect-uri: http://test.haechan.shop:8080/oauth2/callback/google
             scope: profile,email
 
-redirectPath: ENC(bbe1YYvv1eEZX9O6nV0Wv/V30loD114yd1vFBMwGz3FlPNDf6zZulOF38oLSL/sH4DrzWyExi3s/hXS564QZoA==)
+redirectPath: ENC(REzC1OeFdmhEaRwinyQn+XYSj7Y3Sj3KVQo5KvKb/l49d1eSmst1kSyB5m5zMSMLRNMaafxZB2WyZvYxuIlwqg==)
 
 # 60 * 60 * 24 * 14
 cookieExpireTime: 1209600
