@@ -52,8 +52,8 @@ public class Room extends BaseCreateTime {
 	@Column(name = "room_invite_code")
 	private String roomInviteCode;
 
-	@Column(name = "room_invite_time")
-	private LocalDateTime roomInviteTime;
+	@Column(name = "room_expired_time")
+	private LocalDateTime roomExpiredTime;
 
 	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
 	private Set<RoomParticipant> roomParticipants = new HashSet<>();
@@ -69,6 +69,6 @@ public class Room extends BaseCreateTime {
 
 	public void updateInviteCode(String inviteCode, LocalDateTime now) {
 		this.roomInviteCode = inviteCode;
-		this.roomInviteTime = now;
+		this.roomExpiredTime = now;
 	}
 }

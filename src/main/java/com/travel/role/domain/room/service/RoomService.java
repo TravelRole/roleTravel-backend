@@ -124,7 +124,7 @@ public class RoomService {
 		Room room = findRoom(roomId);
 
 		String inviteCode = room.getRoomInviteCode();
-		if (room.getRoomInviteCode() == null || room.getRoomInviteTime().plusDays(1L).isAfter(LocalDateTime.now())) {
+		if (room.getRoomInviteCode() == null || room.getRoomExpiredTime().plusDays(1L).isAfter(LocalDateTime.now())) {
 			inviteCode = generateInviteCode();
 			room.updateInviteCode(inviteCode, LocalDateTime.now());
 		}
