@@ -19,7 +19,7 @@ import com.travel.role.global.auth.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class RoomController {
 
