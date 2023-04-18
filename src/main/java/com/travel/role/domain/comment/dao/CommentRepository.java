@@ -26,6 +26,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
 	@Transactional
 	@Modifying(clearAutomatically = true)
-	@Query(value = "DELETE FROM comment WHERE group_id = :groupId AND depth >= :depth ORDER BY depth DESC)", nativeQuery = true)
+	@Query(value = "DELETE FROM comment WHERE group_id = :groupId AND depth >= :depth ORDER BY depth DESC", nativeQuery = true)
 	void deleteAllByGroupIdAndDepth(@Param("groupId") Long groupId, @Param("depth") Integer depth);
 }
