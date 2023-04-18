@@ -139,7 +139,7 @@ public class RoomService {
 					return;
 			}
 		}
-		throw new UserHaveNotPrivilegeException(USER_HAVE_NOT_PRIVILEGE);
+		throw new UserHaveNotPrivilegeException();
 	}
 
 	private String generateInviteCode() {

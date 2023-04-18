@@ -1,8 +1,7 @@
 package com.travel.role.domain.room.exception;
 
-import lombok.NoArgsConstructor;
+import static com.travel.role.global.exception.ExceptionMessage.*;
 
-@NoArgsConstructor
 public class UserHaveNotPrivilegeException extends RuntimeException{
-	public UserHaveNotPrivilegeException(String msg) {super(msg);}
+	public UserHaveNotPrivilegeException() {super(USER_HAVE_NOT_PRIVILEGE);}
 }
