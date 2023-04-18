@@ -1,23 +1,12 @@
 package com.travel.role.domain.room.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.travel.role.global.domain.BaseTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Table(name = "PARTICIPANT_ROLE")
 @Entity
@@ -36,6 +25,6 @@ public class ParticipantRole extends BaseTime {
 	private RoomRole roomRole;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "room_id")
+	@JoinColumn(name = "room_participant_id")
 	private RoomParticipant roomParticipant;
 }

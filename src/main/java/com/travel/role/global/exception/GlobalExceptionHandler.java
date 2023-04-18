@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.amazonaws.SdkClientException;
-import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
 import com.travel.role.domain.user.exception.InputValueNotMatchException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
 import javax.mail.SendFailedException;
 import java.time.LocalDateTime;
 
@@ -102,5 +99,17 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ExceptionResponse s3ImageNotFoundException(S3ImageNotFoundException e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(RoomInfoNotFoundException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse roomInfoNotFoundException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(PlaceInfoNotFoundException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse placeInfoNotFoundException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
