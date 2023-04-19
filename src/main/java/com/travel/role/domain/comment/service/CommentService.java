@@ -1,5 +1,7 @@
 package com.travel.role.domain.comment.service;
 
+import static com.travel.role.global.exception.ResourceOperationAccessDeniedException.*;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -82,7 +84,7 @@ public class CommentService {
 		Comment comment = findCommentByIdOrElseThrow(commentId);
 
 		checkUserInRoom(loginUser, room);
-		checkAuthorizationForComment(comment, loginUser.getId(), "수정");
+		checkAuthorizationForComment(comment, loginUser.getId(), Operation.MODIFY);
 
 		comment.update(reqDTO.getContent());
 	}
@@ -94,15 +96,15 @@ public class CommentService {
 		Comment comment = findCommentByIdOrElseThrow(commentId);
 
 		checkUserInRoom(loginUser, room);
-		checkAuthorizationForComment(comment, loginUser.getId(), "삭제");
+		checkAuthorizationForComment(comment, loginUser.getId(), Operation.DELETE);
 
 		commentRepository.deleteAllByGroupIdAndDepth(comment.getGroupId(), comment.getDepth());
 	}
 
-	private void checkAuthorizationForComment(Comment comment, Long userId, String operation) {
+	private void checkAuthorizationForComment(Comment comment, Long userId, Operation operation) {
 
 		if (!Objects.equals(comment.getUser().getId(), userId)) {
-			throw new ResourceOperationAccessDeniedException("댓글", operation);
+			throw new ResourceOperationAccessDeniedException(Resource.COMMENT, operation);
 		}
 	}
 
