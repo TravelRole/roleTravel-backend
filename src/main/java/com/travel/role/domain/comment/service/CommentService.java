@@ -1,7 +1,5 @@
 package com.travel.role.domain.comment.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -111,22 +109,20 @@ public class CommentService {
 	private void checkUserInRoom(User user, Room room) {
 
 		if (!roomParticipantRepository.existsByUserAndRoom(user, room)) {
-			throw new UserNotParticipateRoomException(USER_NOT_PARTICIPATE_ROOM);
+			throw new UserNotParticipateRoomException();
 		}
 	}
 
 	private User findUserByEmailOrElseThrow(String email) {
 
 		return userRepository.findByEmail(email)
-			.orElseThrow(() -> new UserInfoNotFoundException(
-				USERNAME_NOT_FOUND));
+			.orElseThrow(UserInfoNotFoundException::new);
 	}
 
 	private Room findRoomByIdOrElseThrow(Long roomId) {
 
 		return roomRepository.findById(roomId)
-			.orElseThrow(() -> new RoomInfoNotFoundException(
-				ROOM_NOT_FOUND));
+			.orElseThrow(RoomInfoNotFoundException::new);
 	}
 
 	private Comment findCommentByIdOrElseThrow(Long commentId) {

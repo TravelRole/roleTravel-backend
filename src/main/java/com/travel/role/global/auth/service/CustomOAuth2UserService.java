@@ -1,7 +1,5 @@
 package com.travel.role.global.auth.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
-
 import java.util.Collections;
 import java.util.Map;
 
@@ -54,11 +52,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 	private User checkAndSaveUser(OAuthAttributes attributes) {
 		return userRepository.findByProviderAndProviderId(Provider.google,
-			attributes.getOAuth2UserInfo().getId())
+				attributes.getOAuth2UserInfo().getId())
 			.orElseGet(() -> {
 				if (!userRepository.existsByEmail(attributes.getOAuth2UserInfo().getEmail()))
 					return saveUser(Provider.google, attributes.getOAuth2UserInfo());
-				throw new AlreadyExistUserException(ALREADY_EXIST_USER);
+				throw new AlreadyExistUserException();
 			});
 	}
 

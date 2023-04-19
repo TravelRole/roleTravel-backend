@@ -1,10 +1,9 @@
 package com.travel.role.global.auth.exception;
 
-import lombok.NoArgsConstructor;
+import com.travel.role.global.exception.ExceptionMessage;
 
-@NoArgsConstructor
-public class NotExistTokenException extends RuntimeException{
-	public NotExistTokenException(String msg) {
-		super(msg);
+public class NotExistTokenException extends RuntimeException {
+	public NotExistTokenException() {
+		super(ExceptionMessage.NOT_EXISTS_TOKEN);
 	}
 }

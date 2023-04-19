@@ -1,10 +1,9 @@
 package com.travel.role.domain.user.exception;
 
-import lombok.NoArgsConstructor;
+import com.travel.role.global.exception.ExceptionMessage;
 
-@NoArgsConstructor
-public class AlreadyExistUserException extends RuntimeException{
-	public AlreadyExistUserException(String msg) {
-		super(msg);
+public class AlreadyExistUserException extends RuntimeException {
+	public AlreadyExistUserException() {
+		super(ExceptionMessage.ALREADY_EXIST_USER);
 	}
 }
