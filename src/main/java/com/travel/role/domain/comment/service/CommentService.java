@@ -41,18 +41,9 @@ public class CommentService {
 
 		User loginUser = findUserByEmailOrElseThrow(email);
 		Room room = findRoomByIdOrElseThrow(roomId);
-		Comment newComment;
-
 		checkUserInRoom(loginUser, room);
 
-		if (parentId == null) {
-			newComment = Comment.ofParent(loginUser, room, reqDTO.getContent());
-			newComment = commentRepository.save(newComment);
-			newComment.setGroupId(newComment.getId());
-		} else {
-			Comment parentComment = findCommentByIdOrElseThrow(parentId);
-			newComment = Comment.ofChild(loginUser, room, parentComment, reqDTO.getContent());
-		}
+		Comment newComment = createComment(parentId, loginUser, room, reqDTO.getContent());
 
 		commentRepository.save(newComment);
 	}
@@ -64,13 +55,7 @@ public class CommentService {
 		Room room = findRoomByIdOrElseThrow(roomId);
 		checkUserInRoom(loginUser, room);
 
-		List<Comment> comments;
-
-		if (parentId == null) {
-			comments = commentRepository.findAllFirstDepthComments();
-		} else {
-			comments = commentRepository.findAllChildCommentsByParentId(parentId);
-		}
+		List<Comment> comments = getComments(parentId);
 
 		return CommentListResDTO.from(comments.stream()
 			.map(CommentResDTO::fromComment)
@@ -99,6 +84,35 @@ public class CommentService {
 		checkAuthorizationForComment(comment, loginUser.getId(), Operation.DELETE);
 
 		commentRepository.deleteAllByGroupIdAndDepth(comment.getGroupId(), comment.getDepth());
+	}
+
+	private Comment createComment(Long parentId, User loginUser, Room room, String content) {
+
+		Comment newComment;
+
+		if (parentId == null) {
+			newComment = Comment.ofParent(loginUser, room, content);
+			newComment = commentRepository.save(newComment);
+			newComment.setGroupId(newComment.getId());
+		} else {
+			Comment parentComment = findCommentByIdOrElseThrow(parentId);
+			newComment = Comment.ofChild(loginUser, room, parentComment, content);
+		}
+
+		return newComment;
+	}
+
+	private List<Comment> getComments(Long parentId) {
+
+		List<Comment> comments;
+
+		if (parentId == null) {
+			comments = commentRepository.findAllFirstDepthComments();
+		} else {
+			comments = commentRepository.findAllChildCommentsByParentId(parentId);
+		}
+
+		return comments;
 	}
 
 	private void checkAuthorizationForComment(Comment comment, Long userId, Operation operation) {
