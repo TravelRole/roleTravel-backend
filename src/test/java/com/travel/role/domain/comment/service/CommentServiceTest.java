@@ -470,7 +470,7 @@ class CommentServiceTest {
 			.hasMessage(String.format(ExceptionMessage.RESOURCE_OPERATION_ACCESS_DENIED, "댓글", "삭제"));
 	}
 
-	private static User makeUser(Long id) {
+	private User makeUser(Long id) {
 		return User.builder()
 			.id(id)
 			.email("kkk@naver.com")
@@ -478,12 +478,12 @@ class CommentServiceTest {
 			.build();
 	}
 
-	private static Room makeRoom() {
+	private Room makeRoom() {
 		return Room.builder()
 			.build();
 	}
 
-	private static Comment makeCommentAfterSaved(User user, Long id, Long groupId, Integer depth) {
+	private Comment makeCommentAfterSaved(User user, Long id, Long groupId, Integer depth) {
 
 		Comment comment = Comment.builder()
 			.user(user)
