@@ -2,6 +2,7 @@ package com.travel.role.domain.comment.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.travel.role.domain.comment.dto.CommentListResDTO;
@@ -28,6 +30,7 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@PostMapping({"", "/{parent_id}"})
+	@ResponseStatus(HttpStatus.CREATED)
 	public void createComment(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId,
 		@PathVariable(value = "parent_id", required = false) Long parentId,
