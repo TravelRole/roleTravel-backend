@@ -12,12 +12,6 @@ public final class ExceptionMessage {
 	public static final String INVALID_USER = "유효하지 않은 회원입니다.";
 	public static final String MAIL_SEND_FAILED_ERROR = "서버가 메일을 보내는데 실패하였습니다.";
 	public static final String USERNAME_NOT_EMPTY = "이름은 필수값 입니다.";
-	public static final String ROOM_NOT_FOUND = "해당하는 방이 존재하지 않습니다.";
-	public static final String COMMENT_NOT_FOUND = "해당하는 댓글이 존재하지 않습니다.";
-	public static final String USER_NOT_PARTICIPATE_ROOM = "사용자는 방에 참여하지 않았습니다";
-	public static final String ROOM_ID_VALUE_NOT_EMPTY = "방 아이디는 필수값 입니다.";
-	public static final String PLACE_NAME_VALUE_NOT_EMPTY = "장소 이름은 필수값 입니다.";
-	public static final String PLACE_ADDRESS_VALUE_NOT_EMPTY = "장소 주소는 필수값 입니다.";
 	public static final String LATITUDE_VALUE_NOT_EMPTY = "위도는 필수값 입니다.";
 	public static final String LONGITUDE_NOT_EMPTY = "경도는 필수값 입니다.";
 	public static final String PASSWORD_NOT_EMPTY = "비밀번호는 필수값 입니다.";
@@ -29,4 +23,10 @@ public final class ExceptionMessage {
 	public static final String RESOURCE_OPERATION_ACCESS_DENIED = "해당 %s에 대한 %s 권한이 없습니다.";
 	// Room
 	public static final String INVALID_DATE_ERROR = "시작 날짜의 크기는 종료 날짜의 크기보다 클 수 없습니다.";
+	public static final String ROOM_NOT_FOUND = "해당하는 방이 존재하지 않습니다.";
+	public static final String USER_NOT_PARTICIPATE_ROOM = "사용자는 방에 참여하지 않았습니다";
+	public static final String ROOM_ID_VALUE_NOT_EMPTY = "방 아이디는 필수값 입니다.";
+	public static final String PLACE_NAME_VALUE_NOT_EMPTY = "장소 이름은 필수값 입니다.";
+	public static final String PLACE_ADDRESS_VALUE_NOT_EMPTY = "장소 주소는 필수값 입니다.";
+	public static final String PLACE_NOT_FOUND = "해당하는 장소가 존재하지 않습니다.";
 }
