@@ -101,7 +101,7 @@ public class RoomService {
 
 	private User findUser(UserPrincipal userPrincipal) {
 		return userRepository.findByEmail(userPrincipal.getEmail())
-			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
+			.orElseThrow(UserInfoNotFoundException::new);
 	}
 
 	private void validateDate(MakeRoomRequestDTO makeRoomRequestDTO) {
