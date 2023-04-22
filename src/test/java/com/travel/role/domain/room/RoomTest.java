@@ -69,17 +69,17 @@ class RoomTest {
         room1 = roomRepository.save(room1);
         room2 = roomRepository.save(room2);
 
-        RoomParticipant roomParticipant1 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room1, null);
-        RoomParticipant roomParticipant2 = new RoomParticipant(null, LocalDateTime.now(), true, user2, room1, null);
-        RoomParticipant roomParticipant3 = new RoomParticipant(null, LocalDateTime.now(), true, user3, room1, null);
-        RoomParticipant roomParticipant4 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room2, null);
-        RoomParticipant roomParticipant5 = new RoomParticipant(null, LocalDateTime.now(), true, user4, room2, null);
+        RoomParticipant roomParticipant1 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room1);
+        RoomParticipant roomParticipant2 = new RoomParticipant(null, LocalDateTime.now(), true, user2, room1);
+        RoomParticipant roomParticipant3 = new RoomParticipant(null, LocalDateTime.now(), true, user3, room1);
+        RoomParticipant roomParticipant4 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room2);
+        RoomParticipant roomParticipant5 = new RoomParticipant(null, LocalDateTime.now(), true, user4, room2);
 
-        roomParticipant1 = roomParticipantRepository.save(roomParticipant1);
-        roomParticipant2 = roomParticipantRepository.save(roomParticipant2);
-        roomParticipant3 = roomParticipantRepository.save(roomParticipant3);
-        roomParticipant4 = roomParticipantRepository.save(roomParticipant4);
-        roomParticipant5 = roomParticipantRepository.save(roomParticipant5);
+        roomParticipantRepository.save(roomParticipant1);
+        roomParticipantRepository.save(roomParticipant2);
+        roomParticipantRepository.save(roomParticipant3);
+        roomParticipantRepository.save(roomParticipant4);
+        roomParticipantRepository.save(roomParticipant5);
     }
 
     @Test
