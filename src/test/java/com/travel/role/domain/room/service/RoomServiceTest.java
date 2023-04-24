@@ -33,7 +33,7 @@ class RoomServiceTest {
 	void 시작날짜가_종료날짜보다_클_경우() {
 		// given
 		MakeRoomRequestDTO newDto = new MakeRoomRequestDTO("여행 가자~", LocalDate.of(2023, 1, 3),
-			LocalDate.of(2023, 1, 1),  "강원도 춘천");
+			LocalDate.of(2023, 1, 1),  "강원도 춘천", 1L);
 
 		// when, then
 		Assertions.assertThatThrownBy(() -> roomService.makeRoom(null, newDto))
@@ -55,7 +55,7 @@ class RoomServiceTest {
 
 	private static MakeRoomRequestDTO getMakeRoomRequestDTO() {
 		return new MakeRoomRequestDTO("여행 가자~", LocalDate.of(2023, 1, 1),
-			LocalDate.of(2023, 1, 3), "강원도 춘천");
+			LocalDate.of(2023, 1, 3), "강원도 춘천", 1L);
 	}
 
 	private static UserPrincipal makeUserPrincipal() {
