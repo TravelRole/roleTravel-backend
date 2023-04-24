@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.repository;
+package com.travel.role.domain.room.repository.querydsl;
 
 import java.util.List;
 

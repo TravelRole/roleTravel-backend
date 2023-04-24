@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.repository;
+package com.travel.role.domain.room.repository.querydsl;
 
 import static com.travel.role.domain.room.entity.QRoom.*;
 import static com.travel.role.domain.room.entity.QRoomParticipant.*;
@@ -11,6 +11,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.travel.role.domain.room.entity.QRoom;
 import com.travel.role.domain.room.entity.QRoomParticipant;
+import com.travel.role.domain.room.repository.querydsl.RoomQuerydsl;
 import com.travel.role.domain.user.entity.QUser;
 
 import lombok.RequiredArgsConstructor;
