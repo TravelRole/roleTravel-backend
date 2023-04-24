@@ -14,9 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
-import com.travel.role.domain.room.exception.InvalidLocalDateException;
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.global.exception.common.InvalidLocalDateException;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.ExceptionMessage;
 

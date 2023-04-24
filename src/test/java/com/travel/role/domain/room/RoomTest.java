@@ -1,14 +1,14 @@
 package com.travel.role.domain.room;
 
-import com.travel.role.domain.room.dao.RoomParticipantRepository;
-import com.travel.role.domain.room.dao.RoomRepository;
-import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.room.domain.RoomParticipant;
+import com.travel.role.domain.room.repository.RoomParticipantRepository;
+import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.room.entity.RoomParticipant;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.token.UserPrincipal;
 import org.junit.jupiter.api.BeforeEach;

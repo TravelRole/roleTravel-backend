@@ -22,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.auth.service.TokenProvider;
 
 import lombok.RequiredArgsConstructor;

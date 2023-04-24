@@ -14,14 +14,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import com.travel.role.config.TestConfig;
-import com.travel.role.domain.comment.dao.CommentRepository;
 import com.travel.role.domain.comment.entity.Comment;
-import com.travel.role.domain.room.dao.RoomRepository;
-import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.Provider;
-import com.travel.role.domain.user.domain.Role;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.Provider;
+import com.travel.role.domain.user.entity.Role;
+import com.travel.role.domain.user.entity.User;
 
 @DataJpaTest
 @Import(TestConfig.class)

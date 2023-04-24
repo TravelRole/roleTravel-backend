@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import com.travel.role.domain.room.exception.InvalidLocalDateException;
+import com.travel.role.global.exception.common.InvalidLocalDateException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package com.travel.role.domain.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -13,17 +13,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.Role;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.Role;
+import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.exception.ExceptionMessage;
-import com.travel.role.domain.user.exception.AlreadyExistUserException;
+import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {

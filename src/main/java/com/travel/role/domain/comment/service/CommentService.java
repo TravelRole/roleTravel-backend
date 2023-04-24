@@ -1,6 +1,6 @@
 package com.travel.role.domain.comment.service;
 
-import static com.travel.role.global.exception.ResourceOperationAccessDeniedException.*;
+import static com.travel.role.global.exception.common.ResourceOperationAccessDeniedException.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,21 +9,21 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.comment.dao.CommentRepository;
+import com.travel.role.domain.comment.repository.CommentRepository;
 import com.travel.role.domain.comment.dto.CommentListResDTO;
 import com.travel.role.domain.comment.dto.CommentReqDTO;
 import com.travel.role.domain.comment.dto.CommentResDTO;
 import com.travel.role.domain.comment.entity.Comment;
-import com.travel.role.domain.comment.exception.CommentInfoNotFoundException;
-import com.travel.role.domain.room.dao.RoomParticipantRepository;
-import com.travel.role.domain.room.dao.RoomRepository;
-import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.User;
-import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
-import com.travel.role.global.exception.ResourceOperationAccessDeniedException;
+import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
+import com.travel.role.domain.room.repository.RoomParticipantRepository;
+import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.User;
+import com.travel.role.global.exception.room.RoomInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.UserNotParticipateRoomException;
+import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
 
 import lombok.RequiredArgsConstructor;
 

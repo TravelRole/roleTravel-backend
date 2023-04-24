@@ -1,15 +1,15 @@
 package com.travel.role.domain.room.service;
 
-import com.travel.role.domain.room.dao.RoomParticipantRepository;
-import com.travel.role.domain.room.dao.RoomRepository;
-import com.travel.role.domain.room.dao.WantPlaceRepository;
-import com.travel.role.domain.room.domain.*;
+import com.travel.role.domain.room.repository.RoomParticipantRepository;
+import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.room.repository.WantPlaceRepository;
+import com.travel.role.domain.room.entity.*;
 import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.User;
-import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.User;
+import com.travel.role.global.exception.room.RoomInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.UserNotParticipateRoomException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

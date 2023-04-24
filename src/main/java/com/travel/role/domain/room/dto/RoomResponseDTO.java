@@ -3,7 +3,7 @@ package com.travel.role.domain.room.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.travel.role.domain.room.domain.Room;
+import com.travel.role.domain.room.entity.Room;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

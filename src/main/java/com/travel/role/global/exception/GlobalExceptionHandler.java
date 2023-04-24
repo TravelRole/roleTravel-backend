@@ -1,7 +1,6 @@
 package com.travel.role.global.exception;
 
-import com.travel.role.domain.room.exception.InvalidLocalDateException;
-import com.travel.role.domain.user.exception.*;
+import com.travel.role.global.exception.common.InvalidLocalDateException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import org.springframework.http.HttpStatus;
@@ -13,11 +12,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.amazonaws.SdkClientException;
-import com.travel.role.domain.comment.exception.CommentInfoNotFoundException;
-import com.travel.role.domain.user.exception.AlreadyExistUserException;
-import com.travel.role.domain.user.exception.InputValueNotMatchException;
-import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
+import com.travel.role.global.exception.place.PlaceInfoNotFoundException;
+import com.travel.role.global.exception.user.AlreadyExistUserException;
+import com.travel.role.global.exception.common.InputValueNotMatchException;
+import com.travel.role.global.exception.room.RoomInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
+import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
+import com.travel.role.global.exception.common.S3ImageNotFoundException;
+import com.travel.role.global.exception.user.UserNotParticipateRoomException;
+
 import javax.mail.SendFailedException;
 import java.time.LocalDateTime;
 
