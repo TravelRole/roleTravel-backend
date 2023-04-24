@@ -69,29 +69,17 @@ class RoomTest {
         room1 = roomRepository.save(room1);
         room2 = roomRepository.save(room2);
 
-        RoomParticipant roomParticipant1 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room1, null);
-        RoomParticipant roomParticipant2 = new RoomParticipant(null, LocalDateTime.now(), true, user2, room1, null);
-        RoomParticipant roomParticipant3 = new RoomParticipant(null, LocalDateTime.now(), true, user3, room1, null);
-        RoomParticipant roomParticipant4 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room2, null);
-        RoomParticipant roomParticipant5 = new RoomParticipant(null, LocalDateTime.now(), true, user4, room2, null);
+        RoomParticipant roomParticipant1 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room1);
+        RoomParticipant roomParticipant2 = new RoomParticipant(null, LocalDateTime.now(), true, user2, room1);
+        RoomParticipant roomParticipant3 = new RoomParticipant(null, LocalDateTime.now(), true, user3, room1);
+        RoomParticipant roomParticipant4 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room2);
+        RoomParticipant roomParticipant5 = new RoomParticipant(null, LocalDateTime.now(), true, user4, room2);
 
-        roomParticipant1 = roomParticipantRepository.save(roomParticipant1);
-        roomParticipant2 = roomParticipantRepository.save(roomParticipant2);
-        roomParticipant3 = roomParticipantRepository.save(roomParticipant3);
-        roomParticipant4 = roomParticipantRepository.save(roomParticipant4);
-        roomParticipant5 = roomParticipantRepository.save(roomParticipant5);
-
-        ParticipantRole participantRole1 = new ParticipantRole(null, RoomRole.ADMIN, roomParticipant1);
-        ParticipantRole participantRole2 = new ParticipantRole(null, RoomRole.SCHEDULE, roomParticipant2);
-        ParticipantRole participantRole3 = new ParticipantRole(null, RoomRole.RESERVATION, roomParticipant3);
-        ParticipantRole participantRole4 = new ParticipantRole(null, RoomRole.ADMIN, roomParticipant4);
-        ParticipantRole participantRole5 = new ParticipantRole(null, RoomRole.ACCOUNTING, roomParticipant5);
-
-        participantRoleRepository.save(participantRole1);
-        participantRoleRepository.save(participantRole2);
-        participantRoleRepository.save(participantRole3);
-        participantRoleRepository.save(participantRole4);
-        participantRoleRepository.save(participantRole5);
+        roomParticipantRepository.save(roomParticipant1);
+        roomParticipantRepository.save(roomParticipant2);
+        roomParticipantRepository.save(roomParticipant3);
+        roomParticipantRepository.save(roomParticipant4);
+        roomParticipantRepository.save(roomParticipant5);
     }
 
     @Test

@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.travel.role.domain.room.dao.RoomParticipantRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.dao.WantPlaceRepository;
 import com.travel.role.domain.room.domain.*;
@@ -47,6 +48,9 @@ class WantPlaceServiceTest {
     private RoomRepository roomRepository;
 
     @Mock
+    private RoomParticipantRepository roomParticipantRepository;
+
+    @Mock
     private WantPlaceRepository wantPlaceRepository;
 
     @InjectMocks
@@ -63,11 +67,8 @@ class WantPlaceServiceTest {
 
         Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , null);
 
-        ParticipantRole participantRole = new ParticipantRole(1L, RoomRole.SCHEDULE, null);
-        List<ParticipantRole> participantRoles = new ArrayList<>();
-        participantRoles.add(participantRole);
-        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2, participantRoles);
-        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, participantRoles);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2);
+        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
 
         Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);
@@ -79,8 +80,10 @@ class WantPlaceServiceTest {
 
         given(userRepository.findByEmail(anyString()))
                 .willReturn(Optional.of(user2));
-        given(roomRepository.findByIdWithParticipants(anyLong()))
+        given(roomRepository.findById(anyLong()))
                 .willReturn(Optional.of(room));
+        given(roomParticipantRepository.existsByUserAndRoom(any(),any()))
+                .willReturn(true);
 
         // when
         wantPlaceService.addWantPlace(makeUserPrincipal(), getWantPlaceRequestDto());
@@ -102,8 +105,9 @@ class WantPlaceServiceTest {
         User user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
                 null, null, null);
 
-        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , null);
-        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, null);
+
+        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
 
         Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);
@@ -112,7 +116,7 @@ class WantPlaceServiceTest {
 
         given(userRepository.findByEmail(anyString()))
                 .willReturn(Optional.of(user1));
-        given(roomRepository.findByIdWithParticipants(anyLong()))
+        given(roomRepository.findById(anyLong()))
                 .willReturn(Optional.of(room));
 
         // when, then
@@ -142,7 +146,7 @@ class WantPlaceServiceTest {
         given(userRepository.findByEmail(anyString()))
                 .willReturn(user);
 
-        given(roomRepository.findByIdWithParticipants(anyLong()))
+        given(roomRepository.findById(anyLong()))
                 .willReturn(Optional.empty());
 
 

@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface WantPlaceRepository extends JpaRepository<WantPlace, Long> {
-    @Query("SELECT w " +
+    @Query("SELECT DISTINCT w " +
             "FROM WantPlace w " +
             "JOIN FETCH w.room r " +
             "WHERE r.id = :roomId ORDER BY w.createDate ASC")

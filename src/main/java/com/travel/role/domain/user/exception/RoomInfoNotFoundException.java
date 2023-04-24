@@ -1,9 +1,10 @@
 package com.travel.role.domain.user.exception;
 
-import lombok.NoArgsConstructor;
+import com.travel.role.global.exception.ExceptionMessage;
 
-@NoArgsConstructor
-public class RoomInfoNotFoundException extends RuntimeException{
-    public RoomInfoNotFoundException(String msg) {super(msg);}
+public class RoomInfoNotFoundException extends RuntimeException {
+	public RoomInfoNotFoundException() {
+		super(ExceptionMessage.ROOM_NOT_FOUND);
+	}
 }
 

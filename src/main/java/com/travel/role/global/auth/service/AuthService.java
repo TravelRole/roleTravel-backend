@@ -57,7 +57,7 @@ public class AuthService {
 	@Transactional
 	public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
 		if (userRepository.existsByEmail(signUpRequestDTO.getEmail())) {
-			throw new AlreadyExistUserException(ALREADY_EXIST_USER);
+			throw new AlreadyExistUserException();
 		}
 
 		User newUser = User.of(signUpRequestDTO,
@@ -106,7 +106,7 @@ public class AuthService {
 	@Transactional
 	public void validateToken(final String refreshToken, String accessToken) {
 		if (refreshToken == null || accessToken == null) {
-			throw new NotExistTokenException(NOT_EXISTS_TOKEN);
+			throw new NotExistTokenException();
 		}
 
 		Optional<User> findUser = userRepository.findByRefreshToken(refreshToken);
@@ -141,9 +141,10 @@ public class AuthService {
 	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO confirmUserRequestDTO) {
 		User user = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
 				confirmUserRequestDTO.getBirth())
-			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
+			.orElseThrow(UserInfoNotFoundException::new);
 
-		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, user.getEmail(), user.getCreateDate().toLocalDate());
+		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, user.getEmail(),
+			user.getCreateDate().toLocalDate());
 	}
 
 	public CheckIdResponse confirmId(CheckIdRequest checkIdRequest) {
@@ -163,6 +164,6 @@ public class AuthService {
 
 	private User checkValidateUser(NewPasswordRequestDTO dto) {
 		return userRepository.findByNameAndBirthAndEmail(dto.getName(), dto.getBirth(), dto.getEmail())
-			.orElseThrow(() -> new UserInfoNotFoundException(USERNAME_NOT_FOUND));
+			.orElseThrow(UserInfoNotFoundException::new);
 	}
 }

@@ -106,7 +106,6 @@ public class UserService {
 	private User findUserByEmailOrElseThrow(String email) {
 
 		return userRepository.findByEmail(email)
-			.orElseThrow(() -> new UserInfoNotFoundException(
-				USERNAME_NOT_FOUND));
+			.orElseThrow(UserInfoNotFoundException::new);
 	}
 }

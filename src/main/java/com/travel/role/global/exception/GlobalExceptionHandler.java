@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.amazonaws.SdkClientException;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
+import com.travel.role.domain.comment.exception.CommentInfoNotFoundException;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
 import com.travel.role.domain.user.exception.InputValueNotMatchException;
+import com.travel.role.domain.user.exception.PlaceInfoNotFoundException;
+import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
@@ -108,5 +111,28 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse userHaveNotPrivilegeException(UserHaveNotPrivilegeException e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+	@ExceptionHandler(RoomInfoNotFoundException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse roomInfoNotFoundException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(PlaceInfoNotFoundException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse placeInfoNotFoundException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(CommentInfoNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ExceptionResponse commentInfoNotFoundException(CommentInfoNotFoundException e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(ResourceOperationAccessDeniedException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public ExceptionResponse resourceOperationAccessDeniedException(ResourceOperationAccessDeniedException e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
 	}
 }
