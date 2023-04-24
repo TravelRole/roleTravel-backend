@@ -2,6 +2,17 @@ package com.travel.role.domain.room.service;
 
 import static com.travel.role.global.exception.ExceptionMessage.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.querydsl.core.Tuple;
 import com.travel.role.domain.room.dao.ParticipantRoleRepository;
 import com.travel.role.domain.room.dao.RoomParticipantRepository;
@@ -21,16 +32,8 @@ import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.util.PasswordGenerator;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -109,10 +112,10 @@ public class RoomService {
 	}
 
 	public String makeInviteCode(UserPrincipal userPrincipal, Long roomId) {
-		List<RoomRole> roomRoles = roomRepository.getRoomRole(userPrincipal.getEmail(), roomId);
-		validRoomRole(roomRoles, RoomRole.ADMIN);
-
+		User user = findUser(userPrincipal);
 		Room room = findRoom(roomId);
+
+		validRoomRole(user, room, RoomRole.ADMIN);
 
 		String inviteCode = room.getRoomInviteCode();
 		if (room.getRoomInviteCode() == null || room.getRoomExpiredTime().plusDays(1L).isAfter(LocalDateTime.now())) {
@@ -123,14 +126,10 @@ public class RoomService {
 		return inviteCode;
 	}
 
-	private void validRoomRole(List<RoomRole> roomRoles, RoomRole... checkRooms) {
-		for (RoomRole role : roomRoles) {
-			for (RoomRole checkRoom : checkRooms) {
-				if (checkRoom.equals(role))
-					return;
-			}
-		}
-		throw new UserHaveNotPrivilegeException();
+	private void validRoomRole(User user, Room room, RoomRole... checkRooms) {
+		boolean isExist = participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room, Arrays.asList(checkRooms));
+		if (!isExist)
+			throw new UserHaveNotPrivilegeException();
 	}
 
 	private String generateInviteCode() {
