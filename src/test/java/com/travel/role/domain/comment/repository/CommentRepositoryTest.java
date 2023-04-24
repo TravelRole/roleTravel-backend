@@ -57,7 +57,6 @@ class CommentRepositoryTest {
 
 		room = Room.builder()
 			.roomName("name1")
-			.roomPassword("password")
 			.travelStartDate(LocalDate.of(2023, 8, 20))
 			.travelEndDate(LocalDate.of(2023, 9, 20))
 			.location("location")

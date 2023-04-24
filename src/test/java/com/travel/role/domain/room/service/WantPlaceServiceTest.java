@@ -21,7 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.travel.role.domain.room.dao.RoomParticipantRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.dao.WantPlaceRepository;
-import com.travel.role.domain.room.domain.*;
+import com.travel.role.domain.room.domain.Room;
+import com.travel.role.domain.room.domain.RoomParticipant;
+import com.travel.role.domain.room.domain.WantPlace;
 import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
@@ -29,14 +31,6 @@ import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
 import com.travel.role.global.auth.token.UserPrincipal;
-import java.util.*;
-
-import static com.travel.role.global.exception.ExceptionMessage.ROOM_NOT_FOUND;
-import static com.travel.role.global.exception.ExceptionMessage.USERNAME_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class WantPlaceServiceTest {
@@ -106,7 +100,7 @@ class WantPlaceServiceTest {
                 null, null, null);
 
 
-        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
+        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , null);
         RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
 
         Set<RoomParticipant> participants = new HashSet<>();

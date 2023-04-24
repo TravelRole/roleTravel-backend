@@ -6,8 +6,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -16,13 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.travel.role.domain.room.dao.ParticipantRoleRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.room.domain.RoomRole;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
-import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
 import com.travel.role.domain.user.dao.UserRepository;
+import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.ExceptionMessage;
@@ -43,6 +41,8 @@ class RoomServiceTest {
 	@Mock
 	private PasswordGenerator passwordGenerator;
 
+	@Mock
+	private ParticipantRoleRepository participantRoleRepository;
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
 		// given
@@ -68,24 +68,16 @@ class RoomServiceTest {
 	}
 
 	@Test
-	void 해당_정보의_권한이_없거나_쿼리로_가져온_결과가_없을경우() {
-		// given
-		given(roomRepository.getRoomRole(anyString(), anyLong()))
-			.willReturn(new ArrayList<RoomRole>());
-
-		// when
-		assertThatThrownBy(() -> roomService.makeInviteCode(makeUserPrincipal(), 1L))
-			.isInstanceOf(UserHaveNotPrivilegeException.class)
-			.hasMessageContaining(USER_HAVE_NOT_PRIVILEGE);
-	}
-
-	@Test
 	void 해당_유저의_코드가_유효기간이_지나_재생성_해야하는_경우() {
 		//given
 		given(passwordGenerator.generateRandomPassword(20))
 			.willReturn("1234");
-		given(roomRepository.getRoomRole(anyString(), anyLong()))
-			.willReturn(List.of(RoomRole.ADMIN));
+		given(participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(any(User.class), any(Room.class), anyList()))
+			.willReturn(true);
+		given(userRepository.findByEmail(anyString()))
+			.willReturn(Optional.of(User.builder().build()));
+		given(roomRepository.findById(anyLong()))
+			.willReturn(Optional.of(Room.builder().build()));
 		given(roomRepository.findById(anyLong()))
 			.willReturn(Optional.of(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
 				null, "강릉", "12", LocalDateTime.now().minusDays(1L).plusSeconds(1L)
@@ -103,8 +95,12 @@ class RoomServiceTest {
 		//given
 		given(passwordGenerator.generateRandomPassword(20))
 			.willReturn("1234");
-		given(roomRepository.getRoomRole(anyString(), anyLong()))
-			.willReturn(List.of(RoomRole.ADMIN));
+		given(participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(any(User.class), any(Room.class), anyList()))
+			.willReturn(true);
+		given(userRepository.findByEmail(anyString()))
+			.willReturn(Optional.of(User.builder().build()));
+		given(roomRepository.findById(anyLong()))
+			.willReturn(Optional.of(Room.builder().build()));
 		given(roomRepository.findById(anyLong()))
 			.willReturn(Optional.of(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
 				null, "강릉", null, null
