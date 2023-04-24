@@ -1,16 +1,25 @@
 package com.travel.role.domain.room.domain;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.global.domain.BaseCreateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Table(name = "ROOM_INFO")
 @Getter
@@ -34,7 +43,7 @@ public class Room extends BaseCreateTime {
 	private LocalDate travelEndDate;
 
 	@Column(name = "room_image")
-	private String roomImage;
+	private Long roomImage;
 
 	@Column(name = "room_password", nullable = false)
 	private String roomPassword;
@@ -52,6 +61,7 @@ public class Room extends BaseCreateTime {
 			.roomPassword(password)
 			.travelEndDate(makeRoomRequestDTO.getTravelEndDate())
 			.travelStartDate(makeRoomRequestDTO.getTravelStartDate())
+			.roomImage(makeRoomRequestDTO.getRoomImage())
 			.build();
 	}
 }
