@@ -17,6 +17,7 @@ import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dao.ParticipantRoleRepository;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.domain.user.dao.UserRepository;
@@ -35,6 +36,9 @@ class RoomTest {
 
     @Autowired
     private RoomParticipantRepository roomParticipantRepository;
+
+    @Autowired
+    private ParticipantRoleRepository participantRoleRepository;
 
     @Autowired
     private RoomService roomService;
@@ -64,8 +68,8 @@ class RoomTest {
                 LocalDate.of(2023, 1, 10),
                 "스울", 2L);
 
-        Room room1 = Room.of(makeRoom1, "1234");
-        Room room2 = Room.of(makeRoom2, "1234");
+        Room room1 = Room.of(makeRoom1);
+        Room room2 = Room.of(makeRoom2);
 
         room1 = roomRepository.save(room1);
         room2 = roomRepository.save(room2);

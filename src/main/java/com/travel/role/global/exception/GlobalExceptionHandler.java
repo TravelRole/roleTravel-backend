@@ -1,9 +1,9 @@
 package com.travel.role.global.exception;
 
-import com.travel.role.domain.room.exception.InvalidLocalDateException;
-import com.travel.role.domain.user.exception.*;
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
+import java.time.LocalDateTime;
+
+import javax.mail.SendFailedException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,13 +13,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.amazonaws.SdkClientException;
+import com.travel.role.domain.room.exception.InvalidLocalDateException;
+import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
 import com.travel.role.domain.comment.exception.CommentInfoNotFoundException;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
 import com.travel.role.domain.user.exception.InputValueNotMatchException;
+import com.travel.role.domain.user.exception.PlaceInfoNotFoundException;
 import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import javax.mail.SendFailedException;
-import java.time.LocalDateTime;
+import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
+import com.travel.role.global.auth.exception.InvalidTokenException;
+import com.travel.role.global.auth.exception.NotExistTokenException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -103,6 +107,11 @@ public class GlobalExceptionHandler {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
 	}
 
+	@ExceptionHandler(UserHaveNotPrivilegeException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse userHaveNotPrivilegeException(UserHaveNotPrivilegeException e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
 	@ExceptionHandler(RoomInfoNotFoundException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse roomInfoNotFoundException(Exception e) {
@@ -126,5 +135,4 @@ public class GlobalExceptionHandler {
 	public ExceptionResponse resourceOperationAccessDeniedException(ResourceOperationAccessDeniedException e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
 	}
-
 }

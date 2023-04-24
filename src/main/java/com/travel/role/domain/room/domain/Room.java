@@ -1,6 +1,7 @@
 package com.travel.role.domain.room.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,23 +46,30 @@ public class Room extends BaseCreateTime {
 	@Column(name = "room_image")
 	private Long roomImage;
 
-	@Column(name = "room_password", nullable = false)
-	private String roomPassword;
-
 	@Column(nullable = false)
 	private String location;
+
+	@Column(name = "room_invite_code")
+	private String roomInviteCode;
+
+	@Column(name = "room_expired_time")
+	private LocalDateTime roomExpiredTime;
 
 	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
 	private Set<RoomParticipant> roomParticipants = new HashSet<>();
 
-	public static Room of(MakeRoomRequestDTO makeRoomRequestDTO, String password) {
+	public static Room of(MakeRoomRequestDTO makeRoomRequestDTO) {
 		return Room.builder()
 			.location(makeRoomRequestDTO.getLocation())
 			.roomName(makeRoomRequestDTO.getRoomName())
-			.roomPassword(password)
 			.travelEndDate(makeRoomRequestDTO.getTravelEndDate())
 			.travelStartDate(makeRoomRequestDTO.getTravelStartDate())
 			.roomImage(makeRoomRequestDTO.getRoomImage())
 			.build();
+	}
+
+	public void updateInviteCode(String inviteCode, LocalDateTime now) {
+		this.roomInviteCode = inviteCode;
+		this.roomExpiredTime = now;
 	}
 }
