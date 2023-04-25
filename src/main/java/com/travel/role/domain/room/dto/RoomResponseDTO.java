@@ -18,10 +18,11 @@ public class RoomResponseDTO {
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private String location;
+	private Long roomImage;
 	private List<MemberDTO> members;
 
 	public static RoomResponseDTO of(Room room, List<MemberDTO> members) {
 		return new RoomResponseDTO(room.getId(), room.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate(),
-			room.getLocation(), members);
+			room.getLocation(), room.getRoomImage(), members);
 	}
 }

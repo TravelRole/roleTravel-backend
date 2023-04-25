@@ -44,7 +44,7 @@ public class Room extends BaseCreateTime {
 	private LocalDate travelEndDate;
 
 	@Column(name = "room_image")
-	private String roomImage;
+	private Long roomImage;
 
 	@Column(nullable = false)
 	private String location;
@@ -64,6 +64,7 @@ public class Room extends BaseCreateTime {
 			.roomName(makeRoomRequestDTO.getRoomName())
 			.travelEndDate(makeRoomRequestDTO.getTravelEndDate())
 			.travelStartDate(makeRoomRequestDTO.getTravelStartDate())
+			.roomImage(makeRoomRequestDTO.getRoomImage())
 			.build();
 	}
 

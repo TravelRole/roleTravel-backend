@@ -21,4 +21,6 @@ public class MakeRoomRequestDTO {
 	private LocalDate travelEndDate;
 
 	private String location;
+
+	private Long roomImage;
 }
