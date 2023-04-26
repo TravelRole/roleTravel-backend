@@ -18,6 +18,7 @@ import com.travel.role.domain.room.dao.ParticipantRoleRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
+import com.travel.role.domain.room.exception.InvalidInviteCode;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.user.dao.UserRepository;
 import com.travel.role.domain.user.domain.User;
@@ -43,11 +44,12 @@ class RoomServiceTest {
 
 	@Mock
 	private ParticipantRoleRepository participantRoleRepository;
+
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
 		// given
 		MakeRoomRequestDTO newDto = new MakeRoomRequestDTO("여행 가자~", LocalDate.of(2023, 1, 3),
-			LocalDate.of(2023, 1, 1),  "강원도 춘천", 1L);
+			LocalDate.of(2023, 1, 1), "강원도 춘천", 1L);
 
 		// when, then
 		assertThatThrownBy(() -> roomService.makeRoom(null, newDto))
@@ -113,6 +115,16 @@ class RoomServiceTest {
 		assertThat(inviteCode).isEqualTo("1234");
 	}
 
+	@Test
+	void 방의_초대코드가_유효하지_않은_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.empty());
+
+		//when,then
+		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
+			.isInstanceOf(InvalidInviteCode.class);
+	}
 
 	private static MakeRoomRequestDTO getMakeRoomRequestDTO() {
 		return new MakeRoomRequestDTO("여행 가자~", LocalDate.of(2023, 1, 1),
