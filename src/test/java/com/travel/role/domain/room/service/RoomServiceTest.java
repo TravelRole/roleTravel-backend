@@ -170,6 +170,22 @@ class RoomServiceTest {
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
+	@Test
+	void 초대한_방_링크로_접속했을때_존재하지_않은_역할을_선택한_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.of(makeRoom()));
+		given(userRepository.findByEmail(anyString()))
+			.willReturn(Optional.of(makeUser()));
+		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
+			.willReturn(false);
+		List<String> selectRole = List.of("HACHAN");
+
+		//when, thend .
+		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", new InviteRequestDTO(selectRole));})
+			.isInstanceOf(UserHaveNotPrivilegeException.class);
+	}
+
 	private static MakeRoomRequestDTO getMakeRoomRequestDTO() {
 		return new MakeRoomRequestDTO("여행 가자~", LocalDate.of(2023, 1, 1),
 			LocalDate.of(2023, 1, 3), "강원도 춘천", 1L);
