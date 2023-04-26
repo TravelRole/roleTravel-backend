@@ -24,6 +24,7 @@ import com.travel.role.domain.room.domain.RoomRole;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.MemberDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
+import com.travel.role.domain.room.exception.AlreadyExistInRoomException;
 import com.travel.role.domain.room.exception.InvalidInviteCode;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
@@ -161,7 +162,7 @@ public class RoomService {
 		}
 
 		if (roomRepository.existsUserInRoom(userPrincipal.getEmail(), room.getId())) {
-
+			throw new AlreadyExistInRoomException();
 		}
 	}
 

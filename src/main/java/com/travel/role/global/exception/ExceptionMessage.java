@@ -29,10 +29,10 @@ public final class ExceptionMessage {
 	public static final String PLACE_NOT_FOUND = "해당하는 장소가 존재하지 않습니다.";
 	public static final String USER_HAVE_NOT_PRIVILEGE = "유저는 해당 권한이 존재하지 않습니다.";
 	public static final String INVALID_INVITE_CODE = "초대코드가 유효하지 않습니다.";
+	public static final String ALREADY_EXIST_USER_IN_ROOM = "이미 이 방에 참여하고 있는 유저입니다.";
 	// comment
 	public static final String COMMENT_NOT_EMPTY = "댓글 내용은 필수값 입니다.";
 	public static final String COMMENT_NOT_FOUND = "해당하는 댓글이 존재하지 않습니다.";
-
 	// image
 	public static final String IMAGE_NOT_FOUND_IN_S3 = "%s 이미지가 s3에 존재하지 않습니다.";
 
