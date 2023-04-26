@@ -1,10 +1,10 @@
 package com.travel.role.domain.room.service;
 
 import com.travel.role.domain.room.dao.ParticipantRoleRepository;
+import com.travel.role.domain.room.dao.RoomParticipantRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.dao.WantPlaceRepository;
 import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.domain.RoomRole;
 import com.travel.role.domain.room.domain.WantPlace;
 import com.travel.role.domain.room.dto.WantPlaceDTO;
@@ -17,9 +17,7 @@ import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
 import com.travel.role.global.auth.token.UserPrincipal;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,51 +33,47 @@ public class WantPlaceService {
 	private final UserRepository userRepository;
 	private final RoomRepository roomRepository;
 	private final WantPlaceRepository wantPlaceRepository;
+	private final RoomParticipantRepository roomParticipantRepository;
 	private final ParticipantRoleRepository participantRoleRepository;
 
 	public void deleteWantPlace(UserPrincipal userPrincipal, Long roomId, Long placeId) {
-		User loginUser = findUser(userPrincipal);
+		User user = findUser(userPrincipal);
 		Room room = findRoom(roomId);
-		checkParticipant(loginUser, room.getRoomParticipants());
+		checkParticipant(user, room);
 		deleteWantPlaceById(placeId);
 	}
 
 	public WantPlaceResponseDTO getWantPlaceList(UserPrincipal userPrincipal, Long roomId) {
-		User loginUser = findUser(userPrincipal);
+		User user = findUser(userPrincipal);
 		Room room = findRoom(roomId);
-		RoomParticipant roomParticipant = checkParticipant(loginUser, room.getRoomParticipants());
+		checkParticipant(user, room);
 		List<WantPlaceDTO> wantPlaceDTOS = getWantPlaceList(roomId);
-		return WantPlaceResponseDTO.of(wantPlaceDTOS, checkRole(roomParticipant));
+		return WantPlaceResponseDTO.of(wantPlaceDTOS, checkRole(user, room));
 	}
 
 	public void addWantPlace(UserPrincipal userPrincipal, WantPlaceRequestDTO wantPlaceRequestDTO) {
-		User loginUser = findUser(userPrincipal);
+		User user = findUser(userPrincipal);
 		Room room = findRoom(wantPlaceRequestDTO.getRoomId());
-		checkParticipant(loginUser, room.getRoomParticipants());
+		checkParticipant(user, room);
 		wantPlaceRepository.save(WantPlace.of(room, wantPlaceRequestDTO));
 	}
 
 	private Room findRoom(Long roomId) {
-		return roomRepository.findByIdWithParticipants(roomId)
-			.orElseThrow(RoomInfoNotFoundException::new);
+		return roomRepository.findById(roomId).orElseThrow(RoomInfoNotFoundException::new);
 	}
 
 	private User findUser(UserPrincipal userPrincipal) {
 		return userRepository.findByEmail(userPrincipal.getEmail()).orElseThrow(UserInfoNotFoundException::new);
 	}
 
-	private RoomParticipant checkParticipant(User loginUser, Set<RoomParticipant> participants) {
-		for (RoomParticipant roomParticipant : participants) {
-			if (loginUser.getId().equals(roomParticipant.getUser().getId())) {
-				return roomParticipant;
-			}
+	private void checkParticipant(User user,Room room) {
+		if (!roomParticipantRepository.existsByUserAndRoom(user, room)) {
+			throw new UserNotParticipateRoomException();
 		}
-		throw new UserNotParticipateRoomException();
 	}
 
-	private boolean checkRole(RoomParticipant roomParticipant) {
-		return participantRoleRepository.existsByRoomParticipantAndRoomRoleIn(roomParticipant,
-			Arrays.asList(RoomRole.ADMIN, RoomRole.SCHEDULE));
+	private boolean checkRole(User user,Room room) {
+		return participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room, Arrays.asList(RoomRole.ADMIN, RoomRole.SCHEDULE));
 	}
 
 	private void deleteWantPlaceById(Long placeId) {

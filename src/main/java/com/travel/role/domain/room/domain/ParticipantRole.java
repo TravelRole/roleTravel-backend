@@ -1,5 +1,6 @@
 package com.travel.role.domain.room.domain;
 
+import com.travel.role.domain.user.domain.User;
 import com.travel.role.global.domain.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,10 @@ public class ParticipantRole extends BaseTime {
 	private RoomRole roomRole;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "room_participant_id")
-	private RoomParticipant roomParticipant;
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "room_id")
+	private Room room;
 }

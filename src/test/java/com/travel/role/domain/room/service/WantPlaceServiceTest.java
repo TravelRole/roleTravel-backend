@@ -1,15 +1,16 @@
 package com.travel.role.domain.room.service;
 
-import com.travel.role.domain.room.dao.RoomRepository;
-import com.travel.role.domain.room.dao.WantPlaceRepository;
-import com.travel.role.domain.room.domain.*;
-import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.User;
-import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
-import com.travel.role.global.auth.token.UserPrincipal;
+import static com.travel.role.global.exception.ExceptionMessage.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,17 +18,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static com.travel.role.global.exception.ExceptionMessage.ROOM_NOT_FOUND;
-import static com.travel.role.global.exception.ExceptionMessage.USERNAME_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import com.travel.role.domain.room.dao.RoomParticipantRepository;
+import com.travel.role.domain.room.dao.RoomRepository;
+import com.travel.role.domain.room.dao.WantPlaceRepository;
+import com.travel.role.domain.room.domain.Room;
+import com.travel.role.domain.room.domain.RoomParticipant;
+import com.travel.role.domain.room.domain.WantPlace;
+import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
+import com.travel.role.domain.user.dao.UserRepository;
+import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
+import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
+import com.travel.role.global.auth.token.UserPrincipal;
 
 @ExtendWith(MockitoExtension.class)
 class WantPlaceServiceTest {
@@ -37,6 +40,9 @@ class WantPlaceServiceTest {
 
     @Mock
     private RoomRepository roomRepository;
+
+    @Mock
+    private RoomParticipantRepository roomParticipantRepository;
 
     @Mock
     private WantPlaceRepository wantPlaceRepository;
@@ -52,26 +58,26 @@ class WantPlaceServiceTest {
         User user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
                 null, null, null);
 
-        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
 
-        ParticipantRole participantRole = new ParticipantRole(1L, RoomRole.SCHEDULE, null);
-        List<ParticipantRole> participantRoles = new ArrayList<>();
-        participantRoles.add(participantRole);
-        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2, participantRoles);
-        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, participantRoles);
+        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , null);
+
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2);
+        RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
 
         Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);
         participants.add(roomParticipant2);
 
-        Room room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", participants);
+        Room room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , participants);
 
         WantPlace wantPlace = WantPlace.of(room, getWantPlaceRequestDto());
 
         given(userRepository.findByEmail(anyString()))
                 .willReturn(Optional.of(user2));
-        given(roomRepository.findByIdWithParticipants(anyLong()))
+        given(roomRepository.findById(anyLong()))
                 .willReturn(Optional.of(room));
+        given(roomParticipantRepository.existsByUserAndRoom(any(),any()))
+                .willReturn(true);
 
         // when
         wantPlaceService.addWantPlace(makeUserPrincipal(), getWantPlaceRequestDto());
@@ -93,17 +99,18 @@ class WantPlaceServiceTest {
         User user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
                 null, null, null);
 
-        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", null);
-        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2, null);
+
+        Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , null);
+        RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
 
         Set<RoomParticipant> participants = new HashSet<>();
         participants.add(roomParticipant1);
 
-        Room room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), "123", "1234", "제주", participants);
+        Room room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , participants);
 
         given(userRepository.findByEmail(anyString()))
                 .willReturn(Optional.of(user1));
-        given(roomRepository.findByIdWithParticipants(anyLong()))
+        given(roomRepository.findById(anyLong()))
                 .willReturn(Optional.of(room));
 
         // when, then
@@ -133,7 +140,7 @@ class WantPlaceServiceTest {
         given(userRepository.findByEmail(anyString()))
                 .willReturn(user);
 
-        given(roomRepository.findByIdWithParticipants(anyLong()))
+        given(roomRepository.findById(anyLong()))
                 .willReturn(Optional.empty());
 
 
