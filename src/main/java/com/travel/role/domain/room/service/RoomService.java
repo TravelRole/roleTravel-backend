@@ -179,9 +179,23 @@ public class RoomService {
 
 	public InviteResponseDTO inviteUser(UserPrincipal userPrincipal, String inviteCode, InviteRequestDTO inviteRequestDTO) {
 		Room room = getRoomUsingInviteCode(inviteCode);
+		User user = findUser(userPrincipal);
 
 		validateInviteRoom(userPrincipal, room);
 
-		return null;
+		List<String> selectRole = inviteRequestDTO.getSelectRole();
+		if (selectRole.contains(RoomRole.ADMIN.getValue())) {
+			throw new UserHaveNotPrivilegeException();
+		}
+
+		for (String role : selectRole) {
+			ParticipantRole participantRole = new ParticipantRole(null, RoomRole.valueOf(role), user, room);
+			participantRoleRepository.save(participantRole);
+		}
+
+		RoomParticipant roomParticipant = new RoomParticipant(null, LocalDateTime.now(), false, user, room);
+		roomParticipantRepository.save(roomParticipant);
+
+		return new InviteResponseDTO(room.getId());
 	}
 }
