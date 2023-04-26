@@ -24,6 +24,7 @@ import com.travel.role.domain.room.domain.RoomRole;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.MemberDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
+import com.travel.role.domain.room.exception.InvalidInviteCode;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
 import com.travel.role.domain.user.dao.UserRepository;
@@ -147,7 +148,13 @@ public class RoomService {
 			.orElseThrow(RoomInfoNotFoundException::new);
 	}
 
+	@Transactional(readOnly = true)
 	public void checkRoomInviteCode(UserPrincipal userPrincipal, String inviteCode) {
+		Room room = getRoomUsingInviteCode(inviteCode);
+	}
 
+	private Room getRoomUsingInviteCode(String inviteCode) {
+		return roomRepository.findByRoomInviteCode(inviteCode)
+			.orElseThrow(InvalidInviteCode::new);
 	}
 }

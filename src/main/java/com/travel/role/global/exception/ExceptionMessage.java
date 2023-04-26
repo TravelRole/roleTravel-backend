@@ -28,6 +28,7 @@ public final class ExceptionMessage {
 	public static final String PLACE_ADDRESS_VALUE_NOT_EMPTY = "장소 주소는 필수값 입니다.";
 	public static final String PLACE_NOT_FOUND = "해당하는 장소가 존재하지 않습니다.";
 	public static final String USER_HAVE_NOT_PRIVILEGE = "유저는 해당 권한이 존재하지 않습니다.";
+	public static final String INVALID_INVITE_CODE = "초대코드가 유효하지 않습니다.";
 	// comment
 	public static final String COMMENT_NOT_EMPTY = "댓글 내용은 필수값 입니다.";
 	public static final String COMMENT_NOT_FOUND = "해당하는 댓글이 존재하지 않습니다.";
