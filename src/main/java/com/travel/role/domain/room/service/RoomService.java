@@ -21,6 +21,8 @@ import com.travel.role.domain.room.domain.ParticipantRole;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.domain.RoomRole;
+import com.travel.role.domain.room.dto.InviteRequestDTO;
+import com.travel.role.domain.room.dto.InviteResponseDTO;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.MemberDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
@@ -169,5 +171,9 @@ public class RoomService {
 	private Room getRoomUsingInviteCode(String inviteCode) {
 		return roomRepository.findByRoomInviteCode(inviteCode)
 			.orElseThrow(InvalidInviteCode::new);
+	}
+
+	public InviteResponseDTO inviteUser(UserPrincipal userPrincipal, String inviteCode, InviteRequestDTO inviteRequestDTO) {
+		return null;
 	}
 }
