@@ -18,6 +18,7 @@ import com.travel.role.domain.room.dao.ParticipantRoleRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
+import com.travel.role.domain.room.exception.AlreadyExistInRoomException;
 import com.travel.role.domain.room.exception.InvalidInviteCode;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.user.dao.UserRepository;
@@ -145,6 +146,19 @@ class RoomServiceTest {
 		//when,then
 		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
 			.isInstanceOf(InvalidInviteCode.class);
+	}
+
+	@Test
+	void 방에_이미_들어가있는_유저인_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.of(makeRoom()));
+		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
+			.willReturn(true);
+
+		//when,then
+		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
+			.isInstanceOf(AlreadyExistInRoomException.class);
 	}
 
 	private static MakeRoomRequestDTO getMakeRoomRequestDTO() {
