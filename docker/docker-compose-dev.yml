@@ -1,0 +1,26 @@
+version: '3'
+services:
+  mysql-main-dev:
+    image: mysql:8.0
+    container_name: travel-role-mysql-main
+    ports:
+      - 13306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      TZ: Asia/Seoul
+      MYSQL_DATABASE: travel
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+  mysql-test-dev:
+    image: mysql:8.0
+    container_name: travel-role-mysql-test
+    ports:
+      - 13309:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      TZ: Asia/Seoul
+      MYSQL_DATABASE: test
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
