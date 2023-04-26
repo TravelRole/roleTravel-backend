@@ -40,4 +40,13 @@ public class RoomQuerydslImpl implements RoomQuerydsl {
 			)).orderBy(room.createDate.desc())
 			.fetch();
 	}
+
+	public boolean existsUserInRoom(String email, Long roomId) {
+		Integer fetchOne = queryFactory
+			.selectOne()
+			.from(roomParticipant)
+			.where(roomParticipant.user.email.eq(email), roomParticipant.room.id.eq(roomId))
+			.fetchFirst();
+		return fetchOne != null;
+	}
 }

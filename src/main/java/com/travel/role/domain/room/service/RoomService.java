@@ -159,6 +159,10 @@ public class RoomService {
 		if (!validateInviteCode(room)) {
 			throw new InvalidInviteCode();
 		}
+
+		if (roomRepository.existsUserInRoom(userPrincipal.getEmail(), room.getId())) {
+
+		}
 	}
 
 	private Room getRoomUsingInviteCode(String inviteCode) {
