@@ -159,6 +159,10 @@ public class RoomService {
 	public void checkRoomInviteCode(UserPrincipal userPrincipal, String inviteCode) {
 		Room room = getRoomUsingInviteCode(inviteCode);
 
+		validateInviteRoom(userPrincipal, room);
+	}
+
+	private void validateInviteRoom(UserPrincipal userPrincipal, Room room) {
 		if (!validateInviteCode(room)) {
 			throw new InvalidInviteCode();
 		}
@@ -174,6 +178,10 @@ public class RoomService {
 	}
 
 	public InviteResponseDTO inviteUser(UserPrincipal userPrincipal, String inviteCode, InviteRequestDTO inviteRequestDTO) {
+		Room room = getRoomUsingInviteCode(inviteCode);
+
+		validateInviteRoom(userPrincipal, room);
+
 		return null;
 	}
 }
