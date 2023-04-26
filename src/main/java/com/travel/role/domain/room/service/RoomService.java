@@ -182,13 +182,9 @@ public class RoomService {
 		User user = findUser(userPrincipal);
 
 		validateInviteRoom(userPrincipal, room);
+		validateSelectRole(inviteRequestDTO.getSelectRole());
 
-		List<String> selectRole = inviteRequestDTO.getSelectRole();
-		if (selectRole.contains(RoomRole.ADMIN.getValue())) {
-			throw new UserHaveNotPrivilegeException();
-		}
-
-		for (String role : selectRole) {
+		for (String role : inviteRequestDTO.getSelectRole()) {
 			ParticipantRole participantRole = new ParticipantRole(null, RoomRole.valueOf(role), user, room);
 			participantRoleRepository.save(participantRole);
 		}
@@ -197,5 +193,17 @@ public class RoomService {
 		roomParticipantRepository.save(roomParticipant);
 
 		return new InviteResponseDTO(room.getId());
+	}
+
+	private void validateSelectRole(List<String> selectRole) {
+		for (String role : selectRole) {
+			try {
+				if (RoomRole.valueOf(role) == RoomRole.ADMIN) {
+					throw new UserHaveNotPrivilegeException();
+				}
+			} catch (IllegalArgumentException e) {
+				throw new UserHaveNotPrivilegeException();
+			}
+		}
 	}
 }
