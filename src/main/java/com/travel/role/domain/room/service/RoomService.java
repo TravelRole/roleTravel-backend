@@ -119,12 +119,16 @@ public class RoomService {
 		validRoomRole(user, room, RoomRole.ADMIN);
 
 		String inviteCode = room.getRoomInviteCode();
-		if (room.getRoomInviteCode() == null || room.getRoomExpiredTime().plusDays(1L).isAfter(LocalDateTime.now())) {
+		if (validateInviteCode(room)) {
 			inviteCode = generateInviteCode();
 			room.updateInviteCode(inviteCode, LocalDateTime.now());
 		}
 
 		return inviteCode;
+	}
+
+	private boolean validateInviteCode(Room room) {
+		return room.getRoomInviteCode() == null || room.getRoomExpiredTime().plusDays(1L).isAfter(LocalDateTime.now());
 	}
 
 	private void validRoomRole(User user, Room room, RoomRole... checkRooms) {
@@ -151,6 +155,10 @@ public class RoomService {
 	@Transactional(readOnly = true)
 	public void checkRoomInviteCode(UserPrincipal userPrincipal, String inviteCode) {
 		Room room = getRoomUsingInviteCode(inviteCode);
+
+		if (!validateInviteCode(room)) {
+			throw new InvalidInviteCode();
+		}
 	}
 
 	private Room getRoomUsingInviteCode(String inviteCode) {
