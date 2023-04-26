@@ -104,9 +104,7 @@ class RoomServiceTest {
 		given(roomRepository.findById(anyLong()))
 			.willReturn(Optional.of(Room.builder().build()));
 		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
-				null, "강릉", null, null
-				, null)));
+			.willReturn(Optional.of(makeRoom()));
 
 		//when
 		String inviteCode = roomService.makeInviteCode(makeUserPrincipal(), 1L);
@@ -115,11 +113,34 @@ class RoomServiceTest {
 		assertThat(inviteCode).isEqualTo("1234");
 	}
 
+	private static Room makeRoom() {
+		return new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
+			1L, "강릉", null, null
+			, null);
+	}
+
+	private static Room makeInvalidInviteDateRoom() {
+		return new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
+			1L, "강릉", "1234", LocalDateTime.now().minusDays(2L)
+			, null);
+	}
+
 	@Test
 	void 방의_초대코드가_유효하지_않은_경우() {
 		//given
 		given(roomRepository.findByRoomInviteCode(anyString()))
 			.willReturn(Optional.empty());
+
+		//when,then
+		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
+			.isInstanceOf(InvalidInviteCode.class);
+	}
+
+	@Test
+	void 방에_들어갔는데_코드가_만료된_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.of(makeInvalidInviteDateRoom()));
 
 		//when,then
 		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
