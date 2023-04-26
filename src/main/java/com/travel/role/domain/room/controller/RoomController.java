@@ -43,9 +43,9 @@ public class RoomController {
 		return roomService.makeInviteCode(userPrincipal, roomId);
 	}
 
-	@GetMapping("/check-room/{room_id}")
+	@GetMapping("/check-room/{invite_code}")
 	public void checkRoomInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@PathVariable("room_id") String inviteCode) {
+		@PathVariable("invite_code") String inviteCode) {
 		roomService.checkRoomInviteCode(userPrincipal, inviteCode);
 	}
 }
