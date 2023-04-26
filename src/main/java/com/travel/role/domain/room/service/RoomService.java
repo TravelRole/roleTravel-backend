@@ -146,4 +146,8 @@ public class RoomService {
 		return roomRepository.findById(id)
 			.orElseThrow(RoomInfoNotFoundException::new);
 	}
+
+	public void checkRoomInviteCode(UserPrincipal userPrincipal, String inviteCode) {
+
+	}
 }

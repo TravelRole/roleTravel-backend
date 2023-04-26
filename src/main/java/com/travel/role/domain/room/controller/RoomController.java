@@ -42,4 +42,10 @@ public class RoomController {
 		@PathVariable("room_id") Long roomId) {
 		return roomService.makeInviteCode(userPrincipal, roomId);
 	}
+
+	@GetMapping("/check-room/{room_id}")
+	public void checkRoomInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") String inviteCode) {
+		roomService.checkRoomInviteCode(userPrincipal, inviteCode);
+	}
 }
