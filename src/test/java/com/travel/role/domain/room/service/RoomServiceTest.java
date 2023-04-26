@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.travel.role.domain.room.dao.ParticipantRoleRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.room.dto.InviteRequestDTO;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.exception.AlreadyExistInRoomException;
 import com.travel.role.domain.room.exception.InvalidInviteCode;
@@ -163,10 +162,9 @@ class RoomServiceTest {
 			.willReturn(Optional.of(makeUser()));
 		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
 			.willReturn(false);
-		List<String> selectRole = List.of("ADMIN");
 
 		//when, then
-		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", new InviteRequestDTO(selectRole));})
+		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", List.of("ADMIN"));})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
@@ -179,10 +177,9 @@ class RoomServiceTest {
 			.willReturn(Optional.of(makeUser()));
 		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
 			.willReturn(false);
-		List<String> selectRole = List.of("HACHAN");
 
 		//when, thend .
-		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", new InviteRequestDTO(selectRole));})
+		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", List.of("HAECHAN"));})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 

@@ -21,7 +21,6 @@ import com.travel.role.domain.room.domain.ParticipantRole;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.domain.RoomRole;
-import com.travel.role.domain.room.dto.InviteRequestDTO;
 import com.travel.role.domain.room.dto.InviteResponseDTO;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.MemberDTO;
@@ -177,14 +176,14 @@ public class RoomService {
 			.orElseThrow(InvalidInviteCode::new);
 	}
 
-	public InviteResponseDTO inviteUser(UserPrincipal userPrincipal, String inviteCode, InviteRequestDTO inviteRequestDTO) {
+	public InviteResponseDTO inviteUser(UserPrincipal userPrincipal, String inviteCode, List<String> roles) {
 		Room room = getRoomUsingInviteCode(inviteCode);
 		User user = findUser(userPrincipal);
 
 		validateInviteRoom(userPrincipal, room);
-		validateSelectRole(inviteRequestDTO.getSelectRole());
+		validateSelectRole(roles);
 
-		for (String role : inviteRequestDTO.getSelectRole()) {
+		for (String role : roles) {
 			ParticipantRole participantRole = new ParticipantRole(null, RoomRole.valueOf(role), user, room);
 			participantRoleRepository.save(participantRole);
 		}
@@ -195,8 +194,8 @@ public class RoomService {
 		return new InviteResponseDTO(room.getId());
 	}
 
-	private void validateSelectRole(List<String> selectRole) {
-		for (String role : selectRole) {
+	private void validateSelectRole(List<String> roles) {
+		for (String role : roles) {
 			try {
 				if (RoomRole.valueOf(role) == RoomRole.ADMIN) {
 					throw new UserHaveNotPrivilegeException();

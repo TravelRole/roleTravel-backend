@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.room.dto.InviteRequestDTO;
 import com.travel.role.domain.room.dto.InviteResponseDTO;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
@@ -54,7 +53,7 @@ public class RoomController {
 	@PostMapping("/room/{invite_code}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public InviteResponseDTO inviteUser(@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@PathVariable("invite_code") String inviteCode, @RequestBody InviteRequestDTO inviteRequestDTO) {
-		return roomService.inviteUser(userPrincipal, inviteCode, inviteRequestDTO);
+		@PathVariable("invite_code") String inviteCode, @RequestBody List<String> roles) {
+		return roomService.inviteUser(userPrincipal, inviteCode, roles);
 	}
 }
