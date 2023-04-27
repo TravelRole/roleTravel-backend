@@ -18,7 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.travel.role.global.auth.exception.TokenExceptionHandlerFilter;
+import com.travel.role.global.exception.auth.TokenExceptionHandlerFilter;
 import com.travel.role.global.auth.oauth.filter.CustomOAuth2LogoutHandler;
 import com.travel.role.global.auth.service.CustomAuthProvider;
 import com.travel.role.global.auth.service.CustomOAuth2UserService;

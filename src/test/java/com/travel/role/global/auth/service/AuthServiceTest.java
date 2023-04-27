@@ -20,8 +20,8 @@ import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.exception.auth.InvalidTokenException;
+import com.travel.role.global.exception.auth.NotExistTokenException;
 import com.travel.role.global.exception.dto.ExceptionMessage;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
 

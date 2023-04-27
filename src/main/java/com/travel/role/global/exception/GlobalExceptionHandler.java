@@ -27,8 +27,8 @@ import com.travel.role.global.exception.user.PlaceInfoNotFoundException;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.user.UserNotParticipateRoomException;
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.exception.auth.InvalidTokenException;
+import com.travel.role.global.exception.auth.NotExistTokenException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

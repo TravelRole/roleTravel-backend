@@ -1,4 +1,4 @@
-package com.travel.role.global.auth.exception;
+package com.travel.role.global.exception.auth;
 
 import com.travel.role.global.exception.dto.ExceptionMessage;
 
