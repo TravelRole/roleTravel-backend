@@ -1,6 +1,6 @@
 package com.travel.role.domain.user.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 

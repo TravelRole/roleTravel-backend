@@ -1,6 +1,6 @@
 package com.travel.role.global.exception.user;
 
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 
 public class InputValueNotMatchException extends RuntimeException {
 

@@ -1,6 +1,6 @@
 package com.travel.role.domain.room.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;

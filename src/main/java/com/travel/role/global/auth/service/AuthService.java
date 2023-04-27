@@ -1,6 +1,6 @@
 package com.travel.role.global.auth.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

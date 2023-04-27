@@ -1,6 +1,6 @@
 package com.travel.role.domain.room.dto;
 
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

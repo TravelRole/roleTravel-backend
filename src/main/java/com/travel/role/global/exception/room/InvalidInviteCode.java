@@ -1,6 +1,6 @@
 package com.travel.role.global.exception.room;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import lombok.NoArgsConstructor;
 

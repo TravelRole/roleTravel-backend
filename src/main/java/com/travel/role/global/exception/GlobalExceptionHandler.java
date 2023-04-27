@@ -16,6 +16,7 @@ import com.amazonaws.SdkClientException;
 import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
 import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
 import com.travel.role.global.exception.common.S3ImageNotFoundException;
+import com.travel.role.global.exception.dto.ExceptionResponse;
 import com.travel.role.global.exception.room.AlreadyExistInRoomException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;

@@ -1,6 +1,6 @@
 package com.travel.role.domain.room.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -29,7 +29,7 @@ import com.travel.role.domain.user.entity.Role;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.auth.token.UserPrincipal;
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 import com.travel.role.global.util.PasswordGenerator;
 
 @ExtendWith(MockitoExtension.class)

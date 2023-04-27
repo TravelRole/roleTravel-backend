@@ -1,6 +1,6 @@
 package com.travel.role.domain.room.dto;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import javax.validation.constraints.Size;
 

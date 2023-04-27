@@ -1,6 +1,6 @@
 package com.travel.role.global.auth.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -22,7 +22,7 @@ import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 @ExtendWith(MockitoExtension.class)

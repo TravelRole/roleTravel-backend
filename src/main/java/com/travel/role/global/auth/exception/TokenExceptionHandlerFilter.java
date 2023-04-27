@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.travel.role.global.exception.ExceptionFilterResponse;
+import com.travel.role.global.exception.dto.ExceptionFilterResponse;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 import lombok.extern.slf4j.Slf4j;

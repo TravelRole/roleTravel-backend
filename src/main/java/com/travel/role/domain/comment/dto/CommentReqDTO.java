@@ -2,7 +2,7 @@ package com.travel.role.domain.comment.dto;
 
 import javax.validation.constraints.NotBlank;
 
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

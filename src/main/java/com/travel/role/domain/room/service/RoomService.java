@@ -1,6 +1,6 @@
 package com.travel.role.domain.room.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

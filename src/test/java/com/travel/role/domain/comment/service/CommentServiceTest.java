@@ -28,7 +28,7 @@ import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.user.UserNotParticipateRoomException;
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
 
 @ExtendWith(MockitoExtension.class)

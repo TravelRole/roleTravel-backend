@@ -1,6 +1,6 @@
 package com.travel.role.global.exception.comment;
 
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 
 public class CommentInfoNotFoundException extends RuntimeException{
 

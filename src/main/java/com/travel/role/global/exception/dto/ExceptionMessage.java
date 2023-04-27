@@ -1,4 +1,4 @@
-package com.travel.role.global.exception;
+package com.travel.role.global.exception.dto;
 
 public final class ExceptionMessage {
 
