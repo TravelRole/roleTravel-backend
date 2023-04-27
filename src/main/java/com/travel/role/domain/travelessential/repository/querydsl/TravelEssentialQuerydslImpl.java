@@ -1,7 +1,7 @@
 package com.travel.role.domain.travelessential.repository.querydsl;
 
 import static com.querydsl.core.group.GroupBy.*;
-import static com.travel.role.domain.room.entity.QTravelEssentials.*;
+import static com.travel.role.domain.travelessential.entity.QTravelEssential.*;
 
 import java.util.List;
 import java.util.Map;
@@ -22,12 +22,10 @@ public class TravelEssentialQuerydslImpl implements TravelEssentialQuerydsl {
 	public Map<EssentialCategory, List<TravelEssentialResDTO>> readAllGroupByEssentialCategory(Long userId,
 		Long roomId) {
 
-		Map<EssentialCategory, List<TravelEssentialResDTO>> result = queryFactory.from(travelEssentials)
-			.where(travelEssentials.user.id.eq(userId)
-				.and(travelEssentials.room.id.eq(roomId)))
-			.transform(groupBy(travelEssentials.category).as(
-				list(Projections.bean(TravelEssentialResDTO.class, travelEssentials.id, travelEssentials.itemName, travelEssentials.isChecked))));
-
-		return result;
+		return queryFactory.from(travelEssential)
+			.where(travelEssential.user.id.eq(userId)
+				.and(travelEssential.room.id.eq(roomId)))
+			.transform(groupBy(travelEssential.category).as(
+				list(Projections.bean(TravelEssentialResDTO.class, travelEssential.id, travelEssential.itemName, travelEssential.isChecked))));
 	}
 }
