@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -18,8 +19,13 @@ import com.travel.role.domain.room.dao.ParticipantRoleRepository;
 import com.travel.role.domain.room.dao.RoomRepository;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
+import com.travel.role.domain.room.exception.AlreadyExistInRoomException;
+import com.travel.role.domain.room.exception.InvalidInviteCode;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
+import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
 import com.travel.role.domain.user.dao.UserRepository;
+import com.travel.role.domain.user.domain.Provider;
+import com.travel.role.domain.user.domain.Role;
 import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 import com.travel.role.global.auth.token.UserPrincipal;
@@ -43,11 +49,12 @@ class RoomServiceTest {
 
 	@Mock
 	private ParticipantRoleRepository participantRoleRepository;
+
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
 		// given
 		MakeRoomRequestDTO newDto = new MakeRoomRequestDTO("여행 가자~", LocalDate.of(2023, 1, 3),
-			LocalDate.of(2023, 1, 1),  "강원도 춘천", 1L);
+			LocalDate.of(2023, 1, 1), "강원도 춘천", 1L);
 
 		// when, then
 		assertThatThrownBy(() -> roomService.makeRoom(null, newDto))
@@ -102,9 +109,7 @@ class RoomServiceTest {
 		given(roomRepository.findById(anyLong()))
 			.willReturn(Optional.of(Room.builder().build()));
 		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
-				null, "강릉", null, null
-				, null)));
+			.willReturn(Optional.of(makeRoom()));
 
 		//when
 		String inviteCode = roomService.makeInviteCode(makeUserPrincipal(), 1L);
@@ -113,6 +118,70 @@ class RoomServiceTest {
 		assertThat(inviteCode).isEqualTo("1234");
 	}
 
+	@Test
+	void 방의_초대코드가_유효하지_않은_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.empty());
+
+		//when,then
+		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
+			.isInstanceOf(InvalidInviteCode.class);
+	}
+
+	@Test
+	void 방에_들어갔는데_코드가_만료된_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.of(makeInvalidInviteDateRoom()));
+
+		//when,then
+		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
+			.isInstanceOf(InvalidInviteCode.class);
+	}
+
+	@Test
+	void 방에_이미_들어가있는_유저인_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.of(makeRoom()));
+		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
+			.willReturn(true);
+
+		//when,then
+		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
+			.isInstanceOf(AlreadyExistInRoomException.class);
+	}
+
+	@Test
+	void 초대한_방_링크로_접속했을때_총무_역할을_선택한_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.of(makeRoom()));
+		given(userRepository.findByEmail(anyString()))
+			.willReturn(Optional.of(makeUser()));
+		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
+			.willReturn(false);
+
+		//when, then
+		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", List.of("ADMIN"));})
+			.isInstanceOf(UserHaveNotPrivilegeException.class);
+	}
+
+	@Test
+	void 초대한_방_링크로_접속했을때_존재하지_않은_역할을_선택한_경우() {
+		//given
+		given(roomRepository.findByRoomInviteCode(anyString()))
+			.willReturn(Optional.of(makeRoom()));
+		given(userRepository.findByEmail(anyString()))
+			.willReturn(Optional.of(makeUser()));
+		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
+			.willReturn(false);
+
+		//when, thend .
+		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", List.of("HAECHAN"));})
+			.isInstanceOf(UserHaveNotPrivilegeException.class);
+	}
 
 	private static MakeRoomRequestDTO getMakeRoomRequestDTO() {
 		return new MakeRoomRequestDTO("여행 가자~", LocalDate.of(2023, 1, 1),
@@ -121,5 +190,22 @@ class RoomServiceTest {
 
 	private static UserPrincipal makeUserPrincipal() {
 		return new UserPrincipal(1L, "haechan@naver.com", "1234", null);
+	}
+
+	private static Room makeRoom() {
+		return new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
+			1L, "강릉", null, null
+			, null);
+	}
+
+	private static Room makeInvalidInviteDateRoom() {
+		return new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
+			1L, "강릉", "1234", LocalDateTime.now().minusDays(2L)
+			, null);
+	}
+
+	private static User makeUser() {
+		return new User(1L, "해찬", "haechan@naver.com", "1234", Role.USER, "1234", "1234", LocalDate.now(),
+			Provider.local, "1234", "1234");
 	}
 }

@@ -8,6 +8,7 @@ import com.travel.role.domain.room.domain.Room;
 
 public interface RoomRepository extends JpaRepository<Room, Long>, RoomQuerydsl {
     boolean existsByRoomInviteCode(String inviteCode);
+    Optional<Room> findByRoomInviteCode(String inviteCode);
 }
 
 
