@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.travel.role.domain.room.domain.EssentialCategory;
-import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.room.domain.TravelEssentials;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.room.entity.EssentialCategory;
+import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.room.entity.TravelEssentials;
+import com.travel.role.domain.user.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

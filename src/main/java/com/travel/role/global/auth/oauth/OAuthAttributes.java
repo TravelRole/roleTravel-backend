@@ -2,7 +2,7 @@ package com.travel.role.global.auth.oauth;
 
 import java.util.Map;
 
-import com.travel.role.domain.user.domain.Provider;
+import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.global.auth.oauth.google.GoogleOAuth2UserInfo;
 
 import lombok.AllArgsConstructor;

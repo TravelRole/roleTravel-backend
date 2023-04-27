@@ -1,14 +1,14 @@
-package com.travel.role.domain.room.dao;
+package com.travel.role.domain.room.repository;
 
 import static com.querydsl.core.group.GroupBy.*;
-import static com.travel.role.domain.room.domain.QTravelEssentials.*;
+import static com.travel.role.domain.room.entity.QTravelEssentials.*;
 
 import java.util.List;
 import java.util.Map;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.travel.role.domain.room.domain.EssentialCategory;
+import com.travel.role.domain.room.entity.EssentialCategory;
 import com.travel.role.domain.room.dto.TravelEssentialResDTO;
 
 import lombok.RequiredArgsConstructor;

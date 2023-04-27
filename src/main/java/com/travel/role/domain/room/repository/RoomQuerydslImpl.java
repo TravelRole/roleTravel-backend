@@ -1,17 +1,17 @@
-package com.travel.role.domain.room.dao;
+package com.travel.role.domain.room.repository;
 
-import static com.travel.role.domain.room.domain.QRoom.*;
-import static com.travel.role.domain.room.domain.QRoomParticipant.*;
-import static com.travel.role.domain.user.domain.QUser.*;
+import static com.travel.role.domain.room.entity.QRoom.*;
+import static com.travel.role.domain.room.entity.QRoomParticipant.*;
+import static com.travel.role.domain.user.entity.QUser.*;
 
 import java.util.List;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.travel.role.domain.room.domain.QRoom;
-import com.travel.role.domain.room.domain.QRoomParticipant;
-import com.travel.role.domain.user.domain.QUser;
+import com.travel.role.domain.room.entity.QRoom;
+import com.travel.role.domain.room.entity.QRoomParticipant;
+import com.travel.role.domain.user.entity.QUser;
 
 import lombok.RequiredArgsConstructor;
 

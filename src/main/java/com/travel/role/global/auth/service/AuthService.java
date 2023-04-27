@@ -17,8 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.dto.CheckIdRequest;
 import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;

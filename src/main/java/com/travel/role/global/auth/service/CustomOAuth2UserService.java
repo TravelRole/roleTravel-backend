@@ -12,9 +12,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.Provider;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.Provider;
+import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.auth.oauth.OAuth2UserInfo;
 import com.travel.role.global.auth.oauth.OAuthAttributes;
 import com.travel.role.global.auth.token.UserPrincipal;

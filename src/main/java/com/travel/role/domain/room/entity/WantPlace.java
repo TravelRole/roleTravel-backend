@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.domain;
+package com.travel.role.domain.room.entity;
 
 import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
 import com.travel.role.global.domain.BaseTime;

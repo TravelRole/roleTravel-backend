@@ -1,4 +1,4 @@
-package com.travel.role.domain.user.dao;
+package com.travel.role.domain.user.repository;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.travel.role.domain.user.domain.Provider;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.entity.Provider;
+import com.travel.role.domain.user.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

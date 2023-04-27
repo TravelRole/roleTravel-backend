@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dao;
+package com.travel.role.domain.room.repository;
 
 import java.util.List;
 

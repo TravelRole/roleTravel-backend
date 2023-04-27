@@ -1,6 +1,6 @@
-package com.travel.role.domain.room.domain;
+package com.travel.role.domain.room.entity;
 
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;

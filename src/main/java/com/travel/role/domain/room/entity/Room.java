@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.domain;
+package com.travel.role.domain.room.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

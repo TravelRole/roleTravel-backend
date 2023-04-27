@@ -1,4 +1,4 @@
-package com.travel.role.domain.user.domain;
+package com.travel.role.domain.user.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.travel.role.domain.comment.dao;
+package com.travel.role.domain.comment.repository;
 
 import java.util.List;
 

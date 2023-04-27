@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.room.domain.EssentialCategory;
+import com.travel.role.domain.room.entity.EssentialCategory;
 import com.travel.role.domain.room.dto.TravelEssentialCheckReqDTO;
 import com.travel.role.domain.room.dto.TravelEssentialDeleteReqDTO;
 import com.travel.role.domain.room.dto.TravelEssentialReqDTO;

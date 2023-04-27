@@ -1,7 +1,7 @@
 package com.travel.role.domain.comment.entity;
 
-import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.domain.BaseTime;
 
 import lombok.*;

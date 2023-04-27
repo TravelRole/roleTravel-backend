@@ -1,10 +1,10 @@
-package com.travel.role.domain.room.dao;
+package com.travel.role.domain.room.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.travel.role.domain.room.domain.Room;
-import com.travel.role.domain.room.domain.RoomParticipant;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.room.entity.RoomParticipant;
+import com.travel.role.domain.user.entity.User;
 
 public interface RoomParticipantRepository extends JpaRepository<RoomParticipant, Long> {
 

@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dao;
+package com.travel.role.domain.room.repository;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.room.domain.TravelEssentials;
+import com.travel.role.domain.room.entity.TravelEssentials;
 
 public interface TravelEssentialRepository extends JpaRepository<TravelEssentials, Long>, TravelEssentialQuerydsl {
 
