@@ -59,7 +59,6 @@ public class RoomService {
 
 			if (Objects.equals(user.getEmail(), userPrincipal.getEmail())) {
 				List<MemberDTO> members = new ArrayList<>();
-				members.add(new MemberDTO(user.getName(), user.getProfile()));
 				hash.put(room.getId(), RoomResponseDTO.of(room, members));
 			}
 		}
