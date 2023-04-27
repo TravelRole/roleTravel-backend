@@ -1,12 +1,13 @@
-package com.travel.role.domain.room.dto;
-
-import com.travel.role.global.exception.dto.ExceptionMessage;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+package com.travel.role.domain.wantplace.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.travel.role.global.exception.dto.ExceptionMessage;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor

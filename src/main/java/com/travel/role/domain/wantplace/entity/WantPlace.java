@@ -1,6 +1,7 @@
-package com.travel.role.domain.room.entity;
+package com.travel.role.domain.wantplace.entity;
 
-import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
+import com.travel.role.domain.wantplace.dto.request.WantPlaceRequestDTO;
+import com.travel.role.domain.room.entity.Room;
 import com.travel.role.global.domain.BaseTime;
 import lombok.*;
 

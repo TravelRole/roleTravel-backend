@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dto;
+package com.travel.role.domain.wantplace.dto.response;
 
 import java.util.ArrayList;
 import java.util.List;

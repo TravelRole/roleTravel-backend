@@ -20,13 +20,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
-import com.travel.role.domain.room.repository.WantPlaceRepository;
+import com.travel.role.domain.wantplace.repository.WantPlaceRepository;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
-import com.travel.role.domain.room.entity.WantPlace;
-import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
+import com.travel.role.domain.wantplace.entity.WantPlace;
+import com.travel.role.domain.wantplace.dto.request.WantPlaceRequestDTO;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.domain.user.entity.User;
+import com.travel.role.domain.wantplace.service.WantPlaceService;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.user.UserNotParticipateRoomException;

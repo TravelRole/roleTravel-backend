@@ -1,15 +1,15 @@
-package com.travel.role.domain.room.service;
+package com.travel.role.domain.wantplace.service;
 
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
-import com.travel.role.domain.room.repository.WantPlaceRepository;
+import com.travel.role.domain.wantplace.repository.WantPlaceRepository;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomRole;
-import com.travel.role.domain.room.entity.WantPlace;
-import com.travel.role.domain.room.dto.WantPlaceDTO;
-import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
-import com.travel.role.domain.room.dto.WantPlaceResponseDTO;
+import com.travel.role.domain.wantplace.entity.WantPlace;
+import com.travel.role.domain.wantplace.dto.response.WantPlaceDTO;
+import com.travel.role.domain.wantplace.dto.request.WantPlaceRequestDTO;
+import com.travel.role.domain.wantplace.dto.response.WantPlaceResponseDTO;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.exception.user.PlaceInfoNotFoundException;

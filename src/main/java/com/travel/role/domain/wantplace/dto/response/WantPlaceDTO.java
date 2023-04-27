@@ -1,6 +1,6 @@
-package com.travel.role.domain.room.dto;
+package com.travel.role.domain.wantplace.dto.response;
 
-import com.travel.role.domain.room.entity.WantPlace;
+import com.travel.role.domain.wantplace.entity.WantPlace;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

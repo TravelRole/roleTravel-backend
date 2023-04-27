@@ -1,6 +1,6 @@
-package com.travel.role.domain.room.repository;
+package com.travel.role.domain.wantplace.repository;
 
-import com.travel.role.domain.room.entity.WantPlace;
+import com.travel.role.domain.wantplace.entity.WantPlace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

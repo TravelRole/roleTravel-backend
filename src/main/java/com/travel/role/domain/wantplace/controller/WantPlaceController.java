@@ -1,9 +1,9 @@
-package com.travel.role.domain.room.controller;
+package com.travel.role.domain.wantplace.controller;
 
 
-import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
-import com.travel.role.domain.room.dto.WantPlaceResponseDTO;
-import com.travel.role.domain.room.service.WantPlaceService;
+import com.travel.role.domain.wantplace.dto.request.WantPlaceRequestDTO;
+import com.travel.role.domain.wantplace.dto.response.WantPlaceResponseDTO;
+import com.travel.role.domain.wantplace.service.WantPlaceService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
