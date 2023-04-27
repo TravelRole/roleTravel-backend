@@ -103,15 +103,14 @@ class RoomTest {
     @Test
     void 방의_정보를_제대로_불러오는지() {
         // given
-        UserPrincipal userPrincipal = new UserPrincipal(1L, "haechan@naver.com", "1234", null);
+        UserPrincipal userPrincipal = new UserPrincipal(1L, "ChanYoo@naver.com", "1234", null);
 
         // when
         List<RoomResponseDTO> roomList = roomService.getRoomList(userPrincipal);
 
         // then
+        assertThat(roomList.size()).isEqualTo(1);
         assertThat(roomList.get(0).getRoomName()).isEqualTo("room1");
         assertThat(roomList.get(0).getMembers().size()).isEqualTo(3);
-        assertThat(roomList.get(1).getRoomName()).isEqualTo("room2");
-        assertThat(roomList.get(1).getMembers().size()).isEqualTo(2);
     }
 }
