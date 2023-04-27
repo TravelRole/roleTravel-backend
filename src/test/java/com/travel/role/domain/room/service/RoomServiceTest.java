@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.entity.Room;
-import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.global.exception.room.AlreadyExistInRoomException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;

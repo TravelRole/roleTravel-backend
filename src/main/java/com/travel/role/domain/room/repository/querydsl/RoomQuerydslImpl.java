@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.repository;
+package com.travel.role.domain.room.repository.querydsl;
 
 import static com.travel.role.domain.room.entity.QRoom.*;
 import static com.travel.role.domain.room.entity.QRoomParticipant.*;

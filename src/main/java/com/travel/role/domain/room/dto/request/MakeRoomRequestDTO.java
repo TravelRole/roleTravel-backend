@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dto;
+package com.travel.role.domain.room.dto.request;
 
 import java.time.LocalDate;
 

@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.room.dto.InviteResponseDTO;
-import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
-import com.travel.role.domain.room.dto.RoomResponseDTO;
+import com.travel.role.domain.room.dto.response.InviteResponseDTO;
+import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.global.auth.token.UserPrincipal;
 

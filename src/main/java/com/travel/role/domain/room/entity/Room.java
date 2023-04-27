@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.global.domain.BaseCreateTime;
 
 import lombok.AllArgsConstructor;
