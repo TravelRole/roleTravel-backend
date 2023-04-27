@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +53,17 @@ public class RoomService {
         List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(userPrincipal.getEmail());
 
         Map<Long, RoomResponseDTO> hash = new HashMap<>();
+		for (Tuple tuple : findRoomInfo) {
+			Room room = tuple.get(0, Room.class);
+			User user = tuple.get(1, User.class);
+
+			if (Objects.equals(user.getEmail(), userPrincipal.getEmail())) {
+				List<MemberDTO> members = new ArrayList<>();
+				members.add(new MemberDTO(user.getName(), user.getProfile()));
+				hash.put(room.getId(), RoomResponseDTO.of(room, members));
+			}
+		}
+
         for (Tuple tuple : findRoomInfo) {
             Room room = tuple.get(0, Room.class);
             User user = tuple.get(1, User.class);
@@ -60,11 +72,6 @@ public class RoomService {
                 RoomResponseDTO roomResponseDTO = hash.get(room.getId());
                 roomResponseDTO.getMembers().add(new MemberDTO(user.getName(), user.getProfile()));
                 hash.put(room.getId(), roomResponseDTO);
-            } else {
-                List<MemberDTO> members = new ArrayList<>();
-                members.add(new MemberDTO(user.getName(), user.getProfile()));
-
-                hash.put(room.getId(), RoomResponseDTO.of(room, members));
             }
         }
 
