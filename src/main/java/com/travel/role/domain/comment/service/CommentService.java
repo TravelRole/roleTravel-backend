@@ -1,6 +1,6 @@
 package com.travel.role.domain.comment.service;
 
-import static com.travel.role.global.exception.ResourceOperationAccessDeniedException.*;
+import static com.travel.role.global.exception.common.ResourceOperationAccessDeniedException.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.user.UserNotParticipateRoomException;
-import com.travel.role.global.exception.ResourceOperationAccessDeniedException;
+import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
 
 import lombok.RequiredArgsConstructor;
 

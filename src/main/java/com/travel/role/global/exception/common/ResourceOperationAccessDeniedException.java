@@ -1,4 +1,6 @@
-package com.travel.role.global.exception;
+package com.travel.role.global.exception.common;
+
+import com.travel.role.global.exception.ExceptionMessage;
 
 public class ResourceOperationAccessDeniedException extends RuntimeException {
 
