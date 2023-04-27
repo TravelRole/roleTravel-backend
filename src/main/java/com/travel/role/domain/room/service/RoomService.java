@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,12 +61,12 @@ public class RoomService {
                 RoomResponseDTO roomResponseDTO = hash.get(room.getId());
                 roomResponseDTO.getMembers().add(new MemberDTO(user.getName(), user.getProfile()));
                 hash.put(room.getId(), roomResponseDTO);
-            } else {
-                List<MemberDTO> members = new ArrayList<>();
-                members.add(new MemberDTO(user.getName(), user.getProfile()));
+            } else if (Objects.equals(user.getEmail(), userPrincipal.getEmail())) {
+				List<MemberDTO> members = new ArrayList<>();
+				members.add(new MemberDTO(user.getName(), user.getProfile()));
 
-                hash.put(room.getId(), RoomResponseDTO.of(room, members));
-            }
+				hash.put(room.getId(), RoomResponseDTO.of(room, members));
+			}
         }
 
         return new ArrayList<>(hash.values());
