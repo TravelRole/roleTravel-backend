@@ -3,7 +3,7 @@ package com.travel.role.domain.user.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

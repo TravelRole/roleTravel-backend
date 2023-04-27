@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 import com.travel.role.global.util.FormatterUtil;
 
 import lombok.AllArgsConstructor;

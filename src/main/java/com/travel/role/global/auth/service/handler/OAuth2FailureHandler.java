@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import com.travel.role.global.exception.ExceptionFilterResponse;
+import com.travel.role.global.exception.dto.ExceptionFilterResponse;
 
 @Component
 public class OAuth2FailureHandler implements AuthenticationFailureHandler {

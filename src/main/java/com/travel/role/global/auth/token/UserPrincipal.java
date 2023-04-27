@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.entity.User;
 
 public class UserPrincipal implements UserDetails, OAuth2User {
 

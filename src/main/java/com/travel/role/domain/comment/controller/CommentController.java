@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.comment.dto.CommentListResDTO;
-import com.travel.role.domain.comment.dto.CommentReqDTO;
+import com.travel.role.domain.comment.dto.response.CommentListResDTO;
+import com.travel.role.domain.comment.dto.request.CommentReqDTO;
 import com.travel.role.domain.comment.service.CommentService;
 import com.travel.role.global.auth.token.UserPrincipal;
 

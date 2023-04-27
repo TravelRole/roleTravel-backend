@@ -1,6 +1,6 @@
 package com.travel.role.domain.user.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -10,15 +10,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.User;
 import com.travel.role.domain.user.dto.UserPasswordModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileResponseDTO;
+import com.travel.role.domain.user.entity.User;
+import com.travel.role.global.exception.user.InputValueNotMatchException;
 import com.travel.role.global.s3.S3Service;
-import com.travel.role.domain.user.exception.InputValueNotMatchException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,14 +25,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
-	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final S3Service s3Service;
+	private final UserReadService userReadService;
 
 	@Transactional(readOnly = true)
 	public UserProfileResponseDTO getBasicProfile(String email) {
 
-		User findUser = findUserByEmailOrElseThrow(email);
+		User findUser = userReadService.findUserByEmailOrElseThrow(email);
 
 		return new UserProfileResponseDTO(findUser.getName(), findUser.getEmail(), findUser.getProfile());
 	}
@@ -42,14 +40,14 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public UserProfileDetailResDTO getUserProfile(String email) {
 
-		User findUser = findUserByEmailOrElseThrow(email);
+		User findUser = userReadService.findUserByEmailOrElseThrow(email);
 
 		return UserProfileDetailResDTO.fromUser(findUser);
 	}
 
 	public UserProfileDetailResDTO modifyUserProfile(String email, UserProfileModifyReqDTO reqDTO) {
 
-		User findUser = findUserByEmailOrElseThrow(email);
+		User findUser = userReadService.findUserByEmailOrElseThrow(email);
 
 		String name = reqDTO.getName();
 		LocalDate birth = reqDTO.getBirth();
@@ -60,7 +58,7 @@ public class UserService {
 
 	public void modifyPassword(String email, UserPasswordModifyReqDTO reqDTO) {
 
-		User findUser = findUserByEmailOrElseThrow(email);
+		User findUser = userReadService.findUserByEmailOrElseThrow(email);
 
 		String newPassword = reqDTO.getNewPassword();
 
@@ -87,25 +85,19 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public String getPreSignedUrlForProfileImage(String email) {
 
-		User findUser = findUserByEmailOrElseThrow(email);
+		User findUser = userReadService.findUserByEmailOrElseThrow(email);
 
 		return s3Service.getPreSignedUrl(S3Service.USER_PROFILE_IMAGE_PATH, findUser.getId().toString());
 	}
 
 	public void modifyProfileImageUrl(String email) {
 
-		User findUser = findUserByEmailOrElseThrow(email);
+		User findUser = userReadService.findUserByEmailOrElseThrow(email);
 
 		String key = S3Service.USER_PROFILE_IMAGE_PATH + findUser.getId();
 		s3Service.checkObjectExistsOrElseThrow(key, "회원 프로필");
 		String profileImageUrl = s3Service.getObjectUrl(key);
 
 		findUser.updateProfileImageUrl(profileImageUrl);
-	}
-
-	private User findUserByEmailOrElseThrow(String email) {
-
-		return userRepository.findByEmail(email)
-			.orElseThrow(UserInfoNotFoundException::new);
 	}
 }

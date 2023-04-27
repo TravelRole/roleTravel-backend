@@ -1,6 +1,6 @@
 package com.travel.role.global.auth.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -17,23 +17,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.User;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.dto.CheckIdRequest;
 import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.exception.auth.InvalidTokenException;
+import com.travel.role.global.exception.auth.NotExistTokenException;
 import com.travel.role.global.auth.service.mail.MailService;
-import com.travel.role.domain.user.exception.AlreadyExistUserException;
+import com.travel.role.global.exception.user.AlreadyExistUserException;
 import com.travel.role.global.util.PasswordGenerator;
 
 import io.jsonwebtoken.ExpiredJwtException;

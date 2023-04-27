@@ -13,19 +13,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.amazonaws.SdkClientException;
-import com.travel.role.domain.comment.exception.CommentInfoNotFoundException;
-import com.travel.role.domain.room.exception.AlreadyExistInRoomException;
-import com.travel.role.domain.room.exception.InvalidInviteCode;
-import com.travel.role.domain.room.exception.InvalidLocalDateException;
-import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
-import com.travel.role.domain.user.exception.AlreadyExistUserException;
-import com.travel.role.domain.user.exception.InputValueNotMatchException;
-import com.travel.role.domain.user.exception.PlaceInfoNotFoundException;
-import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
-import com.travel.role.global.auth.exception.InvalidTokenException;
-import com.travel.role.global.auth.exception.NotExistTokenException;
+import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
+import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
+import com.travel.role.global.exception.common.S3ImageNotFoundException;
+import com.travel.role.global.exception.dto.ExceptionResponse;
+import com.travel.role.global.exception.room.AlreadyExistInRoomException;
+import com.travel.role.global.exception.room.InvalidInviteCode;
+import com.travel.role.global.exception.room.InvalidLocalDateException;
+import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
+import com.travel.role.global.exception.user.AlreadyExistUserException;
+import com.travel.role.global.exception.user.InputValueNotMatchException;
+import com.travel.role.global.exception.user.PlaceInfoNotFoundException;
+import com.travel.role.global.exception.user.RoomInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.UserNotParticipateRoomException;
+import com.travel.role.global.exception.auth.InvalidTokenException;
+import com.travel.role.global.exception.auth.NotExistTokenException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

@@ -1,7 +1,7 @@
 package com.travel.role.domain.user.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.travel.role.global.exception.ExceptionMessage;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
