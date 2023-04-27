@@ -35,4 +35,7 @@ public final class ExceptionMessage {
 	// image
 	public static final String IMAGE_NOT_FOUND_IN_S3 = "%s 이미지가 s3에 존재하지 않습니다.";
 
+	// travel essential
+	public static final String INVALID_ESSENTIAL_CATEGORY = "지정한 카테고리 내에서 입력해 주세요";
+	public static final String INVALID_ESSENTIAL_ITEM_LENGTH = "준비물 길이는 2 이상 15 이하여야 합니다";
 }
