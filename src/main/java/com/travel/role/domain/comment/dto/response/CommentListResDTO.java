@@ -1,6 +1,5 @@
-package com.travel.role.domain.comment.dto;
+package com.travel.role.domain.comment.dto.response;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;

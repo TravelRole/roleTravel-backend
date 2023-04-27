@@ -15,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.travel.role.domain.comment.repository.CommentRepository;
-import com.travel.role.domain.comment.dto.CommentListResDTO;
-import com.travel.role.domain.comment.dto.CommentReqDTO;
-import com.travel.role.domain.comment.dto.CommentResDTO;
+import com.travel.role.domain.comment.dto.response.CommentListResDTO;
+import com.travel.role.domain.comment.dto.request.CommentReqDTO;
+import com.travel.role.domain.comment.dto.response.CommentResDTO;
 import com.travel.role.domain.comment.entity.Comment;
 import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
 import com.travel.role.domain.room.repository.RoomParticipantRepository;

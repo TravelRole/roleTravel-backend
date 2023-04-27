@@ -1,4 +1,4 @@
-package com.travel.role.domain.comment.dto;
+package com.travel.role.domain.comment.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
