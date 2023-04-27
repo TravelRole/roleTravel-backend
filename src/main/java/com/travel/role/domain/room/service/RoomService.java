@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +22,12 @@ import com.travel.role.domain.room.domain.ParticipantRole;
 import com.travel.role.domain.room.domain.Room;
 import com.travel.role.domain.room.domain.RoomParticipant;
 import com.travel.role.domain.room.domain.RoomRole;
+import com.travel.role.domain.room.dto.InviteResponseDTO;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.MemberDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
+import com.travel.role.domain.room.exception.AlreadyExistInRoomException;
+import com.travel.role.domain.room.exception.InvalidInviteCode;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
 import com.travel.role.domain.user.dao.UserRepository;
@@ -52,6 +56,16 @@ public class RoomService {
         List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(userPrincipal.getEmail());
 
         Map<Long, RoomResponseDTO> hash = new HashMap<>();
+		for (Tuple tuple : findRoomInfo) {
+			Room room = tuple.get(0, Room.class);
+			User user = tuple.get(1, User.class);
+
+			if (Objects.equals(user.getEmail(), userPrincipal.getEmail())) {
+				List<MemberDTO> members = new ArrayList<>();
+				hash.put(room.getId(), RoomResponseDTO.of(room, members));
+			}
+		}
+
         for (Tuple tuple : findRoomInfo) {
             Room room = tuple.get(0, Room.class);
             User user = tuple.get(1, User.class);
@@ -60,11 +74,6 @@ public class RoomService {
                 RoomResponseDTO roomResponseDTO = hash.get(room.getId());
                 roomResponseDTO.getMembers().add(new MemberDTO(user.getName(), user.getProfile()));
                 hash.put(room.getId(), roomResponseDTO);
-            } else {
-                List<MemberDTO> members = new ArrayList<>();
-                members.add(new MemberDTO(user.getName(), user.getProfile()));
-
-                hash.put(room.getId(), RoomResponseDTO.of(room, members));
             }
         }
 
@@ -118,12 +127,16 @@ public class RoomService {
 		validRoomRole(user, room, RoomRole.ADMIN);
 
 		String inviteCode = room.getRoomInviteCode();
-		if (room.getRoomInviteCode() == null || room.getRoomExpiredTime().plusDays(1L).isAfter(LocalDateTime.now())) {
+		if (validateInviteCode(room)) {
 			inviteCode = generateInviteCode();
 			room.updateInviteCode(inviteCode, LocalDateTime.now());
 		}
 
 		return inviteCode;
+	}
+
+	private boolean validateInviteCode(Room room) {
+		return room.getRoomInviteCode() == null || room.getRoomExpiredTime().plusDays(1L).isAfter(LocalDateTime.now());
 	}
 
 	private void validRoomRole(User user, Room room, RoomRole... checkRooms) {
@@ -145,5 +158,57 @@ public class RoomService {
 	private Room findRoom(Long id) {
 		return roomRepository.findById(id)
 			.orElseThrow(RoomInfoNotFoundException::new);
+	}
+
+	@Transactional(readOnly = true)
+	public void checkRoomInviteCode(UserPrincipal userPrincipal, String inviteCode) {
+		Room room = getRoomUsingInviteCode(inviteCode);
+
+		validateInviteRoom(userPrincipal, room);
+	}
+
+	private void validateInviteRoom(UserPrincipal userPrincipal, Room room) {
+		if (!validateInviteCode(room)) {
+			throw new InvalidInviteCode();
+		}
+
+		if (roomRepository.existsUserInRoom(userPrincipal.getEmail(), room.getId())) {
+			throw new AlreadyExistInRoomException();
+		}
+	}
+
+	private Room getRoomUsingInviteCode(String inviteCode) {
+		return roomRepository.findByRoomInviteCode(inviteCode)
+			.orElseThrow(InvalidInviteCode::new);
+	}
+
+	public InviteResponseDTO inviteUser(UserPrincipal userPrincipal, String inviteCode, List<String> roles) {
+		Room room = getRoomUsingInviteCode(inviteCode);
+		User user = findUser(userPrincipal);
+
+		validateInviteRoom(userPrincipal, room);
+		validateSelectRole(roles);
+
+		for (String role : roles) {
+			ParticipantRole participantRole = new ParticipantRole(null, RoomRole.valueOf(role), user, room);
+			participantRoleRepository.save(participantRole);
+		}
+
+		RoomParticipant roomParticipant = new RoomParticipant(null, LocalDateTime.now(), false, user, room);
+		roomParticipantRepository.save(roomParticipant);
+
+		return new InviteResponseDTO(room.getId());
+	}
+
+	private void validateSelectRole(List<String> roles) {
+		for (String role : roles) {
+			try {
+				if (RoomRole.valueOf(role) == RoomRole.ADMIN) {
+					throw new UserHaveNotPrivilegeException();
+				}
+			} catch (IllegalArgumentException e) {
+				throw new UserHaveNotPrivilegeException();
+			}
+		}
 	}
 }

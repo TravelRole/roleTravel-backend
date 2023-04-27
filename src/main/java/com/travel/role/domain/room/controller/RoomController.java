@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.travel.role.domain.room.dto.InviteResponseDTO;
 import com.travel.role.domain.room.dto.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.RoomResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
@@ -41,5 +42,18 @@ public class RoomController {
 	public String getInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId) {
 		return roomService.makeInviteCode(userPrincipal, roomId);
+	}
+
+	@GetMapping("/check-room/{invite_code}")
+	public void checkRoomInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("invite_code") String inviteCode) {
+		roomService.checkRoomInviteCode(userPrincipal, inviteCode);
+	}
+
+	@PostMapping("/room/{invite_code}")
+	@ResponseStatus(HttpStatus.CREATED)
+	public InviteResponseDTO inviteUser(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("invite_code") String inviteCode, @RequestBody List<String> roles) {
+		return roomService.inviteUser(userPrincipal, inviteCode, roles);
 	}
 }

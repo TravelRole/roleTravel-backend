@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.amazonaws.SdkClientException;
+import com.travel.role.domain.comment.exception.CommentInfoNotFoundException;
+import com.travel.role.domain.room.exception.AlreadyExistInRoomException;
+import com.travel.role.domain.room.exception.InvalidInviteCode;
 import com.travel.role.domain.room.exception.InvalidLocalDateException;
 import com.travel.role.domain.room.exception.UserHaveNotPrivilegeException;
-import com.travel.role.domain.comment.exception.CommentInfoNotFoundException;
 import com.travel.role.domain.user.exception.AlreadyExistUserException;
 import com.travel.role.domain.user.exception.InputValueNotMatchException;
 import com.travel.role.domain.user.exception.PlaceInfoNotFoundException;
@@ -134,5 +136,17 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public ExceptionResponse resourceOperationAccessDeniedException(ResourceOperationAccessDeniedException e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(InvalidInviteCode.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse invalidInviteCodeException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(AlreadyExistInRoomException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse alreadyExistInRoomException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
