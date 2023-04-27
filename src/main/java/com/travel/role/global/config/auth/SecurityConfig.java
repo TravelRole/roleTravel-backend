@@ -1,4 +1,4 @@
-package com.travel.role.global.auth.config;
+package com.travel.role.global.config.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
