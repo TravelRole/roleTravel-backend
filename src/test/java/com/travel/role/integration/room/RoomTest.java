@@ -1,4 +1,4 @@
-package com.travel.role.domain.room;
+package com.travel.role.integration.room;
 
 import static org.assertj.core.api.Assertions.*;
 

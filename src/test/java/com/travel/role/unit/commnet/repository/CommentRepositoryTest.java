@@ -1,4 +1,4 @@
-package com.travel.role.domain.comment.repository;
+package com.travel.role.unit.commnet.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 
 import com.travel.role.config.TestConfig;
 import com.travel.role.domain.comment.entity.Comment;
+import com.travel.role.domain.comment.repository.CommentRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.user.repository.UserRepository;

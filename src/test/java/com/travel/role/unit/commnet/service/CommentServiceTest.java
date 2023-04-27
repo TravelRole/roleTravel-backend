@@ -1,4 +1,4 @@
-package com.travel.role.domain.comment.service;
+package com.travel.role.unit.commnet.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -19,6 +19,7 @@ import com.travel.role.domain.comment.dto.response.CommentListResDTO;
 import com.travel.role.domain.comment.dto.response.CommentResDTO;
 import com.travel.role.domain.comment.entity.Comment;
 import com.travel.role.domain.comment.repository.CommentRepository;
+import com.travel.role.domain.comment.service.CommentService;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.service.RoomParticipantReadService;

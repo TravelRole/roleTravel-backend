@@ -1,4 +1,4 @@
-package com.travel.role.global.auth.service;
+package com.travel.role.unit.auth.service;
 
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
@@ -19,6 +19,8 @@ import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 
+import com.travel.role.global.auth.service.AuthService;
+import com.travel.role.global.auth.service.TokenProvider;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;

@@ -1,4 +1,4 @@
-package com.travel.role.domain.user.service;
+package com.travel.role.unit.user.service;
 
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
@@ -19,6 +19,8 @@ import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
 import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.domain.user.entity.User;
+import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.domain.user.service.UserService;
 import com.travel.role.global.exception.user.InputValueNotMatchException;
 
 @ExtendWith(MockitoExtension.class)
