@@ -15,26 +15,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
-import com.travel.role.domain.room.repository.ParticipantRoleRepository;
-import com.travel.role.domain.room.repository.RoomParticipantRepository;
-import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.response.InviteResponseDTO;
+import com.travel.role.domain.room.dto.response.MemberDTO;
+import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
 import com.travel.role.domain.room.entity.RoomRole;
-import com.travel.role.domain.room.dto.response.InviteResponseDTO;
-import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
-import com.travel.role.domain.room.dto.response.MemberDTO;
-import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.repository.ParticipantRoleRepository;
+import com.travel.role.domain.room.repository.RoomParticipantRepository;
+import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.user.entity.User;
+import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.room.AlreadyExistInRoomException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
-import com.travel.role.domain.user.repository.UserRepository;
-import com.travel.role.domain.user.entity.User;
-import com.travel.role.global.exception.user.RoomInfoNotFoundException;
-import com.travel.role.global.exception.user.UserInfoNotFoundException;
-import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.util.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
@@ -47,10 +45,11 @@ public class RoomService {
     private static final int MAX_PASSWORD_LENGTH = 20;
 
 	private final RoomRepository roomRepository;
-	private final UserRepository userRepository;
+	private final UserReadService userReadService;
 	private final RoomParticipantRepository roomParticipantRepository;
 	private final ParticipantRoleRepository participantRoleRepository;
 	private final PasswordGenerator passwordGenerator;
+	private final RoomReadService roomReadService;
 
     public List<RoomResponseDTO> getRoomList(UserPrincipal userPrincipal) {
         List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(userPrincipal.getEmail());
@@ -82,7 +81,7 @@ public class RoomService {
 
 	public void makeRoom(UserPrincipal userPrincipal, MakeRoomRequestDTO makeRoomRequestDTO) {
 		validateDate(makeRoomRequestDTO);
-		User user = findUser(userPrincipal);
+		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
 		Room room = roomRepository.save(Room.of(makeRoomRequestDTO));
 		saveNewRoomParticipant(user, room);
 		saveNewParticipantRole(user, room);
@@ -107,11 +106,6 @@ public class RoomService {
         participantRoleRepository.save(newParticipantRole);
     }
 
-    private User findUser(UserPrincipal userPrincipal) {
-        return userRepository.findByEmail(userPrincipal.getEmail())
-                .orElseThrow(UserInfoNotFoundException::new);
-    }
-
     private void validateDate(MakeRoomRequestDTO makeRoomRequestDTO) {
         LocalDate start = makeRoomRequestDTO.getTravelStartDate();
         LocalDate end = makeRoomRequestDTO.getTravelEndDate();
@@ -121,8 +115,8 @@ public class RoomService {
 	}
 
 	public String makeInviteCode(UserPrincipal userPrincipal, Long roomId) {
-		User user = findUser(userPrincipal);
-		Room room = findRoom(roomId);
+		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 
 		validRoomRole(user, room, RoomRole.ADMIN);
 
@@ -155,14 +149,9 @@ public class RoomService {
 		return inviteCode;
 	}
 
-	private Room findRoom(Long id) {
-		return roomRepository.findById(id)
-			.orElseThrow(RoomInfoNotFoundException::new);
-	}
-
 	@Transactional(readOnly = true)
 	public void checkRoomInviteCode(UserPrincipal userPrincipal, String inviteCode) {
-		Room room = getRoomUsingInviteCode(inviteCode);
+		Room room = roomReadService.getRoomUsingInviteCode(inviteCode);
 
 		validateInviteRoom(userPrincipal, room);
 	}
@@ -172,19 +161,15 @@ public class RoomService {
 			throw new InvalidInviteCode();
 		}
 
+		//TODO: ParticipantRepository에 있는것으로 변경하기
 		if (roomRepository.existsUserInRoom(userPrincipal.getEmail(), room.getId())) {
 			throw new AlreadyExistInRoomException();
 		}
 	}
 
-	private Room getRoomUsingInviteCode(String inviteCode) {
-		return roomRepository.findByRoomInviteCode(inviteCode)
-			.orElseThrow(InvalidInviteCode::new);
-	}
-
 	public InviteResponseDTO inviteUser(UserPrincipal userPrincipal, String inviteCode, List<String> roles) {
-		Room room = getRoomUsingInviteCode(inviteCode);
-		User user = findUser(userPrincipal);
+		Room room = roomReadService.getRoomUsingInviteCode(inviteCode);
+		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
 
 		validateInviteRoom(userPrincipal, room);
 		validateSelectRole(roles);

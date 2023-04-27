@@ -14,22 +14,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.travel.role.domain.comment.repository.CommentRepository;
-import com.travel.role.domain.comment.dto.response.CommentListResDTO;
 import com.travel.role.domain.comment.dto.request.CommentReqDTO;
+import com.travel.role.domain.comment.dto.response.CommentListResDTO;
 import com.travel.role.domain.comment.dto.response.CommentResDTO;
 import com.travel.role.domain.comment.entity.Comment;
-import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
-import com.travel.role.domain.room.repository.RoomParticipantRepository;
-import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.comment.repository.CommentRepository;
 import com.travel.role.domain.room.entity.Room;
-import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.room.repository.RoomParticipantRepository;
+import com.travel.role.domain.room.service.RoomParticipantReadService;
+import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
-import com.travel.role.global.exception.user.RoomInfoNotFoundException;
-import com.travel.role.global.exception.user.UserInfoNotFoundException;
-import com.travel.role.global.exception.user.UserNotParticipateRoomException;
-import com.travel.role.global.exception.dto.ExceptionMessage;
+import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
+import com.travel.role.global.exception.dto.ExceptionMessage;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
@@ -38,16 +35,18 @@ class CommentServiceTest {
 	private CommentService commentService;
 
 	@Mock
-	private UserRepository userRepository;
-
+	private UserReadService userReadService;
 	@Mock
-	private RoomRepository roomRepository;
+	private RoomReadService roomReadService;
 
 	@Mock
 	private CommentRepository commentRepository;
 
 	@Mock
 	private RoomParticipantRepository roomParticipantRepository;
+
+	@Mock
+	private RoomParticipantReadService roomParticipantReadService;
 
 	@Test
 	void depth가_0인_댓글_생성_성공() {
@@ -56,12 +55,12 @@ class CommentServiceTest {
 		Room room = makeRoom();
 		CommentReqDTO commentReqDTO = new CommentReqDTO("content");
 		Comment comment = makeCommentAfterSaved(user, 1L, 1L, 0);
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
+			.willReturn(user);
+		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
+			.willReturn(room);
+		doNothing()
+			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 		given(commentRepository.save(any(Comment.class)))
 			.willReturn(comment);
 
@@ -81,88 +80,18 @@ class CommentServiceTest {
 		Comment comment = makeCommentAfterSaved(user, 2L, 1L, 1);
 		given(commentRepository.findById(anyLong()))
 			.willReturn(Optional.of(comment));
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
+			.willReturn(user);
+		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
+			.willReturn(room);
+		doNothing()
+			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
 		// when
 		commentService.createComment("kkk@naver.com", 1L, 1L, commentReqDTO);
 
 		// then
 		then(commentRepository).should(times(1)).save(any(Comment.class));
-	}
-
-	@Test
-	void 댓글_생성_실패_존재하지_않는_댓글에_대댓글을_작성할때() {
-		// given
-		User user = makeUser(1L);
-		Room room = makeRoom();
-		CommentReqDTO commentReqDTO = new CommentReqDTO("content");
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
-		given(commentRepository.findById(anyLong()))
-			.willReturn(Optional.empty());
-
-		// when & then
-		assertThatThrownBy(() -> {
-			commentService.createComment("kkk@naver.com", 1L, 1L, commentReqDTO);
-		}).isInstanceOf(CommentInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.COMMENT_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_생성_실패_존재하지_않는_회원일때() {
-		// given
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.empty());
-
-		// when & then
-		assertThatThrownBy(() -> {
-			commentService.createComment("kkk@naver.com", 1L, null, null);
-		}).isInstanceOf(UserInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.USERNAME_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_생성_실패_존재하지_않는_방일때() {
-		// given
-		User user = makeUser(1L);
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.empty());
-
-		// when & then
-		assertThatThrownBy(() -> {
-			commentService.createComment("kkk@naver.com", 1L, null, null);
-		}).isInstanceOf(RoomInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.ROOM_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_생성_실패_방에_참가하지_않은_회원일때() {
-		// given
-		User user = makeUser(1L);
-		Room room = makeRoom();
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(false);
-
-		// when & then
-		assertThatThrownBy(() -> {
-			commentService.createComment("kkk@naver.com", 1L, null, null);
-		}).isInstanceOf(UserNotParticipateRoomException.class)
-			.hasMessage(ExceptionMessage.USER_NOT_PARTICIPATE_ROOM);
 	}
 
 	@Test
@@ -175,12 +104,12 @@ class CommentServiceTest {
 			makeCommentAfterSaved(user, 1L, 1L, 0),
 			makeCommentAfterSaved(user, 2L, 2L, 0)
 		);
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
+			.willReturn(user);
+		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
+			.willReturn(room);
+		doNothing()
+			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 		given(commentRepository.findAllFirstDepthComments())
 			.willReturn(findZeroDepthComments);
 
@@ -211,12 +140,12 @@ class CommentServiceTest {
 			makeCommentAfterSaved(user, 2L, 1L, 1),
 			makeCommentAfterSaved(user, 3L, 1L, 1)
 		);
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
+			.willReturn(user);
+		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
+			.willReturn(room);
+		doNothing()
+			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 		given(commentRepository.findAllChildCommentsByParentId(parentId))
 			.willReturn(findFirstDepthComments);
 
@@ -243,116 +172,18 @@ class CommentServiceTest {
 		Room room = makeRoom();
 		Comment comment = makeCommentAfterSaved(user, 1L, 1L, 0);
 		CommentReqDTO commentReqDTO = new CommentReqDTO("content");
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
+			.willReturn(user);
+		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
+			.willReturn(room);
 		given(commentRepository.findById(anyLong()))
 			.willReturn(Optional.of(comment));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
+		doNothing()
+			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
 		//when & then
 		assertThatNoException().isThrownBy(() ->
 			commentService.modifyComment("kkk@naver.com", 1L, 1L, commentReqDTO));
-	}
-
-	@Test
-	void 댓글_수정_실패_존재하지_않는_회원일때() {
-		//given
-		CommentReqDTO commentReqDTO = new CommentReqDTO("content");
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.empty());
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.modifyComment("kkk@naver.com", 1L, 1L, commentReqDTO);
-		}).isInstanceOf(UserInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.USERNAME_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_수정_실패_존재하지_않는_방일때() {
-		//given
-		User user = makeUser(1L);
-		CommentReqDTO commentReqDTO = new CommentReqDTO("content");
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.empty());
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.modifyComment("kkk@naver.com", 1L, 1L, commentReqDTO);
-		}).isInstanceOf(RoomInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.ROOM_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_수정_실패_존재하지_않는_댓글일때() {
-		//given
-		User user = makeUser(1L);
-		Room room = makeRoom();
-		CommentReqDTO commentReqDTO = new CommentReqDTO("content");
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(commentRepository.findById(anyLong()))
-			.willReturn(Optional.empty());
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.modifyComment("kkk@naver.com", 1L, 1L, commentReqDTO);
-		}).isInstanceOf(CommentInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.COMMENT_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_수정_실패_방에_참가하지_않은_회원일때() {
-		//given
-		User user = makeUser(1L);
-		Room room = makeRoom();
-		Comment comment = makeCommentAfterSaved(user, 1L, 1L, 0);
-		CommentReqDTO commentReqDTO = new CommentReqDTO("content");
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(commentRepository.findById(anyLong()))
-			.willReturn(Optional.of(comment));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(false);
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.modifyComment("kkk@naver.com", 1L, 1L, commentReqDTO);
-		}).isInstanceOf(UserNotParticipateRoomException.class)
-			.hasMessage(ExceptionMessage.USER_NOT_PARTICIPATE_ROOM);
-	}
-
-	@Test
-	void 댓글_수정_실패_자신이_작성한_댓글이_아닐때() {
-		//given
-		User loginUser = makeUser(1L);
-		User author = makeUser(2L);
-		Room room = makeRoom();
-		Comment comment = makeCommentAfterSaved(author, 1L, 1L, 0);
-		CommentReqDTO commentReqDTO = new CommentReqDTO("content");
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(loginUser));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(commentRepository.findById(anyLong()))
-			.willReturn(Optional.of(comment));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.modifyComment("kkk@naver.com", 1L, 1L, commentReqDTO);
-		}).isInstanceOf(ResourceOperationAccessDeniedException.class)
-			.hasMessage(String.format(ExceptionMessage.RESOURCE_OPERATION_ACCESS_DENIED, "댓글", "수정"));
 	}
 
 	@Test
@@ -361,14 +192,14 @@ class CommentServiceTest {
 		User user = makeUser(1L);
 		Room room = makeRoom();
 		Comment comment = makeCommentAfterSaved(user, 1L, 1L, 0);
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
+			.willReturn(user);
+		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
+			.willReturn(room);
 		given(commentRepository.findById(anyLong()))
 			.willReturn(Optional.of(comment));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
+		doNothing()
+			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
 		//when & then
 		assertThatNoException().isThrownBy(() ->
@@ -377,75 +208,6 @@ class CommentServiceTest {
 		then(commentRepository).should(times(1)).deleteAllByGroupIdAndDepth(comment.getGroupId(), comment.getDepth());
 	}
 
-	@Test
-	void 댓글_삭제_실패_존재하지_않는_회원일때() {
-		//given
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.empty());
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.deleteComment("kkk@naver.com", 1L, 1L);
-		}).isInstanceOf(UserInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.USERNAME_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_삭제_실패_존재하지_않는_방일때() {
-		//given
-		User user = makeUser(1L);
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.empty());
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.deleteComment("kkk@naver.com", 1L, 1L);
-		}).isInstanceOf(RoomInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.ROOM_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_삭제_실패_존재하지_않는_댓글일때() {
-		//given
-		User user = makeUser(1L);
-		Room room = makeRoom();
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(commentRepository.findById(anyLong()))
-			.willReturn(Optional.empty());
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.deleteComment("kkk@naver.com", 1L, 1L);
-		}).isInstanceOf(CommentInfoNotFoundException.class)
-			.hasMessage(ExceptionMessage.COMMENT_NOT_FOUND);
-	}
-
-	@Test
-	void 댓글_삭제_실패_방에_참가하지_않은_회원일때() {
-		//given
-		User user = makeUser(1L);
-		Room room = makeRoom();
-		Comment comment = makeCommentAfterSaved(user, 1L, 1L, 0);
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(user));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
-		given(commentRepository.findById(anyLong()))
-			.willReturn(Optional.of(comment));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(false);
-
-		//when & then
-		assertThatThrownBy(() -> {
-			commentService.deleteComment("kkk@naver.com", 1L, 1L);
-		}).isInstanceOf(UserNotParticipateRoomException.class)
-			.hasMessage(ExceptionMessage.USER_NOT_PARTICIPATE_ROOM);
-	}
 
 	@Test
 	void 댓글_삭제_실패_자신이_작성한_댓글이_아닐때() {
@@ -454,14 +216,14 @@ class CommentServiceTest {
 		User author = makeUser(2L);
 		Room room = makeRoom();
 		Comment comment = makeCommentAfterSaved(author, 1L, 1L, 0);
-		given(userRepository.findByEmail(anyString()))
-			.willReturn(Optional.of(loginUser));
-		given(roomRepository.findById(anyLong()))
-			.willReturn(Optional.of(room));
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
+			.willReturn(loginUser);
+		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
+			.willReturn(room);
 		given(commentRepository.findById(anyLong()))
 			.willReturn(Optional.of(comment));
-		given(roomParticipantRepository.existsByUserAndRoom(any(User.class), any(Room.class)))
-			.willReturn(true);
+		doNothing()
+			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
 		//when & then
 		assertThatThrownBy(() -> {

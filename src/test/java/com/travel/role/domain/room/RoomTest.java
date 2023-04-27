@@ -12,17 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.room.repository.RoomParticipantRepository;
-import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
-import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
-import com.travel.role.domain.room.repository.ParticipantRoleRepository;
-import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.repository.RoomParticipantRepository;
+import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.service.RoomService;
-import com.travel.role.domain.user.repository.UserRepository;
-import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
+import com.travel.role.domain.user.entity.User;
+import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.global.auth.token.UserPrincipal;
 
 @SpringBootTest
@@ -36,9 +35,6 @@ class RoomTest {
 
     @Autowired
     private RoomParticipantRepository roomParticipantRepository;
-
-    @Autowired
-    private ParticipantRoleRepository participantRoleRepository;
 
     @Autowired
     private RoomService roomService;
