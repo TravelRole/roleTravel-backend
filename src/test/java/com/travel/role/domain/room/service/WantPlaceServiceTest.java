@@ -27,9 +27,9 @@ import com.travel.role.domain.room.entity.WantPlace;
 import com.travel.role.domain.room.dto.WantPlaceRequestDTO;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.domain.user.entity.User;
-import com.travel.role.domain.user.exception.RoomInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
-import com.travel.role.domain.user.exception.UserNotParticipateRoomException;
+import com.travel.role.global.exception.user.RoomInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.UserNotParticipateRoomException;
 import com.travel.role.global.auth.token.UserPrincipal;
 
 @ExtendWith(MockitoExtension.class)

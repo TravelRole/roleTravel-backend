@@ -17,8 +17,8 @@ import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileResponseDTO;
 import com.travel.role.global.s3.S3Service;
-import com.travel.role.domain.user.exception.InputValueNotMatchException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.InputValueNotMatchException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

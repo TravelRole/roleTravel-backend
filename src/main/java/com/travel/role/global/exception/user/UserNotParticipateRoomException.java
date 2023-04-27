@@ -1,4 +1,4 @@
-package com.travel.role.domain.user.exception;
+package com.travel.role.global.exception.user;
 
 import com.travel.role.global.exception.ExceptionMessage;
 

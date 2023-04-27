@@ -25,7 +25,7 @@ import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
@@ -33,7 +33,7 @@ import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.exception.InvalidTokenException;
 import com.travel.role.global.auth.exception.NotExistTokenException;
 import com.travel.role.global.auth.service.mail.MailService;
-import com.travel.role.domain.user.exception.AlreadyExistUserException;
+import com.travel.role.global.exception.user.AlreadyExistUserException;
 import com.travel.role.global.util.PasswordGenerator;
 
 import io.jsonwebtoken.ExpiredJwtException;

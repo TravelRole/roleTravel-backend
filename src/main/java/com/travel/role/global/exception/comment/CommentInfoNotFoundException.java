@@ -1,4 +1,4 @@
-package com.travel.role.domain.comment.exception;
+package com.travel.role.global.exception.comment;
 
 import com.travel.role.global.exception.ExceptionMessage;
 

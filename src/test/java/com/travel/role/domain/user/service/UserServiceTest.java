@@ -21,8 +21,8 @@ import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.dto.UserPasswordModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
-import com.travel.role.domain.user.exception.InputValueNotMatchException;
-import com.travel.role.domain.user.exception.UserInfoNotFoundException;
+import com.travel.role.global.exception.user.InputValueNotMatchException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
