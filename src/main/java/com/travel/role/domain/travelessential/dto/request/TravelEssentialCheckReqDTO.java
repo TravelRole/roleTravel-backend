@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dto;
+package com.travel.role.domain.travelessential.dto.request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class TravelEssentialDeleteReqDTO {
+public class TravelEssentialCheckReqDTO {
 
+	private Boolean check;
 	private List<Long> ids = new ArrayList<>();
 }

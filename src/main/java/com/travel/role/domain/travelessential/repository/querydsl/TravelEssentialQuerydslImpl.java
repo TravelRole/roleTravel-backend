@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.repository;
+package com.travel.role.domain.travelessential.repository.querydsl;
 
 import static com.querydsl.core.group.GroupBy.*;
 import static com.travel.role.domain.room.entity.QTravelEssentials.*;
@@ -8,8 +8,8 @@ import java.util.Map;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.travel.role.domain.room.entity.EssentialCategory;
-import com.travel.role.domain.room.dto.TravelEssentialResDTO;
+import com.travel.role.domain.travelessential.entity.EssentialCategory;
+import com.travel.role.domain.travelessential.dto.response.TravelEssentialResDTO;
 
 import lombok.RequiredArgsConstructor;
 

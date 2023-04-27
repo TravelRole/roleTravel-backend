@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.controller;
+package com.travel.role.domain.travelessential.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.room.entity.EssentialCategory;
-import com.travel.role.domain.room.dto.TravelEssentialCheckReqDTO;
-import com.travel.role.domain.room.dto.TravelEssentialDeleteReqDTO;
-import com.travel.role.domain.room.dto.TravelEssentialReqDTO;
-import com.travel.role.domain.room.dto.TravelEssentialResDTO;
-import com.travel.role.domain.room.service.TravelEssentialService;
+import com.travel.role.domain.travelessential.entity.EssentialCategory;
+import com.travel.role.domain.travelessential.dto.request.TravelEssentialCheckReqDTO;
+import com.travel.role.domain.travelessential.dto.request.TravelEssentialDeleteReqDTO;
+import com.travel.role.domain.travelessential.dto.request.TravelEssentialReqDTO;
+import com.travel.role.domain.travelessential.dto.response.TravelEssentialResDTO;
+import com.travel.role.domain.travelessential.service.TravelEssentialService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;

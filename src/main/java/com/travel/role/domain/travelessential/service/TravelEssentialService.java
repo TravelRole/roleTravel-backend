@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.service;
+package com.travel.role.domain.travelessential.service;
 
 import java.util.List;
 import java.util.Map;
@@ -8,14 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
-import com.travel.role.domain.room.repository.TravelEssentialRepository;
-import com.travel.role.domain.room.entity.EssentialCategory;
+import com.travel.role.domain.travelessential.entity.TravelEssential;
+import com.travel.role.domain.travelessential.repository.TravelEssentialRepository;
+import com.travel.role.domain.travelessential.entity.EssentialCategory;
 import com.travel.role.domain.room.entity.Room;
-import com.travel.role.domain.room.entity.TravelEssentials;
-import com.travel.role.domain.room.dto.TravelEssentialCheckReqDTO;
-import com.travel.role.domain.room.dto.TravelEssentialDeleteReqDTO;
-import com.travel.role.domain.room.dto.TravelEssentialReqDTO;
-import com.travel.role.domain.room.dto.TravelEssentialResDTO;
+import com.travel.role.domain.travelessential.dto.request.TravelEssentialCheckReqDTO;
+import com.travel.role.domain.travelessential.dto.request.TravelEssentialDeleteReqDTO;
+import com.travel.role.domain.travelessential.dto.request.TravelEssentialReqDTO;
+import com.travel.role.domain.travelessential.dto.response.TravelEssentialResDTO;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
@@ -41,7 +41,7 @@ public class TravelEssentialService {
 
 		checkUserInRoom(findUser, findRoom);
 
-		List<TravelEssentials> travelEssentials = reqDTO.toTravelEssentials(findUser, findRoom);
+		List<TravelEssential> travelEssentials = reqDTO.toTravelEssentials(findUser, findRoom);
 
 		travelEssentialRepository.saveAll(travelEssentials);
 	}

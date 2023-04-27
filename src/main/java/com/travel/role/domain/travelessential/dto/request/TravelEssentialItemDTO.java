@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dto;
+package com.travel.role.domain.travelessential.dto.request;
 
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 

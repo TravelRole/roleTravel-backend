@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.dto;
+package com.travel.role.domain.travelessential.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

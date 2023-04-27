@@ -1,4 +1,4 @@
-package com.travel.role.domain.room.entity;
+package com.travel.role.domain.travelessential.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
