@@ -1,7 +1,6 @@
 package com.travel.role.domain.travelessential.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,8 +11,6 @@ import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.travelessential.dto.request.TravelEssentialCheckReqDTO;
 import com.travel.role.domain.travelessential.dto.request.TravelEssentialDeleteReqDTO;
 import com.travel.role.domain.travelessential.dto.request.TravelEssentialReqDTO;
-import com.travel.role.domain.travelessential.dto.response.TravelEssentialResDTO;
-import com.travel.role.domain.travelessential.entity.EssentialCategory;
 import com.travel.role.domain.travelessential.entity.TravelEssential;
 import com.travel.role.domain.travelessential.repository.TravelEssentialRepository;
 import com.travel.role.domain.user.entity.User;
@@ -41,17 +38,6 @@ public class TravelEssentialService {
 		List<TravelEssential> travelEssentials = reqDTO.toTravelEssentials(findUser, findRoom);
 
 		travelEssentialRepository.saveAll(travelEssentials);
-	}
-
-	@Transactional(readOnly = true)
-	public Map<EssentialCategory, List<TravelEssentialResDTO>> readAllGroupByCategory(String email, Long roomId) {
-
-		User findUser = userReadService.findUserByEmailOrElseThrow(email);
-		Room findRoom = roomReadService.findRoomByIdOrElseThrow(roomId);
-
-		roomParticipantReadService.checkParticipant(findUser, findRoom);
-
-		return travelEssentialRepository.readAllGroupByEssentialCategory(findUser.getId(), findRoom.getId());
 	}
 
 	public void deleteTravelEssentials(String email, Long roomId, TravelEssentialDeleteReqDTO reqDTO) {

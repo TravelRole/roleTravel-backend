@@ -21,6 +21,7 @@ import com.travel.role.domain.travelessential.dto.request.TravelEssentialCheckRe
 import com.travel.role.domain.travelessential.dto.request.TravelEssentialDeleteReqDTO;
 import com.travel.role.domain.travelessential.dto.request.TravelEssentialReqDTO;
 import com.travel.role.domain.travelessential.dto.response.TravelEssentialResDTO;
+import com.travel.role.domain.travelessential.service.TravelEssentialReadService;
 import com.travel.role.domain.travelessential.service.TravelEssentialService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class TravelEssentialController {
 
 	private final TravelEssentialService travelEssentialService;
+	private final TravelEssentialReadService travelEssentialReadService;
 
 	@PostMapping
 	public void createTravelEssentials(
@@ -48,8 +50,8 @@ public class TravelEssentialController {
 		@PathVariable("room_id") Long roomId
 	) {
 
-		Map<EssentialCategory, List<TravelEssentialResDTO>> resultMap = travelEssentialService.readAllGroupByCategory(
-			userPrincipal.getEmail(), roomId);
+		Map<EssentialCategory, List<TravelEssentialResDTO>> resultMap =
+			travelEssentialReadService.readAllGroupByCategory(userPrincipal.getEmail(), roomId);
 
 		return ResponseEntity.ok(resultMap);
 	}
