@@ -22,7 +22,6 @@ import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
-import com.travel.role.global.auth.token.UserPrincipal;
 
 @SpringBootTest
 @Transactional
@@ -99,10 +98,9 @@ class RoomTest {
     @Test
     void 방의_정보를_제대로_불러오는지() {
         // given
-        UserPrincipal userPrincipal = new UserPrincipal(1L, "ChanYoo@naver.com", "1234", null);
-
+        String email = "ChanYoo@naver.com";
         // when
-        List<RoomResponseDTO> roomList = roomService.getRoomList(userPrincipal);
+        List<RoomResponseDTO> roomList = roomService.getRoomList(email);
 
         // then
         assertThat(roomList.size()).isEqualTo(1);

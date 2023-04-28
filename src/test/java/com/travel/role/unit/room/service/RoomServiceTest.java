@@ -77,7 +77,7 @@ class RoomServiceTest {
 			.willReturn("1234");
 		given(participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(any(User.class), any(Room.class), anyList()))
 			.willReturn(true);
-		given(userReadService.findUserByEmailOrElseThrow(any(UserPrincipal.class)))
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
 			.willReturn(User.builder().build());
 		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
 			.willReturn(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
@@ -85,7 +85,7 @@ class RoomServiceTest {
 				, null));
 
 		//when
-		String inviteCode = roomService.makeInviteCode(makeUserPrincipal(), 1L);
+		String inviteCode = roomService.makeInviteCode("haechan@naver.com", 1L);
 
 		//then
 		assertThat(inviteCode).isEqualTo("1234");
@@ -98,13 +98,13 @@ class RoomServiceTest {
 			.willReturn("1234");
 		given(participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(any(User.class), any(Room.class), anyList()))
 			.willReturn(true);
-		given(userReadService.findUserByEmailOrElseThrow(any(UserPrincipal.class)))
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
 			.willReturn(User.builder().build());
 		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
 			.willReturn(makeRoom());
 
 		//when
-		String inviteCode = roomService.makeInviteCode(makeUserPrincipal(), 1L);
+		String inviteCode = roomService.makeInviteCode("haechan@naver.com", 1L);
 
 		//then
 		assertThat(inviteCode).isEqualTo("1234");
@@ -117,7 +117,7 @@ class RoomServiceTest {
 			.willReturn(makeInvalidInviteDateRoom());
 
 		//when,then
-		assertThatThrownBy(() -> {roomService.checkRoomInviteCode(makeUserPrincipal(), "1234");})
+		assertThatThrownBy(() -> {roomService.checkRoomInviteCode("haechan@naver.com", "1234");})
 			.isInstanceOf(InvalidInviteCode.class);
 	}
 
@@ -126,13 +126,13 @@ class RoomServiceTest {
 		//given
 		given(roomReadService.getRoomUsingInviteCode(anyString()))
 			.willReturn(makeRoom());
-		given(userReadService.findUserByEmailOrElseThrow(any(UserPrincipal.class)))
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
 			.willReturn(makeUser());
 		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
 			.willReturn(false);
 
 		//when, then
-		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", List.of("ADMIN"));})
+		assertThatThrownBy(() -> {roomService.inviteUser("haechan@naver.com", "1234", List.of("ADMIN"));})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
@@ -141,13 +141,13 @@ class RoomServiceTest {
 		//given
 		given(roomReadService.getRoomUsingInviteCode(anyString()))
 			.willReturn(makeRoom());
-		given(userReadService.findUserByEmailOrElseThrow(any(UserPrincipal.class)))
+		given(userReadService.findUserByEmailOrElseThrow(anyString()))
 			.willReturn(makeUser());
 		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
 			.willReturn(false);
 
 		//when, thend .
-		assertThatThrownBy(() -> {roomService.inviteUser(makeUserPrincipal(), "1234", List.of("HAECHAN"));})
+		assertThatThrownBy(() -> {roomService.inviteUser("haechan@naver.com", "1234", List.of("HAECHAN"));})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 	private static UserPrincipal makeUserPrincipal() {
@@ -210,7 +210,7 @@ class RoomServiceTest {
 
 			WantPlace wantPlace = WantPlace.of(room, getWantPlaceRequestDto());
 
-			given(userReadService.findUserByEmailOrElseThrow(any(UserPrincipal.class)))
+			given(userReadService.findUserByEmailOrElseThrow(anyString()))
 					.willReturn(user2);
 			given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
 					.willReturn(room);
@@ -218,7 +218,7 @@ class RoomServiceTest {
 				.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
 			// when
-			wantPlaceService.addWantPlace(makeUserPrincipal(), getWantPlaceRequestDto());
+			wantPlaceService.addWantPlace("asdd@gmail.com", getWantPlaceRequestDto());
 
 			// then
 			assertThat(wantPlace.getPlaceName()).isEqualTo("제주도");
@@ -231,12 +231,8 @@ class RoomServiceTest {
 
 		private static WantPlaceRequestDTO getWantPlaceRequestDto() {
 			return new WantPlaceRequestDTO(
-					1L, "제주도", "제주도", "1234",
-					123.0, 456.0);
-		}
-
-		private static UserPrincipal makeUserPrincipal() {
-			return new UserPrincipal(1L, "asdd@gmail.com", "1234", null);
+				1L, "제주도", "제주도", "1234",
+				123.0, 456.0);
 		}
 	}
 }

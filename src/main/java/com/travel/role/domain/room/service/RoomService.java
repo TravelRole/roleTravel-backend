@@ -28,7 +28,6 @@ import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
-import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.room.AlreadyExistInRoomException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
@@ -51,15 +50,15 @@ public class RoomService {
 	private final PasswordGenerator passwordGenerator;
 	private final RoomReadService roomReadService;
 
-    public List<RoomResponseDTO> getRoomList(UserPrincipal userPrincipal) {
-        List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(userPrincipal.getEmail());
+    public List<RoomResponseDTO> getRoomList(String email) {
+        List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(email);
 
         Map<Long, RoomResponseDTO> hash = new HashMap<>();
 		for (Tuple tuple : findRoomInfo) {
 			Room room = tuple.get(0, Room.class);
 			User user = tuple.get(1, User.class);
 
-			if (Objects.equals(user.getEmail(), userPrincipal.getEmail())) {
+			if (Objects.equals(user.getEmail(), email)) {
 				List<MemberDTO> members = new ArrayList<>();
 				hash.put(room.getId(), RoomResponseDTO.of(room, members));
 			}
@@ -79,9 +78,9 @@ public class RoomService {
         return new ArrayList<>(hash.values());
     }
 
-	public void makeRoom(UserPrincipal userPrincipal, MakeRoomRequestDTO makeRoomRequestDTO) {
+	public void makeRoom(String email, MakeRoomRequestDTO makeRoomRequestDTO) {
 		validateDate(makeRoomRequestDTO);
-		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
+		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomRepository.save(Room.of(makeRoomRequestDTO));
 		saveNewRoomParticipant(user, room);
 		saveNewParticipantRole(user, room);
@@ -114,8 +113,8 @@ public class RoomService {
 			throw new InvalidLocalDateException(INVALID_DATE_ERROR);
 	}
 
-	public String makeInviteCode(UserPrincipal userPrincipal, Long roomId) {
-		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
+	public String makeInviteCode(String email, Long roomId) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 
 		validRoomRole(user, room, RoomRole.ADMIN);
@@ -150,28 +149,28 @@ public class RoomService {
 	}
 
 	@Transactional(readOnly = true)
-	public void checkRoomInviteCode(UserPrincipal userPrincipal, String inviteCode) {
+	public void checkRoomInviteCode(String email, String inviteCode) {
 		Room room = roomReadService.getRoomUsingInviteCode(inviteCode);
 
-		validateInviteRoom(userPrincipal, room);
+		validateInviteRoom(email, room);
 	}
 
-	private void validateInviteRoom(UserPrincipal userPrincipal, Room room) {
+	private void validateInviteRoom(String email, Room room) {
 		if (!validateInviteCode(room)) {
 			throw new InvalidInviteCode();
 		}
 
 		//TODO: ParticipantRepository에 있는것으로 변경하기
-		if (roomRepository.existsUserInRoom(userPrincipal.getEmail(), room.getId())) {
+		if (roomRepository.existsUserInRoom(email, room.getId())) {
 			throw new AlreadyExistInRoomException();
 		}
 	}
 
-	public InviteResponseDTO inviteUser(UserPrincipal userPrincipal, String inviteCode, List<String> roles) {
+	public InviteResponseDTO inviteUser(String email, String inviteCode, List<String> roles) {
 		Room room = roomReadService.getRoomUsingInviteCode(inviteCode);
-		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
+		User user = userReadService.findUserByEmailOrElseThrow(email);
 
-		validateInviteRoom(userPrincipal, room);
+		validateInviteRoom(email, room);
 		validateSelectRole(roles);
 
 		for (String role : roles) {
