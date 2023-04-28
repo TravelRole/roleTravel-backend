@@ -7,6 +7,7 @@ import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -72,5 +73,11 @@ public class UserController {
 	public void modifyProfileImageUrl(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 
 		userService.modifyProfileImageUrl(userPrincipal.getEmail());
+	}
+
+	@DeleteMapping("/users/image")
+	public void deleteProfileImage(@AuthenticationPrincipal UserPrincipal userPrincipal){
+
+		userService.deleteProfileImageUrl(userPrincipal.getEmail());
 	}
 }
