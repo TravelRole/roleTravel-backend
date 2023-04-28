@@ -16,6 +16,7 @@ import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileResponseDTO;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.exception.user.InputValueNotMatchException;
+import com.travel.role.global.s3.ImageProperty;
 import com.travel.role.global.s3.S3Service;
 
 import lombok.RequiredArgsConstructor;
@@ -94,10 +95,20 @@ public class UserService {
 
 		User findUser = userReadService.findUserByEmailOrElseThrow(email);
 
-		String key = S3Service.USER_PROFILE_IMAGE_PATH + findUser.getId();
-		s3Service.checkObjectExistsOrElseThrow(key, "회원 프로필");
+		String key = s3Service.getUserProfileImageKey(findUser.getId());
+		s3Service.checkObjectExistsOrElseThrow(key, ImageProperty.USER_PROFILE);
 		String profileImageUrl = s3Service.getObjectUrl(key);
 
 		findUser.updateProfileImageUrl(profileImageUrl);
+	}
+
+	public void deleteProfileImageUrl(String email){
+
+		User findUser = userReadService.findUserByEmailOrElseThrow(email);
+
+		String key = s3Service.getUserProfileImageKey(findUser.getId());
+		s3Service.deleteObject(key);
+
+		findUser.updateProfileImageUrl(null);
 	}
 }
