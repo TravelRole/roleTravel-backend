@@ -20,7 +20,6 @@ import com.travel.role.domain.wantplace.dto.response.WantPlaceDTO;
 import com.travel.role.domain.wantplace.dto.response.WantPlaceResponseDTO;
 import com.travel.role.domain.wantplace.entity.WantPlace;
 import com.travel.role.domain.wantplace.repository.WantPlaceRepository;
-import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.user.PlaceInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -35,23 +34,23 @@ public class WantPlaceService {
 	private final RoomParticipantReadService roomParticipantReadService;
 	private final ParticipantRoleRepository participantRoleRepository;
 
-	public void deleteWantPlace(UserPrincipal userPrincipal, Long roomId, Long placeId) {
-		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
+	public void deleteWantPlace(String email, Long roomId, Long placeId) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(user, room);
 		deleteWantPlaceById(placeId);
 	}
 
-	public WantPlaceResponseDTO getWantPlaceList(UserPrincipal userPrincipal, Long roomId) {
-		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
+	public WantPlaceResponseDTO getWantPlaceList(String email, Long roomId) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(user, room);
 		List<WantPlaceDTO> wantPlaceDTOS = getWantPlaceList(roomId);
 		return WantPlaceResponseDTO.of(wantPlaceDTOS, checkRole(user, room));
 	}
 
-	public void addWantPlace(UserPrincipal userPrincipal, WantPlaceRequestDTO wantPlaceRequestDTO) {
-		User user = userReadService.findUserByEmailOrElseThrow(userPrincipal);
+	public void addWantPlace(String email, WantPlaceRequestDTO wantPlaceRequestDTO) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(wantPlaceRequestDTO.getRoomId());
 		roomParticipantReadService.checkParticipant(user, room);
 		wantPlaceRepository.save(WantPlace.of(room, wantPlaceRequestDTO));

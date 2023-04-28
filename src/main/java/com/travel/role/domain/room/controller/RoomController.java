@@ -30,30 +30,30 @@ public class RoomController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/room")
 	public void makeRoom(@AuthenticationPrincipal UserPrincipal userPrincipal,@RequestBody MakeRoomRequestDTO dto) {
-		roomService.makeRoom(userPrincipal, dto);
+		roomService.makeRoom(userPrincipal.getEmail(), dto);
 	}
 
 	@GetMapping("/room")
 	public List<RoomResponseDTO> getRoomList(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		return roomService.getRoomList(userPrincipal);
+		return roomService.getRoomList(userPrincipal.getEmail());
 	}
 
 	@GetMapping("/room/invite-code/{room_id}")
 	public String getInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId) {
-		return roomService.makeInviteCode(userPrincipal, roomId);
+		return roomService.makeInviteCode(userPrincipal.getEmail(), roomId);
 	}
 
 	@GetMapping("/check-room/{invite_code}")
 	public void checkRoomInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("invite_code") String inviteCode) {
-		roomService.checkRoomInviteCode(userPrincipal, inviteCode);
+		roomService.checkRoomInviteCode(userPrincipal.getEmail(), inviteCode);
 	}
 
 	@PostMapping("/room/{invite_code}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public InviteResponseDTO inviteUser(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("invite_code") String inviteCode, @RequestBody List<String> roles) {
-		return roomService.inviteUser(userPrincipal, inviteCode, roles);
+		return roomService.inviteUser(userPrincipal.getEmail(), inviteCode, roles);
 	}
 }
