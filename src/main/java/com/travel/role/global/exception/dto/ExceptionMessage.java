@@ -35,6 +35,8 @@ public final class ExceptionMessage {
 	public static final String COMMENT_NOT_FOUND = "해당하는 댓글이 존재하지 않습니다.";
 	// image
 	public static final String IMAGE_NOT_FOUND_IN_S3 = "%s 이미지가 s3에 존재하지 않습니다.";
+	public static final String CREATE_PRESIGNED_URL_FAIL = "PreSigned Url 을 생성하던 중 문제가 발생하였습니다.";
+	public static final String DELETE_IMAGE_FAIL_IN_S3 = "이미지를 삭제하던 중 문제가 발생하였습니다.";
 
 	// travel essential
 	public static final String INVALID_ESSENTIAL_CATEGORY = "지정한 카테고리 내에서 입력해 주세요";
