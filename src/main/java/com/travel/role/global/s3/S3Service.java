@@ -1,5 +1,7 @@
 package com.travel.role.global.s3;
 
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
+
 import java.net.URL;
 import java.util.Date;
 import java.util.Objects;
@@ -49,7 +51,7 @@ public class S3Service {
 		} catch (SdkClientException e) {
 
 			log.error("getPreSignedUrl : {}", e.getMessage());
-			throw new SdkClientException("PreSigned Url 을 생성하던 중 문제가 발생하였습니다.");
+			throw new SdkClientException(CREATE_PRESIGNED_URL_FAIL);
 		}
 	}
 
@@ -61,11 +63,27 @@ public class S3Service {
 	}
 
 	// imageProperty -> 회원 프로필 등 어떤 사진인지를 설명하는 속성
-	public void checkObjectExistsOrElseThrow(String key, String imageProperty) {
+	public void checkObjectExistsOrElseThrow(String key, ImageProperty imageProperty) {
 
 		if (!amazonS3.doesObjectExist(bucket, key)) {
-			throw new S3ImageNotFoundException(imageProperty);
+			throw new S3ImageNotFoundException(imageProperty.getPropertyName());
 		}
+	}
+
+	public void deleteObject(String key) {
+
+		try {
+			amazonS3.deleteObject(bucket, key);
+		} catch (SdkClientException e) {
+
+			log.error("deleteObject : {}", e.getMessage());
+			throw new SdkClientException(DELETE_IMAGE_FAIL_IN_S3);
+		}
+	}
+
+	public String getUserProfileImageKey(Long userId) {
+
+		return S3Service.USER_PROFILE_IMAGE_PATH + userId;
 	}
 
 	private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String fileName) {
