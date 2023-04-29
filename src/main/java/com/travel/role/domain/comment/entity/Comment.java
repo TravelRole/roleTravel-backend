@@ -8,6 +8,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.ColumnDefault;
+
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -25,39 +27,40 @@ public class Comment extends BaseTime {
 	@Column
 	private Long groupId;
 
-	@Column(nullable = false, updatable = false)
-	private Integer depth;
-
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "user_id", nullable = false, updatable = false)
-	private User user;
+	@JoinColumn(name = "from_user_id", nullable = false, updatable = false)
+	private User fromUser; // 작성자
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "to_user_id", updatable = false)
+	private User toUser; // 어떤 댓글의 주인에게 대댓글을 남겼는지
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "room_id", nullable = false, updatable = false)
 	private Room room;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "parent_id", updatable = false)
-	private Comment parent;
+	@Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
+	@ColumnDefault(value = "0")
+	private Boolean deleted;
 
 	@Builder
-	public Comment(User user, Room room, Comment parent, String content, Long groupId, Integer depth) {
+	public Comment(Room room, User fromUser, User toUser, String content, Long groupId) {
 		this.content = content;
 		this.groupId = groupId;
-		this.depth = depth;
-		this.user = user;
+		this.fromUser = fromUser;
+		this.toUser = toUser;
 		this.room = room;
-		this.parent = parent;
+		this.deleted = false;
 	}
 
-	public static Comment ofParent(User user, Room room, String content) {
+	public static Comment ofParent(User fromUser, Room room, String content) {
 
-		return new Comment(user, room, null, content, null, 0);
+		return new Comment(room, fromUser, null, content, null);
 	}
 
-	public static Comment ofChild(User user, Room room, Comment parent, String content) {
+	public static Comment ofChild(User fromUser, User toUser, Room room, Long groupId, String content) {
 
-		return new Comment(user, room, parent, content, parent.getGroupId(), parent.getDepth() + 1);
+		return new Comment(room, fromUser, toUser, content, groupId);
 	}
 
 	public void update(String content) {
