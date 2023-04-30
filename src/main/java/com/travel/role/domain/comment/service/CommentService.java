@@ -4,7 +4,6 @@ import static com.travel.role.global.exception.common.ResourceOperationAccessDen
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,23 +39,22 @@ public class CommentService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(loginUser, room);
 
-		Comment newComment = createComment(parentId, loginUser, room, reqDTO.getContent());
+		Comment newComment = createComment(loginUser, room, parentId, reqDTO.getContent());
 
 		commentRepository.save(newComment);
 	}
 
 	@Transactional(readOnly = true)
-	public CommentListResDTO getComments(String email, Long roomId, Long parentId) {
+	public CommentListResDTO getComments(String email, Long roomId) {
 
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(loginUser, room);
 
-		List<Comment> comments = getComments(parentId);
+		List<CommentResDTO> commentResDTOS = commentRepository.findAllOrderByGroupIdAndCreateDate(
+			roomId);
 
-		return CommentListResDTO.from(comments.stream()
-			.map(CommentResDTO::fromComment)
-			.collect(Collectors.toList()));
+		return CommentListResDTO.from(commentResDTOS);
 	}
 
 	public void modifyComment(String email, Long roomId, Long commentId, CommentReqDTO reqDTO) {
@@ -80,41 +78,30 @@ public class CommentService {
 		roomParticipantReadService.checkParticipant(loginUser, room);
 		checkAuthorizationForComment(comment, loginUser.getId(), Operation.DELETE);
 
-		commentRepository.deleteAllByGroupIdAndDepth(comment.getGroupId(), comment.getDepth());
+		commentRepository.dynamicDeleteById(commentId);
 	}
 
-	private Comment createComment(Long parentId, User loginUser, Room room, String content) {
+	private Comment createComment(User fromUser, Room room, Long parentId, String content) {
 
 		Comment newComment;
 
 		if (parentId == null) {
-			newComment = Comment.ofParent(loginUser, room, content);
-			newComment = commentRepository.save(newComment);
+			newComment = Comment.ofParent(fromUser, room, content);
+			commentRepository.save(newComment);
 			newComment.setGroupId(newComment.getId());
 		} else {
-			Comment parentComment = findCommentByIdOrElseThrow(parentId);
-			newComment = Comment.ofChild(loginUser, room, parentComment, content);
+			Comment parentComment = findCommentWithFromUserByIdOrElseThrow(parentId);
+
+			newComment =
+				Comment.ofChild(fromUser, parentComment.getFromUser(), room, parentComment.getGroupId(), content);
 		}
 
 		return newComment;
 	}
 
-	private List<Comment> getComments(Long parentId) {
-
-		List<Comment> comments;
-
-		if (parentId == null) {
-			comments = commentRepository.findAllFirstDepthComments();
-		} else {
-			comments = commentRepository.findAllChildCommentsByParentId(parentId);
-		}
-
-		return comments;
-	}
-
 	private void checkAuthorizationForComment(Comment comment, Long userId, Operation operation) {
 
-		if (!Objects.equals(comment.getUser().getId(), userId)) {
+		if (!Objects.equals(comment.getFromUser().getId(), userId)) {
 			throw new ResourceOperationAccessDeniedException(Resource.COMMENT, operation);
 		}
 	}
@@ -122,6 +109,12 @@ public class CommentService {
 	private Comment findCommentByIdOrElseThrow(Long commentId) {
 
 		return commentRepository.findById(commentId)
+			.orElseThrow(CommentInfoNotFoundException::new);
+	}
+
+	private Comment findCommentWithFromUserByIdOrElseThrow(Long commentId) {
+
+		return commentRepository.findByIdWithFromUser(commentId)
 			.orElseThrow(CommentInfoNotFoundException::new);
 	}
 }
