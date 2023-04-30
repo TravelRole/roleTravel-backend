@@ -18,7 +18,6 @@ import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
-import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
 import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommentService {
 
+	private final CommentReadService commentReadService;
 	private final UserReadService userReadService;
 	private final RoomReadService roomReadService;
 	private final CommentRepository commentRepository;
@@ -45,14 +45,13 @@ public class CommentService {
 	}
 
 	@Transactional(readOnly = true)
-	public CommentListResDTO getComments(String email, Long roomId) {
+	public CommentListResDTO getAllCommentsInRoom(String email, Long roomId) {
 
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(loginUser, room);
 
-		List<CommentResDTO> commentResDTOS = commentRepository.findAllOrderByGroupIdAndCreateDate(
-			roomId);
+		List<CommentResDTO> commentResDTOS = commentReadService.getAllCommentsByRoomId(roomId);
 
 		return CommentListResDTO.from(commentResDTOS);
 	}
@@ -61,7 +60,7 @@ public class CommentService {
 
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
-		Comment comment = findCommentByIdOrElseThrow(commentId);
+		Comment comment = commentReadService.findCommentByIdOrElseThrow(commentId);
 
 		roomParticipantReadService.checkParticipant(loginUser, room);
 		checkAuthorizationForComment(comment, loginUser.getId(), Operation.MODIFY);
@@ -73,7 +72,7 @@ public class CommentService {
 
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
-		Comment comment = findCommentByIdOrElseThrow(commentId);
+		Comment comment = commentReadService.findCommentByIdOrElseThrow(commentId);
 
 		roomParticipantReadService.checkParticipant(loginUser, room);
 		checkAuthorizationForComment(comment, loginUser.getId(), Operation.DELETE);
@@ -90,7 +89,8 @@ public class CommentService {
 			commentRepository.save(newComment);
 			newComment.setGroupId(newComment.getId());
 		} else {
-			Comment parentComment = findCommentWithFromUserByIdOrElseThrow(parentId);
+			Comment parentComment = commentReadService
+				.findCommentWithFromUserByIdOrElseThrow(parentId);
 
 			newComment =
 				Comment.ofChild(fromUser, parentComment.getFromUser(), room, parentComment.getGroupId(), content);
@@ -104,17 +104,5 @@ public class CommentService {
 		if (!Objects.equals(comment.getFromUser().getId(), userId)) {
 			throw new ResourceOperationAccessDeniedException(Resource.COMMENT, operation);
 		}
-	}
-
-	private Comment findCommentByIdOrElseThrow(Long commentId) {
-
-		return commentRepository.findById(commentId)
-			.orElseThrow(CommentInfoNotFoundException::new);
-	}
-
-	private Comment findCommentWithFromUserByIdOrElseThrow(Long commentId) {
-
-		return commentRepository.findByIdWithFromUser(commentId)
-			.orElseThrow(CommentInfoNotFoundException::new);
 	}
 }

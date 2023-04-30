@@ -43,7 +43,7 @@ public class CommentController {
 	public ResponseEntity<CommentListResDTO> getComments(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId) {
 
-		CommentListResDTO resDTO = commentService.getComments(userPrincipal.getEmail(), roomId);
+		CommentListResDTO resDTO = commentService.getAllCommentsInRoom(userPrincipal.getEmail(), roomId);
 
 		return ResponseEntity.ok(resDTO);
 	}
