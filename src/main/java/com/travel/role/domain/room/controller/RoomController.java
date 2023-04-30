@@ -1,24 +1,17 @@
 package com.travel.role.domain.room.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.global.auth.token.UserPrincipal;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -55,5 +48,10 @@ public class RoomController {
 	public InviteResponseDTO inviteUser(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("invite_code") String inviteCode, @RequestBody List<String> roles) {
 		return roomService.inviteUser(userPrincipal.getEmail(), inviteCode, roles);
+	}
+
+	@GetMapping("/room/day")
+	public List<TimeResponseDTO> getDay(@RequestParam("roomId") Long roomId){
+		return roomService.getTime(roomId);
 	}
 }
