@@ -1,5 +1,7 @@
 package com.travel.role.global.auth.service;
 
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
+
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -10,12 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.global.auth.dto.TokenMapping;
+import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.global.auth.token.UserPrincipal;
+import com.travel.role.global.exception.auth.InvalidTokenException;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -111,12 +113,9 @@ public class TokenProvider {
 	public void validateToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-		} catch (ExpiredJwtException e) {
-			log.info("validation 결과 Jwt 토큰이 잘못되었습니다 : {}", e.getMessage());
-			throw e;
 		} catch (Exception e) {
 			log.info("JWT 토큰이 잘못되었습니다 : {}", e.getMessage());
-			throw e;
+			throw new InvalidTokenException(INVALID_TOKEN);
 		}
 	}
 
