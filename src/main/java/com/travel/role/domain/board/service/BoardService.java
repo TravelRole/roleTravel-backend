@@ -1,7 +1,7 @@
 package com.travel.role.domain.board.service;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
-import com.travel.role.domain.board.dto.response.ScheduleInfoResponseDTO;
+import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.entity.ScheduleInfo;
@@ -36,27 +36,27 @@ public class BoardService {
     private final ScheduleInfoRepository scheduleInfoRepository;
     private final RoomParticipantReadService roomParticipantReadService;
 
-    public List<ScheduleInfoResponseDTO> getScheduleInfo(String email, Long roomId, LocalDate date){
+    public List<BookInfoResponseDTO> getScheduleInfo(String email, Long roomId, LocalDate date) {
         User user = userReadService.findUserByEmailOrElseThrow(email);
 
         Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 
         roomParticipantReadService.checkParticipant(user, room);
 
-        validateDate(room.getTravelStartDate(), room.getTravelEndDate() , date);
+        validateDate(room.getTravelStartDate(), room.getTravelEndDate(), date);
 
         return getScheduleInfoResult(boardRepository.findBoardBookInfoScheduleInfoByRoomIdAndScheduleDate(roomId, date.atStartOfDay(), date.atTime(LocalTime.MAX)));
     }
 
-    private List<ScheduleInfoResponseDTO> getScheduleInfoResult(List<Object[]> boardInfos) {
-        List<ScheduleInfoResponseDTO> result = new ArrayList<>();
+    private List<BookInfoResponseDTO> getScheduleInfoResult(List<Object[]> boardInfos) {
+        List<BookInfoResponseDTO> result = new ArrayList<>();
 
-        for (Object[] objects : boardInfos){
+        for (Object[] objects : boardInfos) {
             Board board = (Board) objects[0];
             BookInfo bookInfo = (BookInfo) objects[1];
-            ScheduleInfo scheduleInfo = (ScheduleInfo)objects[2];
+            ScheduleInfo scheduleInfo = (ScheduleInfo) objects[2];
 
-            result.add(ScheduleInfoResponseDTO.of(board,scheduleInfo,bookInfo));
+            result.add(BookInfoResponseDTO.of(board, scheduleInfo, bookInfo));
         }
         return result;
     }
@@ -68,7 +68,7 @@ public class BoardService {
 
         roomParticipantReadService.checkParticipant(user, room);
 
-        validateDate(room.getTravelStartDate(), room.getTravelEndDate() ,boardRequestDTO.getScheduleDate().toLocalDate());
+        validateDate(room.getTravelStartDate(), room.getTravelEndDate(), boardRequestDTO.getScheduleDate().toLocalDate());
 
         Board board = boardRepository.save(Board.of(room, boardRequestDTO));
 

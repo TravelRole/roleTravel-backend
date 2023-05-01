@@ -1,7 +1,7 @@
 package com.travel.role.unit.room.service;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
-import com.travel.role.domain.board.dto.response.ScheduleInfoResponseDTO;
+import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.entity.Category;
@@ -72,7 +72,7 @@ public class BoardServiceTest {
                 .when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
         //when
-        List<ScheduleInfoResponseDTO> result = boardService.getScheduleInfo("asd@naver.com",1L,LocalDate.now());
+        List<BookInfoResponseDTO> result = boardService.getScheduleInfo("asd@naver.com",1L,LocalDate.now());
 
         //then
         assertThat(result.get(0).getPlaceName()).isEqualTo("우도");
