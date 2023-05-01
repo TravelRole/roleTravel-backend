@@ -45,7 +45,7 @@ public class UserReadService {
 	}
 
 	public void validateUserExistByEmail(String email) {
-		if (!userRepository.existsByEmail(email)) {
+		if (userRepository.existsByEmail(email)) {
 			throw new AlreadyExistUserException();
 		}
 	}
