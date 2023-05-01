@@ -1,6 +1,7 @@
 package com.travel.role.global.auth.token;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -30,8 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
 		String jwt = getJwtFromRequest(request);
+		String servletPath = request.getServletPath();
 
-		if (StringUtils.hasText(jwt)) {
+		if (StringUtils.hasText(jwt) && !Objects.equals(servletPath, "/api/refresh")) {
 			tokenProvider.validateToken(jwt);
 			UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationById(jwt);
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
