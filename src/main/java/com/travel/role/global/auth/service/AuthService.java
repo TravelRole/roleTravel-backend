@@ -12,28 +12,26 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.repository.UserRepository;
-import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.dto.CheckIdRequest;
 import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
-import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
-import com.travel.role.global.exception.user.UserInfoNotFoundException;
-import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
+import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
+import com.travel.role.domain.user.entity.User;
+import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.auth.dto.TokenMapping;
+import com.travel.role.global.auth.dto.TokenResponse;
+import com.travel.role.global.auth.service.mail.MailService;
 import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;
-import com.travel.role.global.auth.service.mail.MailService;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
 import com.travel.role.global.util.PasswordGenerator;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -50,15 +48,14 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final PasswordGenerator passwordGenerator;
 	private final MailService mailService;
+	private final UserReadService userReadService;
 
 	private static final String SUCCESS_SIGN_UP = "회원가입에 성공하셨습니다";
 	private static final String SUCCESS_MESSAGE = "성공하셨습니다.";
 
 	@Transactional
 	public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
-		if (userRepository.existsByEmail(signUpRequestDTO.getEmail())) {
-			throw new AlreadyExistUserException();
-		}
+		userReadService.validateUserExistByEmail(signUpRequestDTO.getEmail());
 
 		User newUser = User.of(signUpRequestDTO,
 			passwordEncoder.encode(signUpRequestDTO.getPassword()));
@@ -86,19 +83,16 @@ public class AuthService {
 
 	@Transactional
 	public void updateToken(TokenMapping tokenMapping) {
-		User findUser = userRepository.findByEmail(tokenMapping.getUserEmail()).orElseThrow(
-			() -> new UsernameNotFoundException(USERNAME_NOT_FOUND)
-		);
-		findUser.updateRefreshToken(tokenMapping.getRefreshToken());
+		User user = userReadService.findUserByEmailOrElseThrow(tokenMapping.getUserEmail());
+		user.updateRefreshToken(tokenMapping.getRefreshToken());
 	}
 
 	public TokenResponse refresh(final String refreshToken, String accessToken) {
 		validateToken(refreshToken, accessToken);
 
-		User findUser = userRepository.findByRefreshToken(refreshToken)
-			.orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
+		User user = userReadService.findUserByRefreshTokenOrElseThrow(refreshToken);
 		UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationByEmail(
-			findUser.getEmail());
+			user.getEmail());
 
 		return tokenProvider.refreshAccessToken(authentication);
 	}
@@ -137,33 +131,26 @@ public class AuthService {
 		}
 	}
 
-	@Transactional(readOnly = true)
-	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO confirmUserRequestDTO) {
-		User user = userRepository.findByNameAndBirth(confirmUserRequestDTO.getName(),
-				confirmUserRequestDTO.getBirth())
-			.orElseThrow(UserInfoNotFoundException::new);
+	public ConfirmUserResponseDTO findId(ConfirmUserRequestDTO dto) {
+		User user = userReadService.findByNameAndBirthOrElseThrow(
+			dto.getName(), dto.getBirth());
 
 		return new ConfirmUserResponseDTO(SUCCESS_MESSAGE, HttpStatus.OK, user.getEmail(),
 			user.getCreateDate().toLocalDate());
 	}
 
 	public CheckIdResponse confirmId(CheckIdRequest checkIdRequest) {
-		boolean result = userRepository.existsByEmail(checkIdRequest.getEmail());
+		boolean result = userReadService.existsByEmail(checkIdRequest.getEmail());
 		return new CheckIdResponse(result);
 	}
 
 	@Transactional
-	public void changePassword(NewPasswordRequestDTO newPasswordRequestDTO) throws SendFailedException {
-		User user = checkValidateUser(newPasswordRequestDTO);
+	public void changePassword(NewPasswordRequestDTO dto) throws SendFailedException {
+		User user = userReadService.findUserByNameAndBirthAndEmailOrElseThrow(dto.getName(), dto.getBirth(), dto.getEmail());
 
 		String randomPassword = passwordGenerator.generateRandomPassword(16);
 		user.updatePassword(passwordEncoder.encode(randomPassword));
 
 		mailService.sendPasswordMail(randomPassword, user.getEmail());
-	}
-
-	private User checkValidateUser(NewPasswordRequestDTO dto) {
-		return userRepository.findByNameAndBirthAndEmail(dto.getName(), dto.getBirth(), dto.getEmail())
-			.orElseThrow(UserInfoNotFoundException::new);
 	}
 }
