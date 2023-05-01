@@ -20,6 +20,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -60,7 +63,6 @@ public class BoardServiceTest {
                 .willReturn(room);
         doNothing()
                 .when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
-
         //when
         boardService.addSchedule("asd@gmail.com",createBoardRequestDTO());
 
@@ -82,10 +84,12 @@ public class BoardServiceTest {
                 .id(id)
                 .location("korea")
                 .roomName("asd")
+                .travelStartDate(LocalDate.now())
+                .travelEndDate(LocalDate.now())
                 .build();
     }
 
     private BoardRequestDTO createBoardRequestDTO(){
-        return new BoardRequestDTO(1L,"우도","제주도",null,null,true, Category.ETC,123.0,456.0,null);
+        return new BoardRequestDTO(1L,"우도","제주도",LocalDate.now().atTime(LocalTime.now()),null,true, Category.ETC,123.0,456.0,null);
     }
 }

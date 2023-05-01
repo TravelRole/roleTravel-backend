@@ -12,9 +12,14 @@ import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.global.exception.room.InvalidLocalDateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+
+import static com.travel.role.global.exception.dto.ExceptionMessage.INVALID_DATE_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -34,12 +39,25 @@ public class BoardService {
 
         roomParticipantReadService.checkParticipant(user, room);
 
+        validateDate(room, boardRequestDTO);
+
         Board board = boardRepository.save(Board.of(room, boardRequestDTO));
 
         scheduleInfoRepository.save(ScheduleInfo.of(board, boardRequestDTO));
 
         if (boardRequestDTO.getIsBookRequired())
             bookInfoRepository.save(BookInfo.from(board));
+    }
+
+    public void validateDate(Room room, BoardRequestDTO boardRequestDTO) {
+        LocalDate start = room.getTravelStartDate();
+        LocalDate end = room.getTravelEndDate();
+        LocalDate addTime = boardRequestDTO.getScheduleDate().toLocalDate();
+
+        if (addTime.isBefore(start))
+            throw new InvalidLocalDateException(INVALID_DATE_ERROR);
+        if (addTime.isAfter(end))
+            throw new InvalidLocalDateException(INVALID_DATE_ERROR);
     }
 
 }
