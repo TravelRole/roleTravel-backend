@@ -34,7 +34,6 @@ import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;
 import com.travel.role.global.util.PasswordGenerator;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -87,8 +86,8 @@ public class AuthService {
 		user.updateRefreshToken(tokenMapping.getRefreshToken());
 	}
 
-	public TokenResponse refresh(final String refreshToken, String accessToken) {
-		validateToken(refreshToken, accessToken);
+	public TokenResponse refresh(final String refreshToken) {
+		validateToken(refreshToken);
 
 		User user = userReadService.findUserByRefreshTokenOrElseThrow(refreshToken);
 		UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationByEmail(
@@ -98,8 +97,8 @@ public class AuthService {
 	}
 
 	@Transactional
-	public void validateToken(final String refreshToken, String accessToken) {
-		if (refreshToken == null || accessToken == null) {
+	public void validateToken(final String refreshToken) {
+		if (refreshToken == null) {
 			throw new NotExistTokenException();
 		}
 
@@ -120,14 +119,6 @@ public class AuthService {
 		if (refreshTokenExpirationTime < 0) {
 			findUser.get().deleteRefreshToken();
 			throw new InvalidTokenException(INVALID_TOKEN);
-		}
-
-		try {
-			tokenProvider.getTokenExpiration(accessToken);
-		} catch (ExpiredJwtException ignored) {
-		} catch (Exception e) {
-			findUser.get().deleteRefreshToken();
-			throw new InvalidTokenException(e.getMessage());
 		}
 	}
 

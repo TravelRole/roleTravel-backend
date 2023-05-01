@@ -44,8 +44,7 @@ public class AuthController {
 
 	@PostMapping("/refresh")
 	public TokenResponse refresh(
-		@CookieValue(value = REFRESH_TOKEN, required = false) String refreshToken,
-		@RequestBody @Valid AccessTokenRequestDTO token) {
-		return authService.refresh(refreshToken, token.getAccessToken());
+		@CookieValue(value = REFRESH_TOKEN, required = false) String refreshToken) {
+		return authService.refresh(refreshToken);
 	}
 }
