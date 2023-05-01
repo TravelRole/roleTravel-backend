@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
-public class ScheduleInfoResponseDTO {
+public class BookInfoResponseDTO {
     private String placeName;
     private LocalTime time;
     private String link;
@@ -20,8 +20,9 @@ public class ScheduleInfoResponseDTO {
     private String paymentMethod;
     private Category category;
     private String accountingEtc;
+    private Boolean isBooked;
 
-    private ScheduleInfoResponseDTO(Board board, ScheduleInfo scheduleInfo, BookInfo bookInfo) {
+    private BookInfoResponseDTO(Board board, ScheduleInfo scheduleInfo, BookInfo bookInfo) {
         this.placeName = scheduleInfo.getPlaceName();
         this.time = board.getScheduleDate().toLocalTime();
         this.link = board.getLink();
@@ -30,10 +31,11 @@ public class ScheduleInfoResponseDTO {
         this.paymentMethod = bookInfo.getPaymentMethod();
         this.category = board.getCategory();
         this.accountingEtc = bookInfo.getAccountingEtc();
+        this.isBooked = bookInfo.getIsBooked();
     }
 
-    public static ScheduleInfoResponseDTO of(Board board, ScheduleInfo scheduleInfo, BookInfo bookInfo) {
-        return new ScheduleInfoResponseDTO(board, scheduleInfo, bookInfo);
+    public static BookInfoResponseDTO of(Board board, ScheduleInfo scheduleInfo, BookInfo bookInfo) {
+        return new BookInfoResponseDTO(board, scheduleInfo, bookInfo);
     }
 
 }
