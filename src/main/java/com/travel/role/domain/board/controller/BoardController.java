@@ -1,7 +1,7 @@
 package com.travel.role.domain.board.controller;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
-import com.travel.role.domain.board.dto.response.ScheduleInfoResponseDTO;
+import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.service.BoardService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class BoardController {
         boardService.addSchedule(userPrincipal.getEmail(), boardRequestDTO);
     }
 
-    @GetMapping("/schedule")
-    public List<ScheduleInfoResponseDTO> getScheduleInfo(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("roomId") Long roomId, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    @GetMapping("/book")
+    public List<BookInfoResponseDTO> getScheduleInfo(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("roomId") Long roomId, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return boardService.getScheduleInfo(userPrincipal.getEmail(), roomId, date);
     }
 
