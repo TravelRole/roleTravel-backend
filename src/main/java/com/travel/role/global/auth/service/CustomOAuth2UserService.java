@@ -12,9 +12,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.domain.user.entity.User;
+import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.global.auth.oauth.OAuth2UserInfo;
 import com.travel.role.global.auth.oauth.OAuthAttributes;
 import com.travel.role.global.auth.token.UserPrincipal;
@@ -39,10 +39,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			.getUserInfoEndpoint()
 			.getUserNameAttributeName();
 		Map<String, Object> attributes = oAuth2User.getAttributes();
+		String registrationId = userRequest.getClientRegistration().getRegistrationId();
+		Provider provider = getProvider(registrationId);
 
-		OAuthAttributes newAttributes = OAuthAttributes.of(Provider.google, userNameAttributeName, attributes);
+		OAuthAttributes newAttributes = OAuthAttributes.of(provider, userNameAttributeName, attributes);
 
-		User user = checkAndSaveUser(newAttributes);
+		User user = checkAndSaveUser(newAttributes, provider);
 
 		user.updateProviderToken(userRequest.getAccessToken().getTokenValue());
 
@@ -51,12 +53,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleValue())));
 	}
 
-	private User checkAndSaveUser(OAuthAttributes attributes) {
-		return userRepository.findByProviderAndProviderId(Provider.google,
+	private User checkAndSaveUser(OAuthAttributes attributes, Provider provider) {
+		return userRepository.findByProviderAndProviderId(provider,
 				attributes.getOAuth2UserInfo().getId())
 			.orElseGet(() -> {
 				if (!userRepository.existsByEmail(attributes.getOAuth2UserInfo().getEmail()))
-					return saveUser(Provider.google, attributes.getOAuth2UserInfo());
+					return saveUser(provider, attributes.getOAuth2UserInfo());
 				throw new AlreadyExistUserException();
 			});
 	}
@@ -64,5 +66,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	private User saveUser(Provider provider, OAuth2UserInfo userInfo) {
 		User newUser = User.of(provider, userInfo);
 		return userRepository.save(newUser);
+	}
+
+	private Provider getProvider(String registrationId) {
+		if (Provider.google.name().equals(registrationId)) {
+			return Provider.google;
+		}
+		return Provider.kakao;
 	}
 }

@@ -15,6 +15,7 @@ spring:
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email, birthday
             client-name: Kakao
+            redirect-uri: http://test.haechan.shop:8080/oauth2/callback/kakao
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
