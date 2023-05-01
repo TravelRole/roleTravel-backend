@@ -1,25 +1,34 @@
 package com.travel.role.domain.board.controller;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
+import com.travel.role.domain.board.dto.response.ScheduleInfoResponseDTO;
 import com.travel.role.domain.board.service.BoardService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/board")
 public class BoardController {
     private final BoardService boardService;
 
-    @PostMapping("/board")
-    public void addSchedule(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody @Valid BoardRequestDTO boardRequestDTO){
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addSchedule(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody @Valid BoardRequestDTO boardRequestDTO) {
         boardService.addSchedule(userPrincipal.getEmail(), boardRequestDTO);
     }
+
+    @GetMapping("/schedule")
+    public List<ScheduleInfoResponseDTO> getScheduleInfo(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("roomId") Long roomId, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        return boardService.getScheduleInfo(userPrincipal.getEmail(), roomId, date);
+    }
+
 }
