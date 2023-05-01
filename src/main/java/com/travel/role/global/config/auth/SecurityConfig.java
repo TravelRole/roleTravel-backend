@@ -85,7 +85,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic()
 			.disable()
 			.authorizeRequests()
-			.antMatchers("/auth/**", "/oauth2/**").permitAll()
+			.antMatchers( "/oauth2/**", "/api/signup",
+				"/api/find-id", "/api/confirm-id", "/api/new-password", "/api/login",
+				"/api/refresh").permitAll()
 			.anyRequest()
 			.authenticated()
 			.and()
@@ -102,7 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.authenticationEntryPoint(new Http403ForbiddenEntryPoint())
 			.and()
 				.logout()
-					.logoutUrl("/auth/logout")
+					.logoutUrl("/api/logout")
 						.invalidateHttpSession(true)
 							.clearAuthentication(true)
 								.deleteCookies("JSESSIONID", "refreshToken")
