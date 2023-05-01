@@ -35,7 +35,7 @@ public class Board {
     private Category category;
 
     @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ScheduleInfo scheduleBoard;
+    private ScheduleInfo scheduleInfo;
 
     @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private BookInfo bookInfo;
