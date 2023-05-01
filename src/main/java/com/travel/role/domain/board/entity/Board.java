@@ -1,6 +1,5 @@
 package com.travel.role.domain.board.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.room.entity.Room;
 import lombok.AccessLevel;
@@ -25,35 +24,27 @@ public class Board {
     @JoinColumn(name = "room_id", nullable = false, updatable = false)
     private Room room;
 
-    @Column(name = "place_name", length = 100, nullable = false)
-    private String placeName;
-
-    @Column(name = "place_address", length = 100, nullable = false)
-    private String placeAddress;
-
     @Column(name = "schedule_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime scheduleDate;
 
     @Column
     private String link;
 
-    @Column(name = "is_book_required")
-    private Boolean isBookRequired;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 100)
+    private Category category;
 
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
-    private ScheduleBoard scheduleBoard;
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ScheduleInfo scheduleBoard;
 
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
-    private BookBoard bookBoard;
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private BookInfo bookInfo;
 
     private Board(Room room, BoardRequestDTO boardRequestDTO) {
         this.room = room;
-        this.placeName = boardRequestDTO.getPlaceName();
-        this.placeAddress = boardRequestDTO.getPlaceAddress();
         this.scheduleDate = boardRequestDTO.getScheduleDate();
         this.link = boardRequestDTO.getLink();
-        this.isBookRequired = boardRequestDTO.getIsBookRequired();
+        this.category = boardRequestDTO.getCategory();
     }
 
     public static Board of(Room room, BoardRequestDTO boardRequestDTO) {

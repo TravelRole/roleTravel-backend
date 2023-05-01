@@ -2,12 +2,12 @@ package com.travel.role.unit.room.service;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.board.entity.Board;
-import com.travel.role.domain.board.entity.BookBoard;
+import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.entity.Category;
-import com.travel.role.domain.board.entity.ScheduleBoard;
+import com.travel.role.domain.board.entity.ScheduleInfo;
 import com.travel.role.domain.board.repository.BoardRepository;
-import com.travel.role.domain.board.repository.BookBoardRepository;
-import com.travel.role.domain.board.repository.ScheduleBoardRepository;
+import com.travel.role.domain.board.repository.BookInfoRepository;
+import com.travel.role.domain.board.repository.ScheduleInfoRepository;
 import com.travel.role.domain.board.service.BoardService;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
@@ -41,10 +41,10 @@ public class BoardServiceTest {
     private BoardRepository boardRepository;
 
     @Mock
-    private BookBoardRepository bookBoardRepository;
+    private BookInfoRepository bookInfoRepository;
 
     @Mock
-    private ScheduleBoardRepository scheduleBoardRepository;
+    private ScheduleInfoRepository scheduleInfoRepository;
 
     @InjectMocks
     private BoardService boardService;
@@ -62,12 +62,12 @@ public class BoardServiceTest {
                 .when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
         //when
-        boardService.addSchedule("asd@gmail.com",getBoardRequestDTO());
+        boardService.addSchedule("asd@gmail.com",createBoardRequestDTO());
 
         //then
         then(boardRepository).should(times(1)).save(any(Board.class));
-        then(bookBoardRepository).should(times(1)).save(any(BookBoard.class));
-        then(scheduleBoardRepository).should(times(1)).save(any(ScheduleBoard.class));
+        then(bookInfoRepository).should(times(1)).save(any(BookInfo.class));
+        then(scheduleInfoRepository).should(times(1)).save(any(ScheduleInfo.class));
     }
     private User makeUser(Long id) {
         return User.builder()
@@ -85,7 +85,7 @@ public class BoardServiceTest {
                 .build();
     }
 
-    private BoardRequestDTO getBoardRequestDTO(){
+    private BoardRequestDTO createBoardRequestDTO(){
         return new BoardRequestDTO(1L,"우도","제주도",null,null,true, Category.ETC,123.0,456.0,null);
     }
 }

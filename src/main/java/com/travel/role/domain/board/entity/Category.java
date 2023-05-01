@@ -6,12 +6,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Category {
-    TRAFFIC("TRAFFIC"),
-    ACCOMMODATION("ACCOMMODATION"),
-    FOOD("FOOD"),
-    TOUR("TOUR"),
-    SHOPPING("SHOPPING"),
-    ETC("ETC");
+    TRAFFIC(),
+    ACCOMMODATION(),
+    FOOD(),
+    TOUR(),
+    SHOPPING(),
+    ETC();
 
-    private final String value;
 }
