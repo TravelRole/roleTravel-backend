@@ -46,6 +46,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		user.updateProviderToken(userRequest.getAccessToken().getTokenValue());
 
+
 		return new UserPrincipal(user.getId(), user.getEmail(), user.getProviderId(),
 			Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleValue())));
 	}
