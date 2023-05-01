@@ -13,6 +13,7 @@ import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,5 +60,4 @@ public class BoardService {
         if (addTime.isAfter(end))
             throw new InvalidLocalDateException(INVALID_DATE_ERROR);
     }
-
 }

@@ -63,6 +63,7 @@ public class BoardServiceTest {
                 .willReturn(room);
         doNothing()
                 .when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
+
         //when
         boardService.addSchedule("asd@gmail.com",createBoardRequestDTO());
 
