@@ -18,7 +18,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.travel.role.global.exception.auth.TokenExceptionHandlerFilter;
 import com.travel.role.global.auth.oauth.filter.CustomOAuth2LogoutHandler;
 import com.travel.role.global.auth.service.CustomAuthProvider;
 import com.travel.role.global.auth.service.CustomOAuth2UserService;
@@ -26,6 +25,7 @@ import com.travel.role.global.auth.service.CustomUserDetailService;
 import com.travel.role.global.auth.service.handler.OAuth2FailureHandler;
 import com.travel.role.global.auth.service.handler.OAuth2SuccessHandler;
 import com.travel.role.global.auth.token.JwtAuthenticationFilter;
+import com.travel.role.global.exception.auth.TokenExceptionHandlerFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -105,11 +105,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.logout()
 					.logoutUrl("/api/logout")
-						.invalidateHttpSession(true)
-							.clearAuthentication(true)
-								.deleteCookies("JSESSIONID", "refreshToken")
-			.addLogoutHandler(logoutHandler)
-									;
+					.invalidateHttpSession(true)
+					.clearAuthentication(true)
+					.deleteCookies("JSESSIONID", "refreshToken", "TIARA")
+			.addLogoutHandler(logoutHandler);
 
 		http
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -48,6 +48,7 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
+
 			String encoded = null;
 			try {
 				encoded = URLEncoder.encode(user.getProviderToken(), "UTF-8");
@@ -56,8 +57,14 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 			}
 			headers.set("Authorization", "Bearer " + encoded);
 			HttpEntity<String> entity = new HttpEntity<>("", headers);
-			String url = "https://accounts.google.com/o/oauth2/revoke?token=" + encoded;
-			ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+			if (user.getProvider().name().equals("google")) {
+				String url = "https://accounts.google.com/o/oauth2/revoke?token=" + encoded;
+				restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+			} else if (user.getProvider().name().equals("kakao")) {
+				String url = "https://kapi.kakao.com/v1/user/logout";
+				ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+				exchange.getStatusCode();
+			}
 		} else {
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
