@@ -160,8 +160,7 @@ public class RoomService {
 			throw new InvalidInviteCode();
 		}
 
-		//TODO: ParticipantRepository에 있는것으로 변경하기
-		if (roomRepository.existsUserInRoom(email, room.getId())) {
+		if (roomParticipantRepository.existsUserInRoom(email, room.getId())) {
 			throw new AlreadyExistInRoomException();
 		}
 	}

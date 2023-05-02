@@ -19,6 +19,7 @@ import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
+import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
@@ -52,7 +53,8 @@ class RoomServiceTest {
 
 	@Mock
 	private PasswordGenerator passwordGenerator;
-
+	@Mock
+	private RoomParticipantRepository roomParticipantRepository;
 	@Mock
 	private ParticipantRoleRepository participantRoleRepository;
 	@Mock
@@ -128,7 +130,7 @@ class RoomServiceTest {
 			.willReturn(makeRoom());
 		given(userReadService.findUserByEmailOrElseThrow(anyString()))
 			.willReturn(makeUser());
-		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
+		given(roomParticipantRepository.existsUserInRoom(anyString(), anyLong()))
 			.willReturn(false);
 
 		//when, then
@@ -143,10 +145,10 @@ class RoomServiceTest {
 			.willReturn(makeRoom());
 		given(userReadService.findUserByEmailOrElseThrow(anyString()))
 			.willReturn(makeUser());
-		given(roomRepository.existsUserInRoom(anyString(), anyLong()))
+		given(roomParticipantRepository.existsUserInRoom(anyString(), anyLong()))
 			.willReturn(false);
 
-		//when, thend .
+		//when, then
 		assertThatThrownBy(() -> {roomService.inviteUser("haechan@naver.com", "1234", List.of("HAECHAN"));})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
