@@ -79,6 +79,7 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 		if (toUserId == null) {
 			// 최상단 댓글이면 update
 			queryFactory.update(comment)
+				.set(comment.content, "")
 				.set(comment.deleted, true)
 				.where(comment.id.eq(commentId))
 				.execute();
