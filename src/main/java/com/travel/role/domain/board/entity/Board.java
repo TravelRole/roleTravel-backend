@@ -34,10 +34,10 @@ public class Board {
     @Column(length = 100)
     private Category category;
 
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
     private ScheduleInfo scheduleInfo;
 
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
     private BookInfo bookInfo;
 
     private Board(Room room, BoardRequestDTO boardRequestDTO) {
