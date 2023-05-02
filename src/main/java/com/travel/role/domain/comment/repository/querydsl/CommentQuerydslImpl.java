@@ -28,7 +28,6 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 	public List<CommentResDTO> findAllOrderByGroupIdAndCreateDate(Long roomId) {
 
 		QComment c = new QComment("c");
-		QParticipantRole p = new QParticipantRole("p");
 		QUser fu = new QUser("fu");
 		QUser tu = new QUser("tu");
 
@@ -47,10 +46,7 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 			.orderBy(c.createDate.asc())
 			.fetch();
 
-		Map<Long, List<RoomRole>> roleMap = queryFactory
-			.from(p)
-			.where(p.room.id.eq(roomId))
-			.transform(groupBy(p.user.id).as(list(p.roomRole)));
+		Map<Long, List<RoomRole>> roleMap = findRoleMapInRoom(roomId);
 
 		return tuples.stream().
 			map(
@@ -95,5 +91,15 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 
 		Long userId = resDTO.getId();
 		resDTO.setRoles(roleMap.getOrDefault(userId, List.of()));
+	}
+
+	private Map<Long, List<RoomRole>> findRoleMapInRoom(Long roomId) {
+
+		QParticipantRole p = new QParticipantRole("p");
+
+		return queryFactory
+			.from(p)
+			.where(p.room.id.eq(roomId))
+			.transform(groupBy(p.user.id).as(list(p.roomRole)));
 	}
 }
