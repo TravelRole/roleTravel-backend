@@ -7,25 +7,27 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class WantPlaceDTO {
-    private Long idx;
     private Long placeId;
     private String placeName;
     private String placeAddress;
     private String phoneNumber;
     private Double latitude;
     private Double longitude;
+    private String category;
+    private String lotNumberAddress;
 
-    private WantPlaceDTO(long idx, WantPlace wantPlace) {
-        this.idx = idx;
+    private WantPlaceDTO(WantPlace wantPlace) {
         this.placeId = wantPlace.getId();
         this.placeName = wantPlace.getPlaceName();
         this.placeAddress = wantPlace.getPlaceAddress();
         this.phoneNumber = wantPlace.getPhoneNumber();
         this.latitude = wantPlace.getLatitude();
         this.longitude = wantPlace.getLongitude();
+        this.category = wantPlace.getCategory();
+        this.lotNumberAddress = wantPlace.getLotNumberAddress();
     }
 
-    public static WantPlaceDTO of(long idx, WantPlace wantPlace) {
-        return new WantPlaceDTO(idx, wantPlace);
+    public static WantPlaceDTO from(WantPlace wantPlace) {
+        return new WantPlaceDTO(wantPlace);
     }
 }
