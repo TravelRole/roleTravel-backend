@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,13 +67,13 @@ public class BoardServiceTest {
                 .willReturn(user);
         given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
                 .willReturn(room);
-        given(boardRepository.findBoardBookInfoScheduleInfoByRoomIdAndScheduleDate(room.getId(),date.atStartOfDay(),date.atTime(LocalTime.MAX)))
-                .willReturn(findObjectList());
+        given(boardRepository.findBoardByRoomIdAndScheduleDate(room.getId(),date.atStartOfDay(),date.atTime(LocalTime.MAX)))
+                .willReturn(findBoardList());
         doNothing()
                 .when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
         //when
-        List<BookInfoResponseDTO> result = boardService.getScheduleInfo("asd@naver.com",1L,LocalDate.now());
+        List<BookInfoResponseDTO> result = boardService.getBookInfo("asd@naver.com",1L,LocalDate.now());
 
         //then
         assertThat(result.get(0).getPlaceName()).isEqualTo("우도");
@@ -122,17 +123,20 @@ public class BoardServiceTest {
         return new BoardRequestDTO(1L,"우도","제주도",LocalDate.now().atTime(LocalTime.now()),null,true, Category.ETC,123.0,456.0,null);
     }
 
-    private List<Object[]> findObjectList (){
-        List<Object[]> result = new ArrayList<>();
-        Object[] list = new Object[3];
-        Object board = Board.of(makeRoom(1L),createBoardRequestDTO());
-        Object bookInfo = BookInfo.from((Board) board);
-        Object scheduleInfo = ScheduleInfo.of((Board) board, createBoardRequestDTO());
+    private List<Board> findBoardList (){
+        List<Board> result = new ArrayList<>();
+        Board temp = Board.of(makeRoom(1L),createBoardRequestDTO());
+        BookInfo bookInfo = BookInfo.from(temp);
+        ScheduleInfo scheduleInfo = ScheduleInfo.of(temp, createBoardRequestDTO());
+        Board board = Board.builder()
+                .id(1L)
+                .scheduleDate(LocalDateTime.now())
+                .category(Category.ETC)
+                .scheduleInfo(scheduleInfo)
+                .bookInfo(bookInfo)
+                .build();
 
-        list[0] = board;
-        list[1] = bookInfo;
-        list[2] = scheduleInfo;
-        result.add(list);
+        result.add(board);
 
         return result;
     }
