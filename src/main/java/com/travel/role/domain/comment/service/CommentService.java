@@ -66,6 +66,7 @@ public class CommentService {
 		checkAuthorizationForComment(comment, loginUser.getId(), Operation.MODIFY);
 
 		comment.update(reqDTO.getContent());
+		commentRepository.save(comment);
 	}
 
 	public void deleteComment(String email, Long roomId, Long commentId) {
