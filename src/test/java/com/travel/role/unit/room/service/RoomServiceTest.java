@@ -1,20 +1,5 @@
 package com.travel.role.unit.room.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
@@ -38,6 +23,19 @@ import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.util.PasswordGenerator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RoomServiceTest {
@@ -83,8 +81,7 @@ class RoomServiceTest {
 			.willReturn(User.builder().build());
 		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
 			.willReturn(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
-				null, "강릉", "12", LocalDateTime.now().minusDays(1L).plusSeconds(1L)
-				, null));
+				null, "강릉", "12", LocalDateTime.now().minusDays(1L).plusSeconds(1L)));
 
 		//when
 		String inviteCode = roomService.makeInviteCode("haechan@naver.com", 1L);
@@ -158,14 +155,12 @@ class RoomServiceTest {
 
 	private static Room makeRoom() {
 		return new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
-			1L, "강릉", null, null
-			, null);
+			1L, "강릉", null, null);
 	}
 
 	private static Room makeInvalidInviteDateRoom() {
 		return new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
-			1L, "강릉", "1234", LocalDateTime.now().minusDays(2L)
-			, null);
+			1L, "강릉", "1234", LocalDateTime.now().minusDays(2L));
 	}
 
 	private static User makeUser() {
@@ -199,16 +194,12 @@ class RoomServiceTest {
 					null, null, null);
 
 
-			Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , null);
+			Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now());
 
 			RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2);
 			RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
 
-			Set<RoomParticipant> participants = new HashSet<>();
-			participants.add(roomParticipant1);
-			participants.add(roomParticipant2);
-
-			Room room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now() , participants);
+			Room room = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now());
 
 			WantPlace wantPlace = WantPlace.of(room, getWantPlaceRequestDto());
 
