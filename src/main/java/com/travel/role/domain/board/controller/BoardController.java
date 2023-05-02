@@ -28,7 +28,7 @@ public class BoardController {
 
     @GetMapping("/book")
     public List<BookInfoResponseDTO> getScheduleInfo(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam("roomId") Long roomId, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        return boardService.getScheduleInfo(userPrincipal.getEmail(), roomId, date);
+        return boardService.getBookInfo(userPrincipal.getEmail(), roomId, date);
     }
 
 }

@@ -23,7 +23,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.travel.role.global.exception.dto.ExceptionMessage.*;
+import static com.travel.role.global.exception.dto.ExceptionMessage.EARLY_DATE_ERROR;
+import static com.travel.role.global.exception.dto.ExceptionMessage.LATE_DATE_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class BoardService {
     private final ScheduleInfoRepository scheduleInfoRepository;
     private final RoomParticipantReadService roomParticipantReadService;
 
-    public List<BookInfoResponseDTO> getScheduleInfo(String email, Long roomId, LocalDate date) {
+    public List<BookInfoResponseDTO> getBookInfo(String email, Long roomId, LocalDate date) {
         User user = userReadService.findUserByEmailOrElseThrow(email);
 
         Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
@@ -45,18 +46,13 @@ public class BoardService {
 
         validateDate(room.getTravelStartDate(), room.getTravelEndDate(), date);
 
-        return getScheduleInfoResult(boardRepository.findBoardBookInfoScheduleInfoByRoomIdAndScheduleDate(roomId, date.atStartOfDay(), date.atTime(LocalTime.MAX)));
+        return getBookInfoResult(boardRepository.findBoardByRoomIdAndScheduleDate(roomId, date.atStartOfDay(), date.atTime(LocalTime.MAX)));
     }
 
-    private List<BookInfoResponseDTO> getScheduleInfoResult(List<Object[]> boardInfos) {
+    private List<BookInfoResponseDTO> getBookInfoResult(List<Board> boardLists) {
         List<BookInfoResponseDTO> result = new ArrayList<>();
-
-        for (Object[] objects : boardInfos) {
-            Board board = (Board) objects[0];
-            BookInfo bookInfo = (BookInfo) objects[1];
-            ScheduleInfo scheduleInfo = (ScheduleInfo) objects[2];
-
-            result.add(BookInfoResponseDTO.of(board, scheduleInfo, bookInfo));
+        for (Board board : boardLists) {
+            result.add(BookInfoResponseDTO.of(board, board.getScheduleInfo(), board.getBookInfo()));
         }
         return result;
     }
