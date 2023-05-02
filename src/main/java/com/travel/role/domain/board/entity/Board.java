@@ -2,9 +2,7 @@ package com.travel.role.domain.board.entity;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.room.entity.Room;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +11,8 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class Board {
 
     @Id
@@ -35,7 +35,7 @@ public class Board {
     private Category category;
 
     @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ScheduleInfo scheduleBoard;
+    private ScheduleInfo scheduleInfo;
 
     @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private BookInfo bookInfo;
