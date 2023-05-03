@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
-import com.travel.role.domain.user.entity.Role;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.global.auth.service.AuthService;
@@ -101,7 +100,6 @@ class AuthServiceTest {
 			.email("chan@naver.com")
 			.name("김철수")
 			.password("$2a$10$RmFajfEsgvXwpJLl7GmKR.0OI5GaH6gb1XsZlvBVuruFZj852loyC")
-			.role(Role.USER)
-			.refreshToken("refreshToken").build();
+			.build();
 	}
 }

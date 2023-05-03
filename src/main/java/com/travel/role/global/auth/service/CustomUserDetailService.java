@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.entity.User;
-import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.global.auth.entity.AuthInfo;
+import com.travel.role.global.auth.repository.AuthReadService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
@@ -17,19 +17,19 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-	private final UserReadService userReadService;
+	private final AuthReadService authReadService;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-		User user = userReadService.findUserByEmailOrElseThrow(email);
+		AuthInfo authInfo = authReadService.findUserByEmailOrElseThrow(email);
 
-		return UserPrincipal.create(user);
+		return UserPrincipal.create(authInfo);
 	}
 
 	public UserDetails loadUserById(Long id) {
-		User user = userReadService.findUserByIdOrElseThrow(id);
+		AuthInfo authInfo = authReadService.findUserByIdOrElseThrow(id);
 
-		return UserPrincipal.create(user);
+		return UserPrincipal.create(authInfo);
 	}
 }

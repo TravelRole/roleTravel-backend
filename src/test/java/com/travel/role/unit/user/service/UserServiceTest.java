@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.travel.role.domain.user.dto.UserPasswordModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
-import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.domain.user.service.UserService;
@@ -43,7 +42,6 @@ class UserServiceTest {
 			.email(email)
 			.birth(LocalDate.of(2000, 10, 10))
 			.profile("imageUrl")
-			.provider(Provider.local)
 			.build();
 		given(userReadService.findUserByEmailOrElseThrow(email))
 			.willReturn(user);
@@ -57,7 +55,6 @@ class UserServiceTest {
 		assertThat(resDTO.getEmail()).isEqualTo(user.getEmail());
 		assertThat(resDTO.getBirth()).isEqualTo(user.getBirth());
 		assertThat(resDTO.getProfile()).isEqualTo(user.getProfile());
-		assertThat(resDTO.getProvider()).isEqualTo(user.getProvider().name());
 	}
 
 	@Test
@@ -67,7 +64,6 @@ class UserServiceTest {
 		User user = User.builder()
 			.name("name")
 			.birth(LocalDate.of(2000, 10, 10))
-			.provider(Provider.local)
 			.build();
 
 		UserProfileModifyReqDTO reqDTO = new UserProfileModifyReqDTO(

@@ -91,7 +91,7 @@ public class AuthService {
 
 	@Transactional
 	public void updateToken(TokenMapping tokenMapping) {
-		AuthInfo authInfo = authReadService.findByEmailOrElseThrow(tokenMapping.getUserEmail());
+		AuthInfo authInfo = authReadService.findUserByEmailOrElseThrow(tokenMapping.getUserEmail());
 		authInfo.updateRefreshToken(tokenMapping.getRefreshToken());
 	}
 

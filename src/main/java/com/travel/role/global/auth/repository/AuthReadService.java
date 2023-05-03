@@ -15,13 +15,18 @@ import lombok.RequiredArgsConstructor;
 public class AuthReadService {
 	private final AuthRepository authRepository;
 
-	public AuthInfo findByEmailOrElseThrow(String email) {
-		return authRepository.findByEmail(email)
+	public AuthInfo findUserByEmailOrElseThrow(String email) {
+		return authRepository.findUserByEmail(email)
 			.orElseThrow(UserInfoNotFoundException::new);
 	}
 
 	public AuthInfo findUserByRefreshTokenOrElseThrow(String refreshToken) {
 		return authRepository.findUserByRefreshToken(refreshToken)
 			.orElseThrow(InvalidTokenException::new);
+	}
+
+	public AuthInfo findUserByIdOrElseThrow(Long id) {
+		return authRepository.findUserById(id)
+			.orElseThrow(UserInfoNotFoundException::new);
 	}
 }

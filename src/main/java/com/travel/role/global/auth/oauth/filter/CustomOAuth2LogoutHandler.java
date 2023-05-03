@@ -90,7 +90,7 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 	private AuthInfo getUserInfo(UsernamePasswordAuthenticationToken authentication) {
 		String email = authentication.getName();
 
-		Optional<AuthInfo> authInfo = authRepository.findByEmail(email);
+		Optional<AuthInfo> authInfo = authRepository.findUserByEmail(email);
 		return authInfo.orElse(null);
 	}
 }

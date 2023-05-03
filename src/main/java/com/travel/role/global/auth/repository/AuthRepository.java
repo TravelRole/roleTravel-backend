@@ -11,10 +11,10 @@ import com.travel.role.global.auth.entity.AuthInfo;
 
 public interface AuthRepository extends JpaRepository<AuthInfo, Long> {
 
-	@Query("SELECT a FROM AuthInfo a"
+	@Query("SELECT a, a.user FROM AuthInfo a"
 		+ " INNER JOIN FETCH a.user u"
 		+ " WHERE u.email = :email")
-	Optional<AuthInfo> findByEmail(@Param("email") String email);
+	Optional<AuthInfo> findUserByEmail(@Param("email") String email);
 
 	@Query("SELECT a, a.user FROM AuthInfo a"
 		+ " LEFT JOIN FETCH a.user"
@@ -25,4 +25,9 @@ public interface AuthRepository extends JpaRepository<AuthInfo, Long> {
 		+ " LEFT JOIN FETCH a.user"
 		+ " WHERE a.provider = :provider AND a.providerId = :providerId")
 	Optional<AuthInfo> findUserByProviderAndProviderId(@Param("provider")Provider provider, @Param("providerId") String providerId);
+
+	@Query("SELECT a, a.user FROM AuthInfo a"
+		+ " INNER JOIN FETCH a.user u"
+		+ " WHERE u.id = :userId")
+	Optional<AuthInfo> findUserById(@Param("userId") Long userId);
 }

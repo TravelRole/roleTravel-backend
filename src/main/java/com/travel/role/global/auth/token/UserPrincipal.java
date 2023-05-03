@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.travel.role.domain.user.entity.User;
+import com.travel.role.global.auth.entity.AuthInfo;
 
 public class UserPrincipal implements UserDetails, OAuth2User {
 
@@ -29,10 +30,11 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 		this.authorities = authorities;
 	}
 
-	public static UserPrincipal create(User user) {
+	public static UserPrincipal create(AuthInfo authInfo) {
 		List<SimpleGrantedAuthority> authorities = Collections.singletonList(
-			new SimpleGrantedAuthority(user.getRole().getRoleValue()));
+			new SimpleGrantedAuthority(authInfo.getRole().getRoleValue()));
 
+		User user = authInfo.getUser();
 		return new UserPrincipal(
 			user.getId(),
 			user.getEmail(),
