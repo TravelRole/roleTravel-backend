@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +25,7 @@ import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.global.auth.service.TokenProvider;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,11 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 	@Override
 	@Transactional
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-		UsernamePasswordAuthenticationToken auth = getUserAuthentication(getJwtFromRequest(request));
+		String token = getJwtFromRequest(request);
+
+		tokenProvider.validateToken(token);
+
+		UsernamePasswordAuthenticationToken auth = getUserAuthentication(token);
 		User user = getUserInfo(auth);
 
 		if (user != null) {
@@ -66,7 +70,7 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 				exchange.getStatusCode();
 			}
 		} else {
-			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			throw new UserInfoNotFoundException();
 		}
 	}
 
