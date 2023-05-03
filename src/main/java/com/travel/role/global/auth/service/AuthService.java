@@ -111,7 +111,7 @@ public class AuthService {
 			throw new NotExistTokenException();
 		}
 
-		AuthInfo authInfo = authReadService.findUserByRefreshToken(refreshToken);
+		AuthInfo authInfo = authReadService.findUserByRefreshTokenOrElseThrow(refreshToken);
 
 		Long refreshTokenExpirationTime = 0L;
 		try {

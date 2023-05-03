@@ -20,7 +20,7 @@ public class AuthReadService {
 			.orElseThrow(UserInfoNotFoundException::new);
 	}
 
-	public AuthInfo findUserByRefreshToken(String refreshToken) {
+	public AuthInfo findUserByRefreshTokenOrElseThrow(String refreshToken) {
 		return authRepository.findUserByRefreshToken(refreshToken)
 			.orElseThrow(InvalidTokenException::new);
 	}

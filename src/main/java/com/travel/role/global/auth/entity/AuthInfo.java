@@ -63,4 +63,8 @@ public class AuthInfo {
 		if (refreshToken != null)
 			refreshToken = null;
 	}
+
+	public void updateProviderToken(final String providerToken) {
+		this.providerToken = providerToken;
+	}
 }

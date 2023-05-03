@@ -62,19 +62,9 @@ public class User extends BaseTime {
 		this.refreshToken = refreshToken;
 	}
 
-	public void deleteRefreshToken() {
-		if (refreshToken != null) {
-			refreshToken = null;
-		}
-	}
-
 	public void updatePassword(String password) {
 		if (!password.isEmpty())
 			this.password = password;
-	}
-
-	public void updateProviderToken(final String providerToken) {
-		this.providerToken = providerToken;
 	}
 
 	public static User of(SignUpRequestDTO signUpRequestDTO, String password) {
