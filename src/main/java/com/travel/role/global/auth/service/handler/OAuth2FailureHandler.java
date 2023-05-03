@@ -1,5 +1,7 @@
 package com.travel.role.global.auth.service.handler;
 
+import static com.travel.role.global.util.Constants.*;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -16,8 +18,6 @@ import com.travel.role.global.exception.dto.ExceptionFilterResponse;
 
 @Component
 public class OAuth2FailureHandler implements AuthenticationFailureHandler {
-
-	private static final String OAUTH_LOGIN_FAILURE = "소셜 로그인에 실패하였습니다";
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,

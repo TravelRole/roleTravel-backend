@@ -1,5 +1,7 @@
 package com.travel.role.global.auth.oauth.filter;
 
+import static com.travel.role.global.util.Constants.*;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Optional;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.global.auth.service.TokenProvider;
@@ -52,9 +55,9 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 			} catch (UnsupportedEncodingException e) {
 				log.info("AccessToken Encoding에 실패하였습니다");
 			}
-			headers.set("Authorization", "Bearer " + encoded);
+			headers.set(HttpHeaders.AUTHORIZATION, TOKEN_NAME + " " + encoded);
 			HttpEntity<String> entity = new HttpEntity<>("", headers);
-			if (user.getProvider().name().equals("google")) {
+			if (user.getProvider().name().equals(Provider.google.name())) {
 				String url = "https://accounts.google.com/o/oauth2/revoke?token=" + encoded;
 				restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 			} else if (user.getProvider().name().equals("kakao")) {
@@ -68,9 +71,9 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 	}
 
 	private String getJwtFromRequest(HttpServletRequest request) {
-		String bearerToken = request.getHeader("Authorization");
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-			return bearerToken.substring(7);
+		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_NAME)) {
+			return bearerToken.substring(TOKEN_NAME.length() + 1);
 		}
 		return null;
 	}

@@ -1,6 +1,6 @@
 package com.travel.role.global.auth.controller;
 
-import static com.travel.role.global.auth.service.RefreshTokenCookieProvider.*;
+import static com.travel.role.global.util.Constants.*;
 
 import javax.validation.Valid;
 
@@ -44,7 +44,7 @@ public class AuthController {
 
 	@PostMapping("/refresh")
 	public TokenResponse refresh(
-		@CookieValue(value = REFRESH_TOKEN, required = false) String refreshToken) {
+		@CookieValue(value = REFRESH_TOKEN_NAME, required = false) String refreshToken) {
 		return authService.refresh(refreshToken);
 	}
 }

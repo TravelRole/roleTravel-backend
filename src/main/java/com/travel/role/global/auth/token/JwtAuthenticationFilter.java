@@ -1,5 +1,7 @@
 package com.travel.role.global.auth.token;
 
+import static com.travel.role.global.util.Constants.*;
+
 import java.io.IOException;
 import java.util.Objects;
 
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -24,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+	private static String REFRESH_API = "/api/refresh";
+
 	@Autowired
 	private TokenProvider tokenProvider;
 
@@ -33,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String jwt = getJwtFromRequest(request);
 		String servletPath = request.getServletPath();
 
-		if (StringUtils.hasText(jwt) && !Objects.equals(servletPath, "/api/refresh")) {
+		if (StringUtils.hasText(jwt) && !Objects.equals(servletPath, REFRESH_API)) {
 			tokenProvider.validateToken(jwt);
 			UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationById(jwt);
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -44,10 +49,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	private String getJwtFromRequest(HttpServletRequest request) {
-		String bearerToken = request.getHeader("Authorization");
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
+		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_NAME)) {
 			log.info("bearer toke = {}", bearerToken);
-			return bearerToken.substring(7);
+			return bearerToken.substring(TOKEN_NAME.length() + 1);
 		}
 		return null;
 	}

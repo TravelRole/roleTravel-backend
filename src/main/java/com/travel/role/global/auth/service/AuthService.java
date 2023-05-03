@@ -51,6 +51,7 @@ public class AuthService {
 
 	private static final String SUCCESS_SIGN_UP = "회원가입에 성공하셨습니다";
 	private static final String SUCCESS_MESSAGE = "성공하셨습니다.";
+	private static final int MAX_PASSWORD_LENGTH = 16;
 
 	@Transactional
 	public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
@@ -139,7 +140,7 @@ public class AuthService {
 	public void changePassword(NewPasswordRequestDTO dto) throws SendFailedException {
 		User user = userReadService.findUserByNameAndBirthAndEmailOrElseThrow(dto.getName(), dto.getBirth(), dto.getEmail());
 
-		String randomPassword = passwordGenerator.generateRandomPassword(16);
+		String randomPassword = passwordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
 		user.updatePassword(passwordEncoder.encode(randomPassword));
 
 		mailService.sendPasswordMail(randomPassword, user.getEmail());
