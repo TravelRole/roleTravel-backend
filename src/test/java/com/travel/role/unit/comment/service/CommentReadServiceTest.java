@@ -14,6 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.travel.role.domain.comment.dto.response.CommentResDTO;
 import com.travel.role.domain.comment.entity.Comment;
@@ -69,20 +72,23 @@ class CommentReadServiceTest {
 	}
 
 	@Test
-	void 방_아이디가_주어졌을때_방에_존재하는_모든_댓글을_찾으면_댓글_목록을_반환한다() {
+	void 방_아이디와_페이징_정보가_주어졌을때_방에_존재하는_댓글을_찾으면_댓글_목록_페이지를_반환한다() {
 
 		// Given
 		Long roomId = 1L;
+		PageRequest pageRequest = PageRequest.of(1, 10);
 		List<CommentResDTO> expectedResDTOList = makeCommentResDTOList();
-		given(commentRepository.findAllOrderByGroupIdAndCreateDate(roomId))
-			.willReturn(expectedResDTOList);
+		PageImpl<CommentResDTO> page = new PageImpl<>(expectedResDTOList, pageRequest, 20L);
+		given(commentRepository.findAllOrderByGroupIdAndCreateDate(roomId, pageRequest))
+			.willReturn(page);
 
 		// When
-		List<CommentResDTO> resDTOList = commentReadService.getAllCommentsByRoomId(roomId);
+		Page<CommentResDTO> result = commentReadService.getCommentsByRoomId(roomId, pageRequest);
 
 		// Then
-		assertThat(resDTOList).hasSize(5)
-			.hasSameElementsAs(expectedResDTOList);
+		assertThat(result.getTotalElements()).isEqualTo(20);
+		assertThat(result.getTotalPages()).isEqualTo(2);
+		assertThat(result.getContent()).hasSize(10);
 	}
 
 	@Test
@@ -118,7 +124,7 @@ class CommentReadServiceTest {
 
 		List<CommentResDTO> resDTOList = new ArrayList<>();
 
-		for(long i = 1 ; i <= 5 ; i++){
+		for(long i = 1 ; i <= 10 ; i++){
 			resDTOList.add(
 				CommentResDTO.builder()
 					.commentId(i)
