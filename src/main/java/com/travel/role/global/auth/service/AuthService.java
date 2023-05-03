@@ -21,6 +21,7 @@ import com.travel.role.domain.user.dto.CheckIdResponse;
 import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
 import com.travel.role.domain.user.dto.ConfirmUserResponseDTO;
 import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
+import com.travel.role.domain.user.dto.auth.AccessTokenResponseDTO;
 import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
@@ -28,7 +29,6 @@ import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.auth.dto.TokenMapping;
-import com.travel.role.global.auth.dto.TokenResponse;
 import com.travel.role.global.auth.service.mail.MailService;
 import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;
@@ -87,7 +87,7 @@ public class AuthService {
 		user.updateRefreshToken(tokenMapping.getRefreshToken());
 	}
 
-	public TokenResponse refresh(final String refreshToken) {
+	public AccessTokenResponseDTO refresh(final String refreshToken) {
 		validateToken(refreshToken);
 
 		User user = userReadService.findUserByRefreshTokenOrElseThrow(refreshToken);
