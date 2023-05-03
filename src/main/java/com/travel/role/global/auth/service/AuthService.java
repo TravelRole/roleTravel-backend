@@ -65,7 +65,7 @@ public class AuthService {
 	}
 
 	@Transactional
-	public TokenMapping signIn(LoginRequestDTO loginRequestDTO) {
+	public TokenMapping login(LoginRequestDTO loginRequestDTO) {
 		Authentication authentication = authenticationManager.authenticate(
 			new UsernamePasswordAuthenticationToken(
 				loginRequestDTO.getEmail(),

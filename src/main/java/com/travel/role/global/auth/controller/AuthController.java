@@ -32,8 +32,8 @@ public class AuthController {
 	private final RefreshTokenCookieProvider refreshTokenCookieProvider;
 
 	@PostMapping("/login")
-	public ResponseEntity<AccessTokenRequestDTO> signIn(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
-		TokenMapping tokenResult = authService.signIn(loginRequestDTO);
+	public ResponseEntity<AccessTokenRequestDTO> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
+		TokenMapping tokenResult = authService.login(loginRequestDTO);
 		ResponseCookie cookie = refreshTokenCookieProvider.createCookie(tokenResult.getRefreshToken());
 
 		return ResponseEntity.ok()
