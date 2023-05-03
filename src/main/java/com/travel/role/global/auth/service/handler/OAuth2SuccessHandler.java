@@ -1,5 +1,7 @@
 package com.travel.role.global.auth.service.handler;
 
+import static com.travel.role.global.util.Constants.*;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -49,7 +51,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		saveUser(token);
 
 		ResponseCookie cookie = refreshTokenCookieProvider.createCookie(token.getRefreshToken());
-		response.addHeader("Set-Cookie", cookie.toString());
+		response.addHeader(COOKIE_HEADER, cookie.toString());
 		response.sendRedirect(redirectPath + "?accessToken=" + token.getAccessToken());
 	}
 

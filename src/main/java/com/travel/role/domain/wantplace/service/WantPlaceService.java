@@ -1,13 +1,5 @@
 package com.travel.role.domain.wantplace.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
@@ -21,8 +13,14 @@ import com.travel.role.domain.wantplace.dto.response.WantPlaceResponseDTO;
 import com.travel.role.domain.wantplace.entity.WantPlace;
 import com.travel.role.domain.wantplace.repository.WantPlaceRepository;
 import com.travel.role.global.exception.user.PlaceInfoNotFoundException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -71,9 +69,8 @@ public class WantPlaceService {
 	private List<WantPlaceDTO> getWantPlaceList(Long roomId) {
 		List<WantPlaceDTO> wantPlaceDTOS = new ArrayList<>();
 		List<WantPlace> wantPlaces = wantPlaceRepository.findByRoomIdWithRole(roomId);
-		long idx = 1;
 		for (WantPlace wantPlace : wantPlaces) {
-			wantPlaceDTOS.add(WantPlaceDTO.of(idx++, wantPlace));
+			wantPlaceDTOS.add(WantPlaceDTO.from(wantPlace));
 		}
 		return wantPlaceDTOS;
 	}

@@ -39,14 +39,13 @@ public class CommentController {
 		commentService.createComment(userPrincipal.getEmail(), roomId, parentId, reqDTO);
 	}
 
-	@GetMapping({"", "/{parent_id}"})
+	@GetMapping
 	public ResponseEntity<CommentListResDTO> getComments(@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@PathVariable("room_id") Long roomId,
-		@PathVariable(value = "parent_id", required = false) Long parentId) {
+		@PathVariable("room_id") Long roomId) {
 
-		CommentListResDTO comments = commentService.getComments(userPrincipal.getEmail(), roomId, parentId);
+		CommentListResDTO resDTO = commentService.getAllCommentsInRoom(userPrincipal.getEmail(), roomId);
 
-		return ResponseEntity.ok(comments);
+		return ResponseEntity.ok(resDTO);
 	}
 
 	@PutMapping("/{comment_id}")
