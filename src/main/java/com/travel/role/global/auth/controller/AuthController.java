@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.user.dto.auth.AccessTokenResponseDTO;
 import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
 import com.travel.role.global.auth.dto.AccessTokenRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
@@ -43,7 +42,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/refresh")
-	public AccessTokenResponseDTO refresh(
+	public AccessTokenRequestDTO refresh(
 		@CookieValue(value = REFRESH_TOKEN_NAME, required = false) String refreshToken) {
 		return authService.refresh(refreshToken);
 	}
