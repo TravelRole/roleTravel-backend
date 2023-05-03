@@ -58,4 +58,9 @@ public class AuthInfo {
 	public void updateRefreshToken(final String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
+
+	public void deleteRefreshToken() {
+		if (refreshToken != null)
+			refreshToken = null;
+	}
 }

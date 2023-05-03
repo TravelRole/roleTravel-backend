@@ -14,4 +14,9 @@ public interface AuthRepository extends JpaRepository<AuthInfo, Long> {
 		+ " INNER JOIN FETCH a.user u"
 		+ " WHERE u.email = :email")
 	Optional<AuthInfo> findByEmail(@Param("email") String email);
+
+	@Query("SELECT a, a.user FROM AuthInfo a"
+		+ " LEFT JOIN FETCH a.user"
+		+ " WHERE a.refreshToken = :refreshToken")
+	Optional<AuthInfo> findUserByRefreshToken(@Param("refreshToken") String refreshToken);
 }

@@ -3,7 +3,6 @@ package com.travel.role.global.auth.service;
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import javax.mail.SendFailedException;
 
@@ -112,22 +111,18 @@ public class AuthService {
 			throw new NotExistTokenException();
 		}
 
-		Optional<User> findUser = userRepository.findByRefreshToken(refreshToken);
-
-		if (findUser.isEmpty()) {
-			throw new InvalidTokenException(INVALID_TOKEN);
-		}
+		AuthInfo authInfo = authReadService.findUserByRefreshToken(refreshToken);
 
 		Long refreshTokenExpirationTime = 0L;
 		try {
 			refreshTokenExpirationTime = tokenProvider.getTokenExpiration(refreshToken);
 		} catch (Exception e) {
-			findUser.get().deleteRefreshToken();
+			authInfo.deleteRefreshToken();
 			throw new InvalidTokenException(INVALID_TOKEN);
 		}
 
 		if (refreshTokenExpirationTime < 0) {
-			findUser.get().deleteRefreshToken();
+			authInfo.deleteRefreshToken();
 			throw new InvalidTokenException(INVALID_TOKEN);
 		}
 	}
