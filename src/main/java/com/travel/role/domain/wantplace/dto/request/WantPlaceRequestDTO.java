@@ -1,13 +1,12 @@
 package com.travel.role.domain.wantplace.dto.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.travel.role.global.exception.dto.ExceptionMessage;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
@@ -29,4 +28,9 @@ public class WantPlaceRequestDTO {
 
     @NotNull(message = ExceptionMessage.LONGITUDE_NOT_EMPTY)
     private Double longitude;
+
+    private String category;
+
+    @NotBlank(message = ExceptionMessage.PLACE_ADDRESS_VALUE_NOT_EMPTY)
+    private String lotNumberAddress;
 }
