@@ -1,7 +1,12 @@
 package com.travel.role.global.config.auth;
 
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
+
+import java.time.LocalDateTime;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.BeanIds;
@@ -12,13 +17,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.travel.role.global.exception.auth.TokenExceptionHandlerFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travel.role.global.auth.oauth.filter.CustomOAuth2LogoutHandler;
 import com.travel.role.global.auth.service.CustomAuthProvider;
 import com.travel.role.global.auth.service.CustomOAuth2UserService;
@@ -26,6 +31,8 @@ import com.travel.role.global.auth.service.CustomUserDetailService;
 import com.travel.role.global.auth.service.handler.OAuth2FailureHandler;
 import com.travel.role.global.auth.service.handler.OAuth2SuccessHandler;
 import com.travel.role.global.auth.token.JwtAuthenticationFilter;
+import com.travel.role.global.exception.auth.TokenExceptionHandlerFilter;
+import com.travel.role.global.exception.dto.ExceptionFilterResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -85,7 +92,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic()
 			.disable()
 			.authorizeRequests()
-			.antMatchers("/auth/**", "/oauth2/**").permitAll()
+			.antMatchers( "/oauth2/**", "/api/signup",
+				"/api/find-id", "/api/confirm-id", "/api/new-password", "/api/login",
+				"/api/refresh").permitAll()
 			.anyRequest()
 			.authenticated()
 			.and()
@@ -99,15 +108,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.failureHandler(oAuth2FailureHandler)
 			.and()
 				.exceptionHandling()
-					.authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+					.authenticationEntryPoint(unauthorizedEntryPoint)
 			.and()
 				.logout()
-					.logoutUrl("/auth/logout")
-						.invalidateHttpSession(true)
-							.clearAuthentication(true)
-								.deleteCookies("JSESSIONID", "refreshToken")
-			.addLogoutHandler(logoutHandler)
-									;
+					.logoutUrl("/api/logout")
+					.invalidateHttpSession(true)
+					.clearAuthentication(true)
+					.deleteCookies("JSESSIONID", "refreshToken", "TIARA")
+			.addLogoutHandler(logoutHandler);
 
 		http
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -126,4 +134,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
+
+	private final AuthenticationEntryPoint unauthorizedEntryPoint = ((request, response, authException) -> {
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.writeValue(response.getWriter(),
+			new ExceptionFilterResponse(NO_AUTHENTICATION, HttpStatus.UNAUTHORIZED, LocalDateTime.now().toString()));
+	});
 }

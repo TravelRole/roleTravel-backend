@@ -1,6 +1,5 @@
 package com.travel.role.unit.auth.service;
 
-import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -13,19 +12,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.domain.user.entity.Role;
 import com.travel.role.domain.user.entity.User;
-import com.travel.role.domain.user.dto.ConfirmUserRequestDTO;
-import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
-
+import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.global.auth.service.AuthService;
 import com.travel.role.global.auth.service.TokenProvider;
-import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;
 import com.travel.role.global.exception.dto.ExceptionMessage;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -38,29 +33,9 @@ class AuthServiceTest {
 	private TokenProvider tokenProvider;
 
 	@Test
-	void 이미_존재하는_이메일로_회원가입을_진행할때_예외_발생() {
-		// given
-		SignUpRequestDTO signUpRequestDTO = createSignUpRequestDTO();
-		given(userRepository.existsByEmail(anyString())).willReturn(true);
-
-		// when, then
-		assertThatThrownBy(() -> authService.signUp(signUpRequestDTO))
-			.isInstanceOf(AlreadyExistUserException.class)
-				.hasMessageContaining(ExceptionMessage.ALREADY_EXIST_USER);
-	}
-
-	@Test
 	void 토큰없이_액세스토큰을_재발급_받으려는_경우_예외_발생() {
 		// given,when,then
-		assertThatThrownBy(() -> authService.refresh(null, "token"))
-			.isInstanceOf(NotExistTokenException.class)
-			.hasMessageContaining(ExceptionMessage.NOT_EXISTS_TOKEN);
-
-		assertThatThrownBy(() -> authService.refresh("token", null))
-			.isInstanceOf(NotExistTokenException.class)
-			.hasMessageContaining(ExceptionMessage.NOT_EXISTS_TOKEN);
-
-		assertThatThrownBy(() -> authService.refresh(null, null))
+		assertThatThrownBy(() -> authService.refresh(null))
 			.isInstanceOf(NotExistTokenException.class)
 			.hasMessageContaining(ExceptionMessage.NOT_EXISTS_TOKEN);
 	}
@@ -71,7 +46,7 @@ class AuthServiceTest {
 		given(userRepository.findByRefreshToken(anyString()))
 			.willReturn(Optional.empty());
 		//when, then
-		assertThatThrownBy(() -> authService.refresh("refreshToken", "accessToken"))
+		assertThatThrownBy(() -> authService.refresh("refreshToken"))
 			.isInstanceOf(InvalidTokenException.class)
 			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
 	}
@@ -89,7 +64,7 @@ class AuthServiceTest {
 			.willReturn(20L);
 
 		//when,then
-		assertThatThrownBy(() -> authService.refresh(refreshToken, accessToken))
+		assertThatThrownBy(() -> authService.refresh(refreshToken))
 			.isInstanceOf(InvalidTokenException.class)
 			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
 	}
@@ -106,21 +81,9 @@ class AuthServiceTest {
 		given(tokenProvider.getTokenExpiration(refreshToken))
 			.willReturn(-20L);
 		//when,then
-		assertThatThrownBy(() -> authService.refresh(refreshToken, accessToken))
+		assertThatThrownBy(() -> authService.refresh(refreshToken))
 			.isInstanceOf(InvalidTokenException.class)
 			.hasMessageContaining(ExceptionMessage.INVALID_TOKEN);
-	}
-
-	@Test
-	void 회원정보가_없는_회원의_아이디를_찾을경우_예외_발생() {
-		// given
-		given(userRepository.findByNameAndBirth(anyString(), any()))
-			.willReturn(Optional.empty());
-
-		// when, then
-		assertThatThrownBy(() -> authService.findId(new ConfirmUserRequestDTO("test", LocalDate.now())))
-			.isInstanceOf(UserInfoNotFoundException.class)
-			.hasMessageContaining(USERNAME_NOT_FOUND);
 	}
 
 	private SignUpRequestDTO createSignUpRequestDTO() {

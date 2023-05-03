@@ -8,6 +8,20 @@ spring:
             client-secret: ENC(/M5KAZAMC0VsKVsHeY27PYbJMzYMJSfEZK8WVYY9nqRgBgTeK82lrZtgy+rutP5A)
             redirect-uri: http://test.haechan.shop:8080/oauth2/callback/google
             scope: profile,email
+          kakao:
+            client-id: ENC(OlKEOgMNgf6nfmqp6e98acodDmtLwZyncwADfLg3VPAiSaa6QIUNz+LVv7lqHGci)
+            client-secret: ENC(J02uIb7BLBhp26Bs2Zca3SoQlMatIQIwVEEvbohtqiPZhbQrAW4NouCNcuuPZTfC)
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email, birthday
+            client-name: Kakao
+            redirect-uri: http://test.haechan.shop:8080/oauth2/callback/kakao
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
 
 redirectPath: ENC(REzC1OeFdmhEaRwinyQn+XYSj7Y3Sj3KVQo5KvKb/l49d1eSmst1kSyB5m5zMSMLRNMaafxZB2WyZvYxuIlwqg==)
 
