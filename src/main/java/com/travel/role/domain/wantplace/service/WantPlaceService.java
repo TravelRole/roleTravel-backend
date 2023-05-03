@@ -18,9 +18,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,12 +67,10 @@ public class WantPlaceService {
 	}
 
 	private List<WantPlaceDTO> getWantPlaceList(Long roomId) {
-		List<WantPlaceDTO> wantPlaceDTOS = new ArrayList<>();
-		List<WantPlace> wantPlaces = wantPlaceRepository.findByRoomIdWithRole(roomId);
-		for (WantPlace wantPlace : wantPlaces) {
-			wantPlaceDTOS.add(WantPlaceDTO.from(wantPlace));
-		}
-		return wantPlaceDTOS;
+		return wantPlaceRepository.findByRoomIdWithRole(roomId)
+				.stream()
+				.map(WantPlaceDTO::from)
+				.collect(Collectors.toList());
 	}
 
 }
