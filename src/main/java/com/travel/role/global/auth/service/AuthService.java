@@ -98,9 +98,9 @@ public class AuthService {
 	public AccessTokenRequestDTO refresh(final String refreshToken) {
 		validateToken(refreshToken);
 
-		User user = userReadService.findUserByRefreshTokenOrElseThrow(refreshToken);
+		AuthInfo authInfo = authReadService.findUserByRefreshTokenOrElseThrow(refreshToken);
 		UsernamePasswordAuthenticationToken authentication = tokenProvider.getAuthenticationByEmail(
-			user.getEmail());
+			authInfo.getUser().getEmail());
 
 		return tokenProvider.refreshAccessToken(authentication);
 	}

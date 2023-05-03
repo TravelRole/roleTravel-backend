@@ -18,6 +18,7 @@ import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
+import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.room.service.RoomService;
@@ -52,6 +53,8 @@ class RoomServiceTest {
 	private RoomParticipantRepository roomParticipantRepository;
 	@Mock
 	private ParticipantRoleRepository participantRoleRepository;
+	@Mock
+	private RoomRepository roomRepository;
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
 		// given
@@ -76,6 +79,8 @@ class RoomServiceTest {
 		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
 			.willReturn(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
 				null, "강릉", "12", LocalDateTime.now().minusDays(1L).plusSeconds(1L)));
+		given(roomRepository.existsByRoomInviteCode(anyString()))
+			.willReturn(false);
 
 		//when
 		String inviteCode = roomService.makeInviteCode("haechan@naver.com", 1L);

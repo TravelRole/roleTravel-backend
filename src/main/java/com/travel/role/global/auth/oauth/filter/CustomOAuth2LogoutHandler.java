@@ -72,6 +72,7 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 				exchange.getStatusCode();
 			}
 		} else {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			throw new UserInfoNotFoundException();
 		}
 	}
