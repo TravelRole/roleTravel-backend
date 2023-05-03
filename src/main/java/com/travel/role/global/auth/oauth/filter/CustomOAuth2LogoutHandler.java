@@ -57,10 +57,10 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 			}
 			headers.set(HttpHeaders.AUTHORIZATION, TOKEN_NAME + " " + encoded);
 			HttpEntity<String> entity = new HttpEntity<>("", headers);
-			if (user.getProvider().name().equals(Provider.google.name())) {
+			if (user.getProvider() == Provider.google) {
 				String url = "https://accounts.google.com/o/oauth2/revoke?token=" + encoded;
 				restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-			} else if (user.getProvider().name().equals("kakao")) {
+			} else if (user.getProvider() == Provider.kakao) {
 				String url = "https://kapi.kakao.com/v1/user/logout";
 				ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 				exchange.getStatusCode();
