@@ -2,6 +2,8 @@ package com.travel.role.domain.comment.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.comment.dto.response.CommentListResDTO;
 import com.travel.role.domain.comment.dto.request.CommentReqDTO;
+import com.travel.role.domain.comment.dto.response.CommentResDTO;
+import com.travel.role.domain.comment.dto.response.PageResDTO;
 import com.travel.role.domain.comment.service.CommentService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
@@ -40,10 +43,11 @@ public class CommentController {
 	}
 
 	@GetMapping
-	public ResponseEntity<CommentListResDTO> getComments(@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@PathVariable("room_id") Long roomId) {
+	public ResponseEntity<PageResDTO<CommentResDTO>> getComments(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") Long roomId,
+		@PageableDefault(size = 10, page = 0) Pageable pageable) {
 
-		CommentListResDTO resDTO = commentService.getAllCommentsInRoom(userPrincipal.getEmail(), roomId);
+		PageResDTO<CommentResDTO> resDTO = commentService.getCommentsInRoom(userPrincipal.getEmail(), roomId, pageable);
 
 		return ResponseEntity.ok(resDTO);
 	}
