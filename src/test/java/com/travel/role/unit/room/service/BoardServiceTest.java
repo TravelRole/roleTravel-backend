@@ -1,6 +1,7 @@
 package com.travel.role.unit.room.service;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
+import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.entity.Category;
@@ -21,8 +22,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -51,6 +56,30 @@ public class BoardServiceTest {
 
     @InjectMocks
     private BoardService boardService;
+
+    @Test
+    void 예약페이지_조회_성공(){
+        //given
+        User user = makeUser(1L);
+        Room room = makeRoom(1L);
+        LocalDate date = LocalDate.now();
+        given(userReadService.findUserByEmailOrElseThrow(anyString()))
+                .willReturn(user);
+        given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
+                .willReturn(room);
+        given(boardRepository.findBoardByRoomIdAndScheduleDate(room.getId(),date.atStartOfDay(),date.atTime(LocalTime.MAX)))
+                .willReturn(findBoardList());
+        doNothing()
+                .when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
+
+        //when
+        List<BookInfoResponseDTO> result = boardService.getBookInfo("asd@naver.com",1L,LocalDate.now());
+
+        //then
+        assertThat(result.get(0).getPlaceName()).isEqualTo("우도");
+        assertThat(result.get(0).getCategory()).isEqualTo(Category.ETC);
+        assertThat(result.get(0).getPrice()).isEqualTo(0);
+    }
 
     @Test
     void 찜목록에서_일정에_추가_성공(){
@@ -92,5 +121,23 @@ public class BoardServiceTest {
 
     private BoardRequestDTO createBoardRequestDTO(){
         return new BoardRequestDTO(1L,"우도","제주도",LocalDate.now().atTime(LocalTime.now()),null,true, Category.ETC,123.0,456.0,null);
+    }
+
+    private List<Board> findBoardList (){
+        List<Board> result = new ArrayList<>();
+        Board temp = Board.of(makeRoom(1L),createBoardRequestDTO());
+        BookInfo bookInfo = BookInfo.from(temp);
+        ScheduleInfo scheduleInfo = ScheduleInfo.of(temp, createBoardRequestDTO());
+        Board board = Board.builder()
+                .id(1L)
+                .scheduleDate(LocalDateTime.now())
+                .category(Category.ETC)
+                .scheduleInfo(scheduleInfo)
+                .bookInfo(bookInfo)
+                .build();
+
+        result.add(board);
+
+        return result;
     }
 }
