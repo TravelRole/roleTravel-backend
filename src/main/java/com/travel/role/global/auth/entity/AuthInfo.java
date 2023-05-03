@@ -50,4 +50,12 @@ public class AuthInfo {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+
+	public static AuthInfo of(Provider provider, User user) {
+		return new AuthInfo(null, provider, null, null, null, Role.USER, user);
+	}
+
+	public void updateRefreshToken(final String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
 }

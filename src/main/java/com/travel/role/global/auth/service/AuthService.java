@@ -24,11 +24,15 @@ import com.travel.role.domain.user.dto.NewPasswordRequestDTO;
 import com.travel.role.domain.user.dto.auth.LoginRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.domain.user.dto.auth.SignUpResponseDTO;
+import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.auth.dto.AccessTokenRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
+import com.travel.role.global.auth.entity.AuthInfo;
+import com.travel.role.global.auth.repository.AuthReadService;
+import com.travel.role.global.auth.repository.AuthRepository;
 import com.travel.role.global.auth.service.mail.MailService;
 import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;
@@ -44,6 +48,8 @@ public class AuthService {
 	private final AuthenticationManager authenticationManager;
 	private final TokenProvider tokenProvider;
 	private final UserRepository userRepository;
+	private final AuthRepository authRepository;
+	private final AuthReadService authReadService;
 	private final PasswordEncoder passwordEncoder;
 	private final PasswordGenerator passwordGenerator;
 	private final MailService mailService;
@@ -57,11 +63,14 @@ public class AuthService {
 	public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
 		userReadService.validateUserExistByEmail(signUpRequestDTO.getEmail());
 
-		User newUser = User.of(signUpRequestDTO,
+		User user = User.of(signUpRequestDTO,
 			passwordEncoder.encode(signUpRequestDTO.getPassword()));
-		userRepository.save(newUser);
+		user = userRepository.save(user);
 
-		return new SignUpResponseDTO(newUser.getEmail(), newUser.getName(), SUCCESS_SIGN_UP, LocalDateTime.now());
+		AuthInfo authInfo = AuthInfo.of(Provider.local, user);
+		authRepository.save(authInfo);
+
+		return new SignUpResponseDTO(user.getEmail(), user.getName(), SUCCESS_SIGN_UP, LocalDateTime.now());
 	}
 
 	@Transactional
@@ -83,8 +92,8 @@ public class AuthService {
 
 	@Transactional
 	public void updateToken(TokenMapping tokenMapping) {
-		User user = userReadService.findUserByEmailOrElseThrow(tokenMapping.getUserEmail());
-		user.updateRefreshToken(tokenMapping.getRefreshToken());
+		AuthInfo authInfo = authReadService.findByEmailOrElseThrow(tokenMapping.getUserEmail());
+		authInfo.updateRefreshToken(tokenMapping.getRefreshToken());
 	}
 
 	public AccessTokenRequestDTO refresh(final String refreshToken) {
