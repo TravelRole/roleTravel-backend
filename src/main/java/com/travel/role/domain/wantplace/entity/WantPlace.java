@@ -1,9 +1,11 @@
 package com.travel.role.domain.wantplace.entity;
 
-import com.travel.role.domain.wantplace.dto.request.WantPlaceRequestDTO;
 import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.wantplace.dto.request.WantPlaceRequestDTO;
 import com.travel.role.global.domain.BaseTime;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -37,6 +39,13 @@ public class WantPlace extends BaseTime {
     @Column(nullable = false)
     private Double longitude;
 
+    @Column(length = 100, nullable = false)
+    private String category;
+
+    @Column(name = "lot_number_address", length = 100, nullable = false)
+    private String lotNumberAddress;
+
+
     private WantPlace(Room room, WantPlaceRequestDTO wantPlaceRequestDTO) {
         this.room = room;
         this.placeName = wantPlaceRequestDTO.getPlaceName();
@@ -44,6 +53,8 @@ public class WantPlace extends BaseTime {
         this.phoneNumber = wantPlaceRequestDTO.getPhoneNumber();
         this.latitude = wantPlaceRequestDTO.getLatitude();
         this.longitude = wantPlaceRequestDTO.getLongitude();
+        this.category = wantPlaceRequestDTO.getCategory();
+        this.lotNumberAddress = wantPlaceRequestDTO.getLotNumberAddress();
     }
 
     public static WantPlace of(Room room,  WantPlaceRequestDTO wantPlaceRequestDTO) {

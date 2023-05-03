@@ -225,7 +225,7 @@ class RoomServiceTest {
 		private static WantPlaceRequestDTO getWantPlaceRequestDto() {
 			return new WantPlaceRequestDTO(
 				1L, "제주도", "제주도", "1234",
-				123.0, 456.0);
+				123.0, 456.0,"섬","색당로2314");
 		}
 	}
 }
