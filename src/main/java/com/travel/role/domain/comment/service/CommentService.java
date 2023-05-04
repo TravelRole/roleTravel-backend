@@ -2,14 +2,15 @@ package com.travel.role.domain.comment.service;
 
 import static com.travel.role.global.exception.common.ResourceOperationAccessDeniedException.*;
 
-import java.util.List;
 import java.util.Objects;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.comment.dto.request.CommentReqDTO;
-import com.travel.role.domain.comment.dto.response.CommentListResDTO;
+import com.travel.role.domain.comment.dto.response.PageResDTO;
 import com.travel.role.domain.comment.dto.response.CommentResDTO;
 import com.travel.role.domain.comment.entity.Comment;
 import com.travel.role.domain.comment.repository.CommentRepository;
@@ -45,15 +46,15 @@ public class CommentService {
 	}
 
 	@Transactional(readOnly = true)
-	public CommentListResDTO getAllCommentsInRoom(String email, Long roomId) {
+	public PageResDTO<CommentResDTO> getCommentsInRoom(String email, Long roomId, Pageable pageable) {
 
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(loginUser, room);
 
-		List<CommentResDTO> commentResDTOS = commentReadService.getAllCommentsByRoomId(roomId);
+		Page<CommentResDTO> page = commentReadService.getCommentsByRoomId(roomId, pageable);
 
-		return CommentListResDTO.from(commentResDTOS);
+		return PageResDTO.from(page);
 	}
 
 	public void modifyComment(String email, Long roomId, Long commentId, CommentReqDTO reqDTO) {

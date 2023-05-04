@@ -1,12 +1,14 @@
 package com.travel.role.domain.comment.repository.querydsl;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.travel.role.domain.comment.dto.response.CommentResDTO;
 
 public interface CommentQuerydsl {
 
-	List<CommentResDTO> findAllOrderByGroupIdAndCreateDate(Long roomId);
+	Page<CommentResDTO> findAllOrderByGroupIdAndCreateDate(Long roomId, Pageable pageable);
+
 	void dynamicDeleteById(Long commentId);
 
 }

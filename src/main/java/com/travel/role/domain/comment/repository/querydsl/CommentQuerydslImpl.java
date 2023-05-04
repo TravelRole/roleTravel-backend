@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,7 +29,7 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<CommentResDTO> findAllOrderByGroupIdAndCreateDate(Long roomId) {
+	public Page<CommentResDTO> findAllOrderByGroupIdAndCreateDate(Long roomId, Pageable pageable) {
 
 		QComment c = new QComment("c");
 		QUser fu = new QUser("fu");
@@ -44,11 +48,13 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 			.where(c.room.id.eq(roomId))
 			.orderBy(c.groupId.asc())
 			.orderBy(c.createDate.asc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
 			.fetch();
 
 		Map<Long, List<RoomRole>> roleMap = findRoleMapInRoom(roomId);
 
-		return tuples.stream().
+		List<CommentResDTO> resDTOS = tuples.stream().
 			map(
 				tuple -> {
 					SimpleUserInfoResDTO simpleUserInfoResDTO = tuple.get(2, SimpleUserInfoResDTO.class);
@@ -62,6 +68,14 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 						Boolean.TRUE.equals(tuple.get(c.deleted)));
 				}
 			).collect(Collectors.toList());
+
+		long total = queryFactory
+			.select(c.count())
+			.from(c)
+			.where(c.room.id.eq(roomId))
+			.fetchOne();
+
+		return new PageImpl<>(resDTOS, pageable, total);
 	}
 
 	@Override
