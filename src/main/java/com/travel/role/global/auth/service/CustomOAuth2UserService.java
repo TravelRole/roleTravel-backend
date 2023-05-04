@@ -77,7 +77,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		User user = User.of(userInfo);
 		user = userRepository.save(user);
 
-		AuthInfo authInfo = AuthInfo.of(provider, user);
+		String providerId = userInfo.getId();
+		AuthInfo authInfo = AuthInfo.of(provider, providerId, user);
 		return authRepository.save(authInfo);
 	}
 

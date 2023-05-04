@@ -55,6 +55,10 @@ public class AuthInfo {
 		return new AuthInfo(null, provider, null, null, null, Role.USER, user);
 	}
 
+	public static AuthInfo of(Provider provider, String providerId, User user) {
+		return new AuthInfo(null, provider, providerId, null, null, Role.USER, user);
+	}
+
 	public void updateRefreshToken(final String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
