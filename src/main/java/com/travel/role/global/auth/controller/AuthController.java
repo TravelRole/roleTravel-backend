@@ -9,6 +9,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +33,8 @@ public class AuthController {
 	private final RefreshTokenCookieProvider refreshTokenCookieProvider;
 
 	@PostMapping("/login")
-	public ResponseEntity<AccessTokenRequestDTO> signIn(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
-		TokenMapping tokenResult = authService.signIn(loginRequestDTO);
+	public ResponseEntity<AccessTokenRequestDTO> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
+		TokenMapping tokenResult = authService.login(loginRequestDTO);
 		ResponseCookie cookie = refreshTokenCookieProvider.createCookie(tokenResult.getRefreshToken());
 
 		return ResponseEntity.ok()
@@ -41,7 +42,7 @@ public class AuthController {
 			.body(new AccessTokenRequestDTO(tokenResult.getAccessToken()));
 	}
 
-	@PostMapping("/refresh")
+	@GetMapping("/refresh")
 	public AccessTokenRequestDTO refresh(
 		@CookieValue(value = REFRESH_TOKEN_NAME, required = false) String refreshToken) {
 		return authService.refresh(refreshToken);

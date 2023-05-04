@@ -21,6 +21,8 @@ import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.domain.user.service.UserService;
+import com.travel.role.global.auth.entity.AuthInfo;
+import com.travel.role.global.auth.repository.AuthReadService;
 import com.travel.role.global.exception.user.InputValueNotMatchException;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +34,8 @@ class UserServiceTest {
 	private PasswordEncoder passwordEncoder;
 	@Mock
 	private UserReadService userReadService;
+	@Mock
+	private AuthReadService authReadService;
 
 	@Test
 	void 회원정보_상세조회_성공() {
@@ -43,10 +47,9 @@ class UserServiceTest {
 			.email(email)
 			.birth(LocalDate.of(2000, 10, 10))
 			.profile("imageUrl")
-			.provider(Provider.local)
 			.build();
-		given(userReadService.findUserByEmailOrElseThrow(email))
-			.willReturn(user);
+		given(authReadService.findUserByEmailOrElseThrow(email))
+			.willReturn(AuthInfo.of(Provider.local, user));
 
 		// when
 		UserProfileDetailResDTO resDTO = userService.getUserProfile(email);
@@ -57,7 +60,6 @@ class UserServiceTest {
 		assertThat(resDTO.getEmail()).isEqualTo(user.getEmail());
 		assertThat(resDTO.getBirth()).isEqualTo(user.getBirth());
 		assertThat(resDTO.getProfile()).isEqualTo(user.getProfile());
-		assertThat(resDTO.getProvider()).isEqualTo(user.getProvider().name());
 	}
 
 	@Test
@@ -67,13 +69,12 @@ class UserServiceTest {
 		User user = User.builder()
 			.name("name")
 			.birth(LocalDate.of(2000, 10, 10))
-			.provider(Provider.local)
 			.build();
 
 		UserProfileModifyReqDTO reqDTO = new UserProfileModifyReqDTO(
 			"modified", "2000/10/10"
 		);
-		given(userReadService.findUserByEmailOrElseThrow(email)).willReturn(user);
+		given(authReadService.findUserByEmailOrElseThrow(email)).willReturn(AuthInfo.of(Provider.local, user));
 
 		// when
 		UserProfileDetailResDTO resDTO = userService.modifyUserProfile(email, reqDTO);

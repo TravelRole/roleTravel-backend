@@ -15,6 +15,8 @@ import com.travel.role.domain.user.dto.UserProfileDetailResDTO;
 import com.travel.role.domain.user.dto.UserProfileModifyReqDTO;
 import com.travel.role.domain.user.dto.UserProfileResponseDTO;
 import com.travel.role.domain.user.entity.User;
+import com.travel.role.global.auth.entity.AuthInfo;
+import com.travel.role.global.auth.repository.AuthReadService;
 import com.travel.role.global.exception.user.InputValueNotMatchException;
 import com.travel.role.global.s3.ImageProperty;
 import com.travel.role.global.s3.S3Service;
@@ -29,6 +31,7 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final S3Service s3Service;
 	private final UserReadService userReadService;
+	private final AuthReadService authReadService;
 
 	@Transactional(readOnly = true)
 	public UserProfileResponseDTO getBasicProfile(String email) {
@@ -41,20 +44,22 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public UserProfileDetailResDTO getUserProfile(String email) {
 
-		User findUser = userReadService.findUserByEmailOrElseThrow(email);
+		AuthInfo authInfo = authReadService.findUserByEmailOrElseThrow(email);
 
-		return UserProfileDetailResDTO.fromUser(findUser);
+		return UserProfileDetailResDTO.fromUser(authInfo);
 	}
 
 	public UserProfileDetailResDTO modifyUserProfile(String email, UserProfileModifyReqDTO reqDTO) {
 
-		User findUser = userReadService.findUserByEmailOrElseThrow(email);
+		AuthInfo authInfo = authReadService.findUserByEmailOrElseThrow(email);
+
+		User findUser = authInfo.getUser();
 
 		String name = reqDTO.getName();
 		LocalDate birth = reqDTO.getBirth();
 		findUser.update(name, birth);
 
-		return UserProfileDetailResDTO.fromUser(findUser);
+		return UserProfileDetailResDTO.fromUser(authInfo);
 	}
 
 	public void modifyPassword(String email, UserPasswordModifyReqDTO reqDTO) {
