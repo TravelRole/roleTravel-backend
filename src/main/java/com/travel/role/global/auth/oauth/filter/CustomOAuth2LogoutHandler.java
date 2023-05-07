@@ -22,8 +22,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.travel.role.domain.user.entity.Provider;
-import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.global.auth.entity.AuthInfo;
+import com.travel.role.global.auth.repository.AuthRepository;
 import com.travel.role.global.auth.service.TokenProvider;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomOAuth2LogoutHandler implements LogoutHandler {
 	private final TokenProvider tokenProvider;
 	private final UserRepository userRepository;
+	private final AuthRepository authRepository;
 
 	@Override
 	@Transactional
@@ -45,31 +47,32 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 		tokenProvider.validateToken(token);
 
 		UsernamePasswordAuthenticationToken auth = getUserAuthentication(token);
-		User user = getUserInfo(auth);
+		AuthInfo authInfo = getUserInfo(auth);
 
-		if (user != null) {
-			user.deleteRefreshToken();
+		if (authInfo != null) {
+			authInfo.deleteRefreshToken();
 
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
 
 			String encoded = null;
 			try {
-				encoded = URLEncoder.encode(user.getProviderToken(), "UTF-8");
+				encoded = URLEncoder.encode(authInfo.getProviderToken(), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				log.info("AccessToken Encoding에 실패하였습니다");
 			}
 			headers.set(HttpHeaders.AUTHORIZATION, TOKEN_NAME + " " + encoded);
 			HttpEntity<String> entity = new HttpEntity<>("", headers);
-			if (user.getProvider() == Provider.google) {
+			if (authInfo.getProvider() == Provider.google) {
 				String url = "https://accounts.google.com/o/oauth2/revoke?token=" + encoded;
 				restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-			} else if (user.getProvider() == Provider.kakao) {
+			} else if (authInfo.getProvider() == Provider.kakao) {
 				String url = "https://kapi.kakao.com/v1/user/logout";
 				ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 				exchange.getStatusCode();
 			}
 		} else {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			throw new UserInfoNotFoundException();
 		}
 	}
@@ -85,10 +88,10 @@ public class CustomOAuth2LogoutHandler implements LogoutHandler {
 	private UsernamePasswordAuthenticationToken getUserAuthentication(String jwt) {
 		return tokenProvider.getAuthenticationById(jwt);
 	}
-	private User getUserInfo(UsernamePasswordAuthenticationToken authentication) {
+	private AuthInfo getUserInfo(UsernamePasswordAuthenticationToken authentication) {
 		String email = authentication.getName();
 
-		Optional<User> userInfo = userRepository.findByEmail(email);
-		return userInfo.orElse(null);
+		Optional<AuthInfo> authInfo = authRepository.findUserByEmail(email);
+		return authInfo.orElse(null);
 	}
 }

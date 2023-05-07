@@ -25,16 +25,6 @@ public class UserReadService {
 			.orElseThrow(UserInfoNotFoundException::new);
 	}
 
-	public User findUserByRefreshTokenOrElseThrow(String refreshToken) {
-		return userRepository.findByRefreshToken(refreshToken)
-			.orElseThrow(UserInfoNotFoundException::new);
-	}
-
-	public User findUserByIdOrElseThrow(Long id) {
-		return userRepository.findById(id)
-			.orElseThrow(UserInfoNotFoundException::new);
-	}
-
 	public User findUserByNameAndBirthAndEmailOrElseThrow(String name, LocalDate birth, String email) {
 		return userRepository.findByNameAndBirthAndEmail(name, birth, email)
 			.orElseThrow(UserInfoNotFoundException::new);

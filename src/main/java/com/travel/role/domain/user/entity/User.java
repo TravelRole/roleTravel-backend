@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,39 +40,13 @@ public class User extends BaseTime {
 
 	private String password;
 
-	@Enumerated(EnumType.STRING)
-	private Role role;
-
-	@Column(name = "refresh_token")
-	private String refreshToken;
-
 	private String profile;
 
 	private LocalDate birth;
-	@Enumerated(EnumType.STRING)
-	private Provider provider;
-	private String providerId;
-
-	@Column(name = "provider_token")
-	private String providerToken;
-
-	public void updateRefreshToken(final String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
-
-	public void deleteRefreshToken() {
-		if (refreshToken != null) {
-			refreshToken = null;
-		}
-	}
 
 	public void updatePassword(String password) {
 		if (!password.isEmpty())
 			this.password = password;
-	}
-
-	public void updateProviderToken(final String providerToken) {
-		this.providerToken = providerToken;
 	}
 
 	public static User of(SignUpRequestDTO signUpRequestDTO, String password) {
@@ -83,20 +55,15 @@ public class User extends BaseTime {
 			.email(signUpRequestDTO.getEmail())
 			.password(password)
 			.birth(signUpRequestDTO.getBirth())
-			.provider(Provider.local)
-			.role(Role.USER)
 			.build();
 	}
 
-	public static User of(Provider provider, OAuth2UserInfo oAuth2UserInfo) {
+	public static User of(OAuth2UserInfo oAuth2UserInfo) {
 		return User.builder()
 			.name(oAuth2UserInfo.getName())
 			.email(oAuth2UserInfo.getEmail())
-			.role(Role.USER)
 			.profile(oAuth2UserInfo.getImageUrl())
-			.providerId(oAuth2UserInfo.getId())
 			.password(oAuth2UserInfo.getId())
-			.provider(provider)
 			.build();
 	}
 

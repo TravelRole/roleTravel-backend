@@ -3,7 +3,6 @@ package com.travel.role.global.auth.service.handler;
 import static com.travel.role.global.util.Constants.*;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,9 +17,10 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.repository.UserRepository;
-import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.auth.dto.TokenMapping;
+import com.travel.role.global.auth.entity.AuthInfo;
+import com.travel.role.global.auth.repository.AuthReadService;
+import com.travel.role.global.auth.repository.AuthRepository;
 import com.travel.role.global.auth.service.RefreshTokenCookieProvider;
 import com.travel.role.global.auth.service.TokenProvider;
 
@@ -34,7 +34,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 	@Value("${redirectPath}")
 	private String redirectPath;
-	private final UserRepository userRepository;
+	private final AuthReadService authReadService;
+	private final AuthRepository authRepository;
 	private final RefreshTokenCookieProvider refreshTokenCookieProvider;
 
 	@Override
@@ -48,19 +49,15 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 		TokenMapping token = tokenProvider.createToken(authentication);
-		saveUser(token);
+		saveToken(token);
 
 		ResponseCookie cookie = refreshTokenCookieProvider.createCookie(token.getRefreshToken());
 		response.addHeader(COOKIE_HEADER, cookie.toString());
 		response.sendRedirect(redirectPath + "?accessToken=" + token.getAccessToken());
 	}
 
-	private void saveUser(TokenMapping token) {
-		Optional<User> user = userRepository.findByEmail(token.getUserEmail());
-
-		if (user.isEmpty())
-			return;
-
-		user.get().updateRefreshToken(token.getRefreshToken());
+	private void saveToken(TokenMapping token) {
+		AuthInfo authInfo = authReadService.findUserByEmailOrElseThrow(token.getUserEmail());
+		authInfo.updateRefreshToken(token.getRefreshToken());
 	}
 }

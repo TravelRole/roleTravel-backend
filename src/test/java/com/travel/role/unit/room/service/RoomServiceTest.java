@@ -1,5 +1,18 @@
 package com.travel.role.unit.room.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
@@ -9,8 +22,6 @@ import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.room.service.RoomService;
-import com.travel.role.domain.user.entity.Provider;
-import com.travel.role.domain.user.entity.Role;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.domain.wantplace.dto.request.WantPlaceRequestDTO;
@@ -23,19 +34,6 @@ import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.util.PasswordGenerator;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RoomServiceTest {
@@ -57,7 +55,6 @@ class RoomServiceTest {
 	private ParticipantRoleRepository participantRoleRepository;
 	@Mock
 	private RoomRepository roomRepository;
-
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
 		// given
@@ -82,6 +79,8 @@ class RoomServiceTest {
 		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
 			.willReturn(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
 				null, "강릉", "12", LocalDateTime.now().minusDays(1L).plusSeconds(1L)));
+		given(roomRepository.existsByRoomInviteCode(anyString()))
+			.willReturn(false);
 
 		//when
 		String inviteCode = roomService.makeInviteCode("haechan@naver.com", 1L);
@@ -164,8 +163,7 @@ class RoomServiceTest {
 	}
 
 	private static User makeUser() {
-		return new User(1L, "해찬", "haechan@naver.com", "1234", Role.USER, "1234", "1234", LocalDate.now(),
-			Provider.local, "1234", "1234");
+		return new User(1L, "해찬", "haechan@naver.com", "1234", null , LocalDate.now());
 	}
 
 	@ExtendWith(MockitoExtension.class)
@@ -188,11 +186,8 @@ class RoomServiceTest {
 		@Test
 		void 가고싶은_장소_추가_성공() {
 			// given
-			User user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, null, null, LocalDate.now(),
-					null, null, null);
-			User user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, null, null, LocalDate.now(),
-					null, null, null);
-
+			User user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, LocalDate.now());
+			User user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, LocalDate.now());
 
 			Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now());
 

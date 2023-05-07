@@ -2,6 +2,7 @@ package com.travel.role.global.auth.service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -15,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.travel.role.domain.user.entity.Provider;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.global.auth.entity.AuthInfo;
 import com.travel.role.global.auth.oauth.OAuth2UserInfo;
 import com.travel.role.global.auth.oauth.OAuthAttributes;
+import com.travel.role.global.auth.repository.AuthRepository;
 import com.travel.role.global.auth.token.UserPrincipal;
-import com.travel.role.global.exception.user.AlreadyExistUserException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
 	private final UserRepository userRepository;
+	private final AuthRepository authRepository;
+	private final UserReadService userReadService;
 
 	@Override
 	@Transactional
@@ -44,28 +49,37 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		OAuthAttributes newAttributes = OAuthAttributes.of(provider, userNameAttributeName, attributes);
 
-		User user = checkAndSaveUser(newAttributes, provider);
+		AuthInfo authInfo = getLoginUser(newAttributes, provider);
 
-		user.updateProviderToken(userRequest.getAccessToken().getTokenValue());
+		authInfo.updateProviderToken(userRequest.getAccessToken().getTokenValue());
 
-
-		return new UserPrincipal(user.getId(), user.getEmail(), user.getProviderId(),
-			Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleValue())));
+		User user = authInfo.getUser();
+		return new UserPrincipal(user.getId(), user.getEmail(), authInfo.getProviderId(),
+			Collections.singleton(new SimpleGrantedAuthority(authInfo.getRole().getRoleValue())));
 	}
 
-	private User checkAndSaveUser(OAuthAttributes attributes, Provider provider) {
-		return userRepository.findByProviderAndProviderId(provider,
-				attributes.getOAuth2UserInfo().getId())
-			.orElseGet(() -> {
-				if (!userRepository.existsByEmail(attributes.getOAuth2UserInfo().getEmail()))
-					return saveUser(provider, attributes.getOAuth2UserInfo());
-				throw new AlreadyExistUserException();
-			});
+	private AuthInfo getLoginUser(OAuthAttributes attributes, Provider provider) {
+		String providerId = attributes.getOAuth2UserInfo().getId();
+		String email = attributes.getOAuth2UserInfo().getEmail();
+		Optional<AuthInfo> authInfo = authRepository.findUserByProviderAndProviderId(provider,
+			providerId);
+
+		return authInfo.orElseGet(
+			() -> {
+				userReadService.validateUserExistByEmail(email);
+
+				return saveUserAndAuthInfo(provider, attributes.getOAuth2UserInfo());
+			}
+		);
 	}
 
-	private User saveUser(Provider provider, OAuth2UserInfo userInfo) {
-		User newUser = User.of(provider, userInfo);
-		return userRepository.save(newUser);
+	private AuthInfo saveUserAndAuthInfo(Provider provider, OAuth2UserInfo userInfo) {
+		User user = User.of(userInfo);
+		user = userRepository.save(user);
+
+		String providerId = userInfo.getId();
+		AuthInfo authInfo = AuthInfo.of(provider, providerId, user);
+		return authRepository.save(authInfo);
 	}
 
 	private Provider getProvider(String registrationId) {
