@@ -8,6 +8,6 @@ import lombok.Data;
 
 @Data
 public class RoomRoleDTO {
-	private String name;
+	private String email;
 	private Set<RoomRole> roles;
 }
