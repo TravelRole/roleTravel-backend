@@ -67,8 +67,8 @@ public class RoomController {
 	}
 
 	@PutMapping("/room")
-	public void modifiedRoomInfo( @AuthenticationPrincipal UserPrincipal userPrincipal,
+	public void modifyRoomInfo( @AuthenticationPrincipal UserPrincipal userPrincipal,
 		@RequestBody RoomModifiedRequestDTO roomModifiedRequestDTO) {
-		roomService.modifiedRoomInfo(userPrincipal.getEmail(), roomModifiedRequestDTO);
+		roomService.modifyRoomInfo(userPrincipal.getEmail(), roomModifiedRequestDTO);
 	}
 }

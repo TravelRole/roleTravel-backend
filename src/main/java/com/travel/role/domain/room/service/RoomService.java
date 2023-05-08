@@ -211,7 +211,7 @@ public class RoomService {
         return result;
     }
 
-    public void modifiedRoomInfo(String email, RoomModifiedRequestDTO dto) {
+    public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto) {
         Long roomId = dto.getRoomId();
 
         User user = userReadService.findUserByEmailOrElseThrow(email);
@@ -221,7 +221,7 @@ public class RoomService {
 
     }
 
-    private void modifiedRoomInfo(Room room, RoomModifiedRequestDTO dto) {
+    private void modifyRoomNameAndDate(Room room, RoomModifiedRequestDTO dto) {
 
     }
 }
