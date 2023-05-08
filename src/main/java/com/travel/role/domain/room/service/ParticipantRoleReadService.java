@@ -1,5 +1,7 @@
 package com.travel.role.domain.room.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +17,11 @@ import lombok.RequiredArgsConstructor;
 public class ParticipantRoleReadService {
 	private final ParticipantRoleRepository participantRoleRepository;
 
-	public ParticipantRole findUserByRoomId(Long roomId) {
-		return participantRoleRepository.findUserByRoomId(roomId)
-			.orElseThrow(RoomInfoNotFoundException::new);
+	public List<ParticipantRole> findUserByRoomId(Long roomId) {
+		List<ParticipantRole> participantRoles = participantRoleRepository.findUserByRoomId(roomId);
+		if (participantRoles.isEmpty()) {
+			throw new RoomInfoNotFoundException();
+		}
+		return participantRoles;
 	}
 }

@@ -216,15 +216,20 @@ public class RoomService {
 
     public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto) {
         Long roomId = dto.getRoomId();
+        validRoomRoles(email, roomId, RoomRole.ADMIN);
 
-        User user = userReadService.findUserByEmailOrElseThrow(email);
-        ParticipantRole participantRole = participantRoleReadService.findUserByRoomId(roomId);
-        validRoomRole(user, participantRole.getRoom(), RoomRole.ADMIN);
+        List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
         validateUserRole(dto.getUserRoles());
 
-        modifyRoomNameAndDate(participantRole.getRoom(), dto);
+        modifyRoomNameAndDate(participantRoles.get(0).getRoom(), dto);
+        modifyRoles(participantRoles, dto.getUserRoles());
+    }
 
-        modifyRoles(participantRole, dto.getUserRoles());
+    private void validRoomRoles(String email, Long roomId, RoomRole roomRole) {
+        boolean isExists = participantRoleRepository.existsByUserEmailAndRoomIdAndRole(email, roomId, roomRole);
+        if (!isExists) {
+            throw new UserHaveNotPrivilegeException();
+        }
     }
 
     private void modifyRoomNameAndDate(Room room, RoomModifiedRequestDTO dto) {
@@ -232,8 +237,48 @@ public class RoomService {
         room.updateRoomNameAndDate(dto.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate());
     }
 
-    private void modifyRoles(ParticipantRole participantRole, List<RoomRoleDTO> userRoles) {
+    private void modifyRoles(List<ParticipantRole> participantRoles, List<RoomRoleDTO> userRoles) {
+        Map<String, List<ParticipantRole>> participantMap = convertToParticipantRoleList(participantRoles);
 
+        for (RoomRoleDTO userRole : userRoles) {
+            List<ParticipantRole> dbParticipant = participantMap.get(userRole.getEmail());
+            modifyRole(dbParticipant, userRole.getRoles());
+        }
+    }
+
+    private void modifyRole(List<ParticipantRole> participantRoles, List<RoomRole> roomRoles) {
+        for (int i = 0; i < roomRoles.size(); i++) {
+            if (i > participantRoles.size() - 1) {
+                ParticipantRole participantRole = participantRoles.get(0);
+                ParticipantRole newParticipantRole = new ParticipantRole(null, roomRoles.get(i),
+                    participantRole.getUser(), participantRole.getRoom());
+
+                participantRoleRepository.save(newParticipantRole);
+            } else {
+                ParticipantRole participantRole = participantRoles.get(i);
+                participantRole.updateRole(roomRoles.get(i));
+            }
+        }
+    }
+
+    private Map<String, List<ParticipantRole>> convertToParticipantRoleList(List<ParticipantRole> participantRoles) {
+        Map<String, List<ParticipantRole>> result = new HashMap<>();
+
+        for (ParticipantRole participantRole : participantRoles) {
+            String email = participantRole.getUser().getEmail();
+            if (!result.containsKey(email)) {
+                List<ParticipantRole> data = new ArrayList<>();
+                data.add(participantRole);
+
+                result.put(email, data);
+            } else {
+                List<ParticipantRole> data = result.get(email);
+                data.add(participantRole);
+
+                result.put(email, data);
+            }
+        }
+        return result;
     }
 
     private void validateUserRole(List<RoomRoleDTO> userRoles) {
