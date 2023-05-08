@@ -1,7 +1,25 @@
 package com.travel.role.domain.room.service;
 
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.querydsl.core.Tuple;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
@@ -20,17 +38,8 @@ import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.util.PasswordGenerator;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-
-import static com.travel.role.global.exception.dto.ExceptionMessage.INVALID_DATE_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -203,5 +212,9 @@ public class RoomService {
             starDate = starDate.plusDays(1);
         }
         return result;
+    }
+
+    public void modifiedRoomInfo(String email, RoomModifiedRequestDTO dto) {
+
     }
 }

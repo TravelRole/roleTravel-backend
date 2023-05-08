@@ -1,17 +1,28 @@
 package com.travel.role.domain.room.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.global.auth.token.UserPrincipal;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
@@ -53,5 +64,11 @@ public class RoomController {
 	@GetMapping("/room/day")
 	public List<TimeResponseDTO> getDay(@RequestParam("roomId") Long roomId){
 		return roomService.getTime(roomId);
+	}
+
+	@PutMapping("/room")
+	public void modifiedRoomInfo( @AuthenticationPrincipal UserPrincipal userPrincipal,
+		@RequestBody RoomModifiedRequestDTO roomModifiedRequestDTO) {
+		roomService.modifiedRoomInfo(userPrincipal.getEmail(), roomModifiedRequestDTO);
 	}
 }
