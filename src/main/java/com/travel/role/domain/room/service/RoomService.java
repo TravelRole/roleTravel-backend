@@ -84,7 +84,7 @@ public class RoomService {
     }
 
     public void makeRoom(String email, MakeRoomRequestDTO makeRoomRequestDTO) {
-        validateDate(makeRoomRequestDTO);
+        validateDate(makeRoomRequestDTO.getTravelStartDate(), makeRoomRequestDTO.getTravelEndDate());
         User user = userReadService.findUserByEmailOrElseThrow(email);
         Room room = roomRepository.save(Room.of(makeRoomRequestDTO));
         saveNewRoomParticipant(user, room);
@@ -110,11 +110,8 @@ public class RoomService {
         participantRoleRepository.save(newParticipantRole);
     }
 
-    private void validateDate(MakeRoomRequestDTO makeRoomRequestDTO) {
-        LocalDate start = makeRoomRequestDTO.getTravelStartDate();
-        LocalDate end = makeRoomRequestDTO.getTravelEndDate();
-
-        if (start.isAfter(end))
+    private void validateDate(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate))
             throw new InvalidLocalDateException(INVALID_DATE_ERROR);
     }
 
@@ -220,5 +217,11 @@ public class RoomService {
         User user = userReadService.findUserByEmailOrElseThrow(email);
         Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
         validRoomRole(user, room, RoomRole.ADMIN);
+
+
+    }
+
+    private void modifiedRoomInfo(Room room, RoomModifiedRequestDTO dto) {
+
     }
 }
