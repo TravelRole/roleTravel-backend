@@ -2,10 +2,8 @@ package com.travel.role.unit.room.service;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
-import com.travel.role.domain.board.entity.Board;
-import com.travel.role.domain.board.entity.BookInfo;
-import com.travel.role.domain.board.entity.Category;
-import com.travel.role.domain.board.entity.ScheduleInfo;
+import com.travel.role.domain.board.entity.*;
+import com.travel.role.domain.board.repository.AccountingInfoRepository;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
 import com.travel.role.domain.board.repository.ScheduleInfoRepository;
@@ -54,6 +52,9 @@ public class BoardServiceTest {
     @Mock
     private ScheduleInfoRepository scheduleInfoRepository;
 
+    @Mock
+    private AccountingInfoRepository accountingInfoRepository;
+
     @InjectMocks
     private BoardService boardService;
 
@@ -100,6 +101,7 @@ public class BoardServiceTest {
         then(boardRepository).should(times(1)).save(any(Board.class));
         then(bookInfoRepository).should(times(1)).save(any(BookInfo.class));
         then(scheduleInfoRepository).should(times(1)).save(any(ScheduleInfo.class));
+        then(accountingInfoRepository).should(times(1)).save(any(AccountingInfo.class));
     }
     private User makeUser(Long id) {
         return User.builder()
@@ -126,14 +128,29 @@ public class BoardServiceTest {
     private List<Board> findBoardList (){
         List<Board> result = new ArrayList<>();
         Board temp = Board.of(makeRoom(1L),createBoardRequestDTO());
-        BookInfo bookInfo = BookInfo.from(temp);
         ScheduleInfo scheduleInfo = ScheduleInfo.of(temp, createBoardRequestDTO());
+        BookInfo bookInfo = BookInfo.builder()
+                .isBooked(false)
+                .bookEtc(null)
+                .build();
+        AccountingInfo accountingInfo = AccountingInfo.builder()
+                .accountingEtc(null)
+                .board(temp)
+                .bookInfo(bookInfo)
+                .category(temp.getCategory())
+                .paymentMethod(null)
+                .paymentName(scheduleInfo.getPlaceName())
+                .paymentTime(null)
+                .price(0)
+                .build();
+
+
         Board board = Board.builder()
                 .id(1L)
                 .scheduleDate(LocalDateTime.now())
                 .category(Category.ETC)
                 .scheduleInfo(scheduleInfo)
-                .bookInfo(bookInfo)
+                .accountingInfo(accountingInfo)
                 .build();
 
         result.add(board);
