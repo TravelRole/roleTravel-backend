@@ -215,6 +215,10 @@ public class RoomService {
     }
 
     public void modifiedRoomInfo(String email, RoomModifiedRequestDTO dto) {
+        Long roomId = dto.getRoomId();
 
+        User user = userReadService.findUserByEmailOrElseThrow(email);
+        Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+        validRoomRole(user, room, RoomRole.ADMIN);
     }
 }
