@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.querydsl.core.Tuple;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
@@ -33,6 +34,7 @@ import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.global.exception.room.AdminIsOnlyOneException;
 import com.travel.role.global.exception.room.AlreadyExistInRoomException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
@@ -52,6 +54,7 @@ public class RoomService {
     private final UserReadService userReadService;
     private final RoomParticipantRepository roomParticipantRepository;
     private final ParticipantRoleRepository participantRoleRepository;
+    private final ParticipantRoleReadService participantRoleReadService;
     private final PasswordGenerator passwordGenerator;
     private final RoomReadService roomReadService;
 
@@ -215,13 +218,30 @@ public class RoomService {
         Long roomId = dto.getRoomId();
 
         User user = userReadService.findUserByEmailOrElseThrow(email);
-        Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
-        validRoomRole(user, room, RoomRole.ADMIN);
+        ParticipantRole participantRole = participantRoleReadService.findUserByRoomId(roomId);
+        validRoomRole(user, participantRole.getRoom(), RoomRole.ADMIN);
+        validateUserRole(dto.getUserRoles());
 
+        modifyRoomNameAndDate(participantRole.getRoom(), dto);
 
+        modifyRoles(participantRole, dto.getUserRoles());
     }
 
     private void modifyRoomNameAndDate(Room room, RoomModifiedRequestDTO dto) {
+        validateDate(dto.getStartDate(), dto.getEndDate());
+        room.updateRoomNameAndDate(dto.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate());
+    }
 
+    private void modifyRoles(ParticipantRole participantRole, List<RoomRoleDTO> userRoles) {
+
+    }
+
+    private void validateUserRole(List<RoomRoleDTO> userRoles) {
+        long count = userRoles.stream().filter((role) ->
+            role.getRoles().contains(RoomRole.ADMIN)).count();
+
+        if (count >= 2) {
+            throw new AdminIsOnlyOneException();
+        }
     }
 }
