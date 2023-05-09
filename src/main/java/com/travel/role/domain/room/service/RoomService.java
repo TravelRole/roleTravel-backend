@@ -217,11 +217,29 @@ public class RoomService {
     public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto) {
         Long roomId = dto.getRoomId();
         validRoomRoles(email, roomId, RoomRole.ADMIN);
-        validateUserRole(dto.getUserRoles());
 
         List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
+        List<String> adminList = validateUserRoleAndEmail(dto.getUserRoles());
+
+        if (adminList.size() == 1) {
+            deleteAdminUserRoles(participantRoles, email, adminList.get(0));
+        }
+
         modifyRoomNameAndDate(participantRoles.get(0).getRoom(), dto);
         modifyRoles(participantRoles, dto.getUserRoles());
+    }
+
+    private void deleteAdminUserRoles(List<ParticipantRole> participantRoles, String email, String adminEmail) {
+        if (adminEmail.equals(email)) {
+            return;
+        }
+
+        for (ParticipantRole participantRole : participantRoles) {
+            User user = participantRole.getUser();
+            if (user.getEmail().equals(adminEmail)) {
+                participantRoleRepository.deleteById(participantRole.getId());
+            }
+        }
     }
 
     private void validRoomRoles(String email, Long roomId, RoomRole roomRole) {
@@ -286,12 +304,18 @@ public class RoomService {
         return result;
     }
 
-    private void validateUserRole(List<RoomRoleDTO> userRoles) {
-        long count = userRoles.stream().filter((role) ->
-            role.getRoles().contains(RoomRole.ADMIN)).count();
+    private List<String> validateUserRoleAndEmail(List<RoomRoleDTO> userRoles) {
+        List<String> admins = new ArrayList<>();
 
-        if (count >= 2) {
+        for (RoomRoleDTO userRole : userRoles) {
+            if (userRole.getRoles().contains(RoomRole.ADMIN))
+                admins.add(userRole.getEmail());
+        }
+
+        if (admins.size() >= 2) {
             throw new AdminIsOnlyOneException();
         }
+
+        return admins;
     }
 }
