@@ -41,6 +41,9 @@ public final class ExceptionMessage {
 	public static final String DELETE_IMAGE_FAIL_IN_S3 = "이미지를 삭제하던 중 문제가 발생하였습니다.";
 
 	// travel essential
-	public static final String INVALID_ESSENTIAL_CATEGORY = "지정한 카테고리 내에서 입력해 주세요";
-	public static final String INVALID_ESSENTIAL_ITEM_LENGTH = "준비물 길이는 2 이상 15 이하여야 합니다";
+	public static final String INVALID_ESSENTIAL_CATEGORY = "지정한 카테고리 내에서 입력해 주세요.";
+	public static final String INVALID_ESSENTIAL_ITEM_LENGTH = "준비물 길이는 2 이상 15 이하여야 합니다.";
+
+	// expense
+	public static final String EXPENSE_MUST_GREATER_THAN_OR_EQUAL_TO_ZERO = "경비는 0원 이상이어야 합니다.";
 }
