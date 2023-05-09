@@ -9,10 +9,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
-    @Query(value = "SELECT DISTINCT b, bi, si " +
+    @Query(value = "SELECT DISTINCT b, ai, si, bi " +
             "FROM Board b " +
-            "JOIN FETCH b.bookInfo bi " +
-            "JOIN FETCH b.scheduleInfo si  " +
+            "JOIN FETCH b.accountingInfo ai " +
+            "JOIN FETCH b.scheduleInfo si " +
+            "JOIN FETCH ai.bookInfo bi " +
             "WHERE b.room.id = :roomId " +
             "AND b.scheduleDate BETWEEN :startOfDay AND :endOfDay")
     List<Board> findBoardByRoomIdAndScheduleDate

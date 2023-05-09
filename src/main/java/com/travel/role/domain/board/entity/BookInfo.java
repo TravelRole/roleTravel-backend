@@ -1,49 +1,26 @@
 package com.travel.role.domain.board.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
 @Table(name = "book_info")
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookInfo {
     @Id
+    @Column(name = "book_info_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
-    private Board board;
-
-    @Column(name = "is_booked")
+    @Column(name = "is_booked", nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault(value = "0")
     private Boolean isBooked;
-
-    @Column
-    private Integer price;
-
-    @Column(name = "payment_method", length = 10)
-    private String paymentMethod;
-
-    @Column(name = "accounting_etc", length = 100)
-    private String accountingEtc;
 
     @Column(name = "book_etc", length = 100)
     private String bookEtc;
-
-    private BookInfo(Board board) {
-        this.board = board;
-        this.isBooked = false;
-        this.price = 0;
-        this.paymentMethod = null;
-        this.accountingEtc = null;
-        this.bookEtc = null;
-    }
-
-    public static BookInfo from(Board board) {
-        return new BookInfo(board);
-    }
 }
