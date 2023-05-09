@@ -215,7 +215,7 @@ public class RoomService {
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 
-		validRoomRole(loginUser, room, RoomRole.ACCOUNTING);
+		validRoomRole(loginUser, room, RoomRole.ACCOUNTING, RoomRole.ADMIN);
 
 		room.updateTravelExpense(requestDTO.getExpenses());
 	}
