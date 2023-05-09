@@ -3,6 +3,7 @@ package com.travel.role.domain.room.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,5 +20,10 @@ public interface ParticipantRoleRepository extends JpaRepository<ParticipantRole
         + " JOIN FETCH pr.user"
         + " JOIN FETCH pr.room"
         + " WHERE pr.room.id = :roomId")
-    List<ParticipantRole> findUserByRoomId(@Param("roomId") Long roomId);
+    List<ParticipantRole> findUserAndRoomByRoomId(@Param("roomId") Long roomId);
+
+    @Modifying
+    @Query("DELETE FROM ParticipantRole pr WHERE pr.id in :ids")
+    void deleteAllByIdInQuery(@Param("ids") List<Long> ids);
+
 }
