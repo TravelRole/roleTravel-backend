@@ -38,7 +38,7 @@ public class Board {
     private ScheduleInfo scheduleInfo;
 
     @OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
-    private BookInfo bookInfo;
+    private AccountingInfo accountingInfo;
 
     private Board(Room room, BoardRequestDTO boardRequestDTO) {
         this.room = room;

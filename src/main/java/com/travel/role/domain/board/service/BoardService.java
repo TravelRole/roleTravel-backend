@@ -2,9 +2,11 @@ package com.travel.role.domain.board.service;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
+import com.travel.role.domain.board.entity.AccountingInfo;
 import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.entity.ScheduleInfo;
+import com.travel.role.domain.board.repository.AccountingInfoRepository;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
 import com.travel.role.domain.board.repository.ScheduleInfoRepository;
@@ -20,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.travel.role.global.exception.dto.ExceptionMessage.EARLY_DATE_ERROR;
 import static com.travel.role.global.exception.dto.ExceptionMessage.LATE_DATE_ERROR;
@@ -35,6 +37,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BookInfoRepository bookInfoRepository;
     private final ScheduleInfoRepository scheduleInfoRepository;
+    private final AccountingInfoRepository accountingInfoRepository;
     private final RoomParticipantReadService roomParticipantReadService;
 
     public List<BookInfoResponseDTO> getBookInfo(String email, Long roomId, LocalDate date) {
@@ -49,12 +52,10 @@ public class BoardService {
         return getBookInfoResult(boardRepository.findBoardByRoomIdAndScheduleDate(roomId, date.atStartOfDay(), date.atTime(LocalTime.MAX)));
     }
 
-    private List<BookInfoResponseDTO> getBookInfoResult(List<Board> boardLists) {
-        List<BookInfoResponseDTO> result = new ArrayList<>();
-        for (Board board : boardLists) {
-            result.add(BookInfoResponseDTO.of(board, board.getScheduleInfo(), board.getBookInfo()));
-        }
-        return result;
+    private List<BookInfoResponseDTO> getBookInfoResult(List<Board> boardList) {
+        return boardList.stream()
+                .map(board -> BookInfoResponseDTO.of(board, board.getScheduleInfo(), board.getAccountingInfo(), board.getAccountingInfo().getBookInfo()))
+                .collect(Collectors.toList());
     }
 
     public void addSchedule(String email, BoardRequestDTO boardRequestDTO) {
@@ -70,8 +71,19 @@ public class BoardService {
 
         scheduleInfoRepository.save(ScheduleInfo.of(board, boardRequestDTO));
 
-        if (boardRequestDTO.getIsBookRequired())
-            bookInfoRepository.save(BookInfo.from(board));
+        if (boardRequestDTO.getIsBookRequired()) {
+            BookInfo bookInfo = bookInfoRepository.save(BookInfo.builder()
+                    .isBooked(false)
+                    .build());
+            accountingInfoRepository.save(AccountingInfo.builder()
+                    .board(board)
+                    .bookInfo(bookInfo)
+                    .category(boardRequestDTO.getCategory())
+                    .paymentName(boardRequestDTO.getPlaceName())
+                    .price(0)
+                    .room(room)
+                    .build());
+        }
     }
 
     public void validateDate(LocalDate startDate, LocalDate endDate, LocalDate date) {

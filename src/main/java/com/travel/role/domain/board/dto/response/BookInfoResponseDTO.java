@@ -1,9 +1,6 @@
 package com.travel.role.domain.board.dto.response;
 
-import com.travel.role.domain.board.entity.Board;
-import com.travel.role.domain.board.entity.BookInfo;
-import com.travel.role.domain.board.entity.Category;
-import com.travel.role.domain.board.entity.ScheduleInfo;
+import com.travel.role.domain.board.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,20 +19,20 @@ public class BookInfoResponseDTO {
     private String accountingEtc;
     private Boolean isBooked;
 
-    private BookInfoResponseDTO(Board board, ScheduleInfo scheduleInfo, BookInfo bookInfo) {
+    private BookInfoResponseDTO(Board board, ScheduleInfo scheduleInfo, AccountingInfo accountingInfo, BookInfo bookInfo) {
         this.placeName = scheduleInfo.getPlaceName();
         this.time = board.getScheduleDate().toLocalTime();
         this.link = board.getLink();
         this.scheduleEtc = scheduleInfo.getScheduleEtc();
-        this.price = bookInfo.getPrice();
-        this.paymentMethod = bookInfo.getPaymentMethod();
+        this.price = accountingInfo.getPrice();
+        this.paymentMethod = accountingInfo.getPaymentMethod();
         this.category = board.getCategory();
-        this.accountingEtc = bookInfo.getAccountingEtc();
+        this.accountingEtc = accountingInfo.getAccountingEtc();
         this.isBooked = bookInfo.getIsBooked();
     }
 
-    public static BookInfoResponseDTO of(Board board, ScheduleInfo scheduleInfo, BookInfo bookInfo) {
-        return new BookInfoResponseDTO(board, scheduleInfo, bookInfo);
+    public static BookInfoResponseDTO of(Board board, ScheduleInfo scheduleInfo,AccountingInfo accountingInfo, BookInfo bookInfo) {
+        return new BookInfoResponseDTO(board, scheduleInfo, accountingInfo, bookInfo);
     }
 
 }
