@@ -221,25 +221,27 @@ public class RoomService {
         List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
         List<String> adminList = validateUserRoleAndEmail(dto.getUserRoles());
 
+        Map<String, List<ParticipantRole>> participantMap = convertToParticipantRoleList(participantRoles);
         if (adminList.size() == 1) {
-            deleteAdminUserRoles(participantRoles, email, adminList.get(0));
+            deleteAdminUserRoles(participantMap, email, adminList.get(0));
         }
 
         modifyRoomNameAndDate(participantRoles.get(0).getRoom(), dto);
-        modifyRoles(participantRoles, dto.getUserRoles());
+        modifyRoles(participantMap, dto.getUserRoles());
     }
 
-    private void deleteAdminUserRoles(List<ParticipantRole> participantRoles, String email, String adminEmail) {
+    private void deleteAdminUserRoles(Map<String, List<ParticipantRole>> participantMap, String email, String adminEmail) {
         if (adminEmail.equals(email)) {
             return;
         }
 
+        List<Long> ids = new ArrayList<>();
+        List<ParticipantRole> participantRoles = participantMap.get(adminEmail);
         for (ParticipantRole participantRole : participantRoles) {
-            User user = participantRole.getUser();
-            if (user.getEmail().equals(adminEmail)) {
-                participantRoleRepository.deleteById(participantRole.getId());
-            }
+            ids.add(participantRole.getId());
+            participantRoles.remove(participantRole);
         }
+        participantRoleRepository.deleteAllByIdInQuery(ids);
     }
 
     private void validRoomRoles(String email, Long roomId, RoomRole roomRole) {
@@ -254,9 +256,7 @@ public class RoomService {
         room.updateRoomNameAndDate(dto.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate());
     }
 
-    private void modifyRoles(List<ParticipantRole> participantRoles, List<RoomRoleDTO> userRoles) {
-        Map<String, List<ParticipantRole>> participantMap = convertToParticipantRoleList(participantRoles);
-
+    private void modifyRoles(Map<String, List<ParticipantRole>> participantMap, List<RoomRoleDTO> userRoles) {
         for (RoomRoleDTO userRole : userRoles) {
             List<ParticipantRole> dbParticipant = participantMap.get(userRole.getEmail());
             modifyRole(dbParticipant, userRole.getRoles());
@@ -265,8 +265,15 @@ public class RoomService {
 
     private void modifyRole(List<ParticipantRole> participantRoles, List<RoomRole> roomRoles) {
         if (participantRoles.size() > roomRoles.size()) {
+            List<Long> ids = new ArrayList<>();
             for (int i = 0 ; i < participantRoles.size() - roomRoles.size(); i++) {
-                participantRoleRepository.deleteById(participantRoles.get(i).getId());
+                ids.add(participantRoles.get(i).getId());
+                participantRoles.remove(participantRoles.get(i));
+            }
+
+            if (ids.size() > 1) {
+                ids.remove(0);
+                participantRoleRepository.deleteAllByIdInQuery(ids);
             }
         }
 
@@ -275,7 +282,6 @@ public class RoomService {
                 ParticipantRole participantRole = participantRoles.get(0);
                 ParticipantRole newParticipantRole = new ParticipantRole(null, roomRoles.get(i),
                     participantRole.getUser(), participantRole.getRoom());
-
                 participantRoleRepository.save(newParticipantRole);
             } else {
                 ParticipantRole participantRole = participantRoles.get(i);

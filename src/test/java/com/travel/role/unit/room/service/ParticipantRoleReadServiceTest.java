@@ -27,7 +27,7 @@ public class ParticipantRoleReadServiceTest {
 	@Test
 	void 방에_해당_정보가_없는_경우() {
 		// given
-		given(participantRoleRepository.findUserByRoomId(anyLong()))
+		given(participantRoleRepository.findUserAndRoomByRoomId(anyLong()))
 			.willReturn(List.of());
 
 		// when, then

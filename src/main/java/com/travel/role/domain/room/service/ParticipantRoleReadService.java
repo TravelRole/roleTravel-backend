@@ -18,7 +18,7 @@ public class ParticipantRoleReadService {
 	private final ParticipantRoleRepository participantRoleRepository;
 
 	public List<ParticipantRole> findUserByRoomId(Long roomId) {
-		List<ParticipantRole> participantRoles = participantRoleRepository.findUserByRoomId(roomId);
+		List<ParticipantRole> participantRoles = participantRoleRepository.findUserAndRoomByRoomId(roomId);
 		if (participantRoles.isEmpty()) {
 			throw new RoomInfoNotFoundException();
 		}
