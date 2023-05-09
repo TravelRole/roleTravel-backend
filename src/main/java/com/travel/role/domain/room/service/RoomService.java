@@ -295,17 +295,16 @@ public class RoomService {
 
         for (ParticipantRole participantRole : participantRoles) {
             String email = participantRole.getUser().getEmail();
+            List<ParticipantRole> data;
             if (!result.containsKey(email)) {
-                List<ParticipantRole> data = new ArrayList<>();
-                data.add(participantRole);
+                data = new ArrayList<>();
 
-                result.put(email, data);
             } else {
-                List<ParticipantRole> data = result.get(email);
-                data.add(participantRole);
+                data = result.get(email);
 
-                result.put(email, data);
             }
+            data.add(participantRole);
+            result.put(email, data);
         }
         return result;
     }
