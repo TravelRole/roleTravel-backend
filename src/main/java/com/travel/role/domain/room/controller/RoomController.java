@@ -1,17 +1,22 @@
 package com.travel.role.domain.room.controller;
 
+import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.global.auth.token.UserPrincipal;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -22,7 +27,7 @@ public class RoomController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/room")
-	public void makeRoom(@AuthenticationPrincipal UserPrincipal userPrincipal,@RequestBody MakeRoomRequestDTO dto) {
+	public void makeRoom(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody MakeRoomRequestDTO dto) {
 		roomService.makeRoom(userPrincipal.getEmail(), dto);
 	}
 
@@ -51,7 +56,15 @@ public class RoomController {
 	}
 
 	@GetMapping("/room/day")
-	public List<TimeResponseDTO> getDay(@RequestParam("roomId") Long roomId){
+	public List<TimeResponseDTO> getDay(@RequestParam("roomId") Long roomId) {
 		return roomService.getTime(roomId);
+	}
+
+	@PutMapping("/room/{room_id}/expenses")
+	public void modifyExpenses(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") Long roomId,
+		@RequestBody @Valid ExpensesRequestDTO requestDTO) {
+
+		roomService.modifyExpenses(userPrincipal.getEmail(), roomId, requestDTO);
 	}
 }
