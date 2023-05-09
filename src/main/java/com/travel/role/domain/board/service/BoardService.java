@@ -74,16 +74,12 @@ public class BoardService {
         if (boardRequestDTO.getIsBookRequired()) {
             BookInfo bookInfo = bookInfoRepository.save(BookInfo.builder()
                     .isBooked(false)
-                    .bookEtc(null)
                     .build());
             accountingInfoRepository.save(AccountingInfo.builder()
-                    .accountingEtc(null)
                     .board(board)
                     .bookInfo(bookInfo)
                     .category(boardRequestDTO.getCategory())
-                    .paymentMethod(null)
                     .paymentName(boardRequestDTO.getPlaceName())
-                    .paymentTime(null)
                     .price(0)
                     .room(room)
                     .build());
