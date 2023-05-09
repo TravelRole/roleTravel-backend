@@ -14,8 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
+import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
@@ -147,6 +150,24 @@ class RoomServiceTest {
 		//when, then
 		assertThatThrownBy(() -> {roomService.inviteUser("haechan@naver.com", "1234", List.of("HAECHAN"));})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
+	}
+
+	@Test
+	void 방_수정시_어드민_유저가_아닐경우() {
+		// given
+		given(participantRoleRepository.existsByUserEmailAndRoomIdAndRole(anyString(), anyLong(), any(RoomRole.class)))
+			.willReturn(false);
+
+		// when, then
+		assertThatThrownBy(() -> roomService.modifyRoomInfo("haechan@naver.com", createRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1))))
+			.isInstanceOf(UserHaveNotPrivilegeException.class);
+	}
+
+	private static RoomModifiedRequestDTO createRoomModifiedDTO(LocalDate startDate, LocalDate endDate) {
+		RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.ADMIN));
+		RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("chan@naver.com", List.of(RoomRole.SCHEDULE, RoomRole.ACCOUNTING));
+		List<RoomRoleDTO> roomRoleDTOS = List.of(roomRoleDTO1, roomRoleDTO2);
+		return new RoomModifiedRequestDTO(1L, "경주로 고고", startDate, endDate, roomRoleDTOS);
 	}
 	private static UserPrincipal makeUserPrincipal() {
 		return new UserPrincipal(1L, "haechan@naver.com", "1234", null);
