@@ -217,10 +217,9 @@ public class RoomService {
     public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto) {
         Long roomId = dto.getRoomId();
         validRoomRoles(email, roomId, RoomRole.ADMIN);
-
-        List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
         validateUserRole(dto.getUserRoles());
 
+        List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
         modifyRoomNameAndDate(participantRoles.get(0).getRoom(), dto);
         modifyRoles(participantRoles, dto.getUserRoles());
     }

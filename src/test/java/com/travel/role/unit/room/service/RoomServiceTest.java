@@ -22,6 +22,7 @@ import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
+import com.travel.role.domain.room.service.ParticipantRoleReadService;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.room.service.RoomService;
@@ -33,6 +34,7 @@ import com.travel.role.domain.wantplace.repository.WantPlaceRepository;
 import com.travel.role.domain.wantplace.service.WantPlaceService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.dto.ExceptionMessage;
+import com.travel.role.global.exception.room.AdminIsOnlyOneException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
@@ -58,6 +60,8 @@ class RoomServiceTest {
 	private ParticipantRoleRepository participantRoleRepository;
 	@Mock
 	private RoomRepository roomRepository;
+	@Mock
+	private ParticipantRoleReadService participantRoleReadService;
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
 		// given
@@ -159,13 +163,24 @@ class RoomServiceTest {
 			.willReturn(false);
 
 		// when, then
-		assertThatThrownBy(() -> roomService.modifyRoomInfo("haechan@naver.com", createRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1))))
+		assertThatThrownBy(() -> roomService.modifyRoomInfo("haechan@naver.com", createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1))))
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
-	private static RoomModifiedRequestDTO createRoomModifiedDTO(LocalDate startDate, LocalDate endDate) {
+	@Test
+	void 방_수정시_총무가_두명이상으로_선택되있는_경우() {
+		//given
+		given(participantRoleRepository.existsByUserEmailAndRoomIdAndRole(anyString(), anyLong(), any(RoomRole.class)))
+			.willReturn(true);
+
+		//when, then
+		assertThatThrownBy(() -> roomService.modifyRoomInfo("chan@naver.com", createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1))))
+			.isInstanceOf(AdminIsOnlyOneException.class);
+	}
+
+	private static RoomModifiedRequestDTO createWrongRoomModifiedDTO(LocalDate startDate, LocalDate endDate) {
 		RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.ADMIN));
-		RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("chan@naver.com", List.of(RoomRole.SCHEDULE, RoomRole.ACCOUNTING));
+		RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("chan@naver.com", List.of(RoomRole.ADMIN));
 		List<RoomRoleDTO> roomRoleDTOS = List.of(roomRoleDTO1, roomRoleDTO2);
 		return new RoomModifiedRequestDTO(1L, "경주로 고고", startDate, endDate, roomRoleDTOS);
 	}
