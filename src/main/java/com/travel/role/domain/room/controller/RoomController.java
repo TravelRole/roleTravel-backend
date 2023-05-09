@@ -2,6 +2,8 @@ package com.travel.role.domain.room.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
@@ -33,7 +36,7 @@ public class RoomController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/room")
-	public void makeRoom(@AuthenticationPrincipal UserPrincipal userPrincipal,@RequestBody MakeRoomRequestDTO dto) {
+	public void makeRoom(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody MakeRoomRequestDTO dto) {
 		roomService.makeRoom(userPrincipal.getEmail(), dto);
 	}
 
@@ -62,13 +65,21 @@ public class RoomController {
 	}
 
 	@GetMapping("/room/day")
-	public List<TimeResponseDTO> getDay(@RequestParam("roomId") Long roomId){
+	public List<TimeResponseDTO> getDay(@RequestParam("roomId") Long roomId) {
 		return roomService.getTime(roomId);
 	}
 
 	@PutMapping("/room")
-	public void modifyRoomInfo( @AuthenticationPrincipal UserPrincipal userPrincipal,
+	public void modifyRoomInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@RequestBody RoomModifiedRequestDTO roomModifiedRequestDTO) {
 		roomService.modifyRoomInfo(userPrincipal.getEmail(), roomModifiedRequestDTO);
+	}
+
+	@PutMapping("/room/{room_id}/expenses")
+	public void modifyExpenses(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") Long roomId,
+		@RequestBody @Valid ExpensesRequestDTO requestDTO) {
+
+		roomService.modifyExpenses(userPrincipal.getEmail(), roomId, requestDTO);
 	}
 }
