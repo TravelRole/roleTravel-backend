@@ -1,6 +1,7 @@
 package com.travel.role.domain.board.service;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
+import com.travel.role.domain.board.dto.request.BookRequestDTO;
 import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.entity.AccountingInfo;
 import com.travel.role.domain.board.entity.Board;
@@ -11,17 +12,21 @@ import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
 import com.travel.role.domain.board.repository.ScheduleInfoRepository;
 import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.room.entity.RoomRole;
+import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
+import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,11 +39,54 @@ import static com.travel.role.global.exception.dto.ExceptionMessage.LATE_DATE_ER
 public class BoardService {
     private final UserReadService userReadService;
     private final RoomReadService roomReadService;
+    private final BoardReadService boardReadService;
     private final BoardRepository boardRepository;
     private final BookInfoRepository bookInfoRepository;
     private final ScheduleInfoRepository scheduleInfoRepository;
     private final AccountingInfoRepository accountingInfoRepository;
+    private final ParticipantRoleRepository participantRoleRepository;
     private final RoomParticipantReadService roomParticipantReadService;
+
+    public void updateBookInfo(String email, BookRequestDTO bookRequestDTO) {
+        User user = userReadService.findUserByEmailOrElseThrow(email);
+
+        Room room = roomReadService.findRoomByIdOrElseThrow(bookRequestDTO.getRoomId());
+
+        roomParticipantReadService.checkParticipant(user, room);
+
+        validRoomRole(user, room);
+
+        AccountingInfo accountingInfo = boardReadService.findAccountingInfoByIdOrElseThrow(
+                bookRequestDTO.getAccountingInfoId());
+
+        BookInfo bookInfo = boardReadService.findBookInfoByIdOrElseThrow(bookRequestDTO.getBookInfoId());
+
+        accountingInfo.updatePaymentMethodAndPrice(bookRequestDTO.getPaymentMethod(), bookRequestDTO.getPrice());
+
+        bookInfo.updateEtc(bookRequestDTO.getBookEtc());
+
+    }
+
+    public void updateIsBook(String email, Long roomId, Long bookInfoId, Boolean isBook) {
+        User user = userReadService.findUserByEmailOrElseThrow(email);
+
+        Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+
+        roomParticipantReadService.checkParticipant(user, room);
+
+        validRoomRole(user, room);
+
+        BookInfo bookInfo = boardReadService.findBookInfoByIdOrElseThrow(bookInfoId);
+
+        bookInfo.updateIsBook(!isBook);
+    }
+
+    private void validRoomRole(User user, Room room) {
+        boolean isExist = participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room,
+                Arrays.asList(RoomRole.ADMIN, RoomRole.SCHEDULE));
+        if (!isExist)
+            throw new UserHaveNotPrivilegeException();
+    }
 
     public List<BookInfoResponseDTO> getBookInfo(String email, Long roomId, LocalDate date) {
         User user = userReadService.findUserByEmailOrElseThrow(email);
@@ -49,12 +97,14 @@ public class BoardService {
 
         validateDate(room.getTravelStartDate(), room.getTravelEndDate(), date);
 
-        return getBookInfoResult(boardRepository.findBoardByRoomIdAndScheduleDate(roomId, date.atStartOfDay(), date.atTime(LocalTime.MAX)));
+        return getBookInfoResult(
+                boardRepository.findBoardByRoomIdAndScheduleDate(roomId, date.atStartOfDay(), date.atTime(LocalTime.MAX)));
     }
 
     private List<BookInfoResponseDTO> getBookInfoResult(List<Board> boardList) {
         return boardList.stream()
-                .map(board -> BookInfoResponseDTO.of(board, board.getScheduleInfo(), board.getAccountingInfo(), board.getAccountingInfo().getBookInfo()))
+                .map(board -> BookInfoResponseDTO.of(board, board.getScheduleInfo(), board.getAccountingInfo(),
+                        board.getAccountingInfo().getBookInfo()))
                 .collect(Collectors.toList());
     }
 
@@ -65,7 +115,8 @@ public class BoardService {
 
         roomParticipantReadService.checkParticipant(user, room);
 
-        validateDate(room.getTravelStartDate(), room.getTravelEndDate(), boardRequestDTO.getScheduleDate().toLocalDate());
+        validateDate(room.getTravelStartDate(), room.getTravelEndDate(),
+                boardRequestDTO.getScheduleDate().toLocalDate());
 
         Board board = boardRepository.save(Board.of(room, boardRequestDTO));
 
