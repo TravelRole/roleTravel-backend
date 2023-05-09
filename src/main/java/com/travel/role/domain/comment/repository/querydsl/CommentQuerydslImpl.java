@@ -28,14 +28,101 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 
 	private final JPAQueryFactory queryFactory;
 
+	private static final QComment c = new QComment("c");
+	private static final QUser fu = new QUser("fu");
+	private static final QUser tu = new QUser("tu");
+
 	@Override
 	public Page<CommentResDTO> findAllOrderByGroupIdAndCreateDate(Long roomId, Pageable pageable) {
 
-		QComment c = new QComment("c");
-		QUser fu = new QUser("fu");
-		QUser tu = new QUser("tu");
+		// 먼저 부모 댓글을 tuple 타입으로 불러옴
+		List<Tuple> parentTuples = findFirstDepthCommentTuples(roomId, pageable);
 
-		List<Tuple> tuples = queryFactory.select(
+		// 부모 댓글들의 id 추출
+		List<Long> parentGroupIds = parentTuples.stream().map(tuple -> tuple.get(c.id)).collect(Collectors.toList());
+
+		// 각 유저들의 방에서의 역할 추출
+		Map<Long, List<RoomRole>> roleMap = findRoleMapInRoom(roomId);
+
+		// 해당 groupId를 가진 자식 댓글들을 tuple 형태로 불러옴
+		List<Tuple> childCommentsTuple = findChildCommentTupleInGroupIds(roomId, parentGroupIds);
+
+		// key - groupId, 불러온 댓글들을 그루핑
+		Map<Long, List<CommentResDTO>> childMap = groupByGroupId(roleMap, childCommentsTuple);
+
+		List<CommentResDTO> resDTOS = mappingToCommentResDTOList(parentTuples, roleMap, childMap);
+
+		long total = queryFactory
+			.select(c.count())
+			.from(c)
+			.where(c.room.id.eq(roomId), c.toUser.isNull())
+			.fetchOne();
+
+		return new PageImpl<>(resDTOS, pageable, total);
+	}
+
+	private List<CommentResDTO> mappingToCommentResDTOList(List<Tuple> tuples, Map<Long, List<RoomRole>> roleMap,
+		Map<Long, List<CommentResDTO>> childMap) {
+		return tuples.stream().
+			map(
+				tuple -> {
+					SimpleUserInfoResDTO simpleUserInfoResDTO = tuple.get(2, SimpleUserInfoResDTO.class);
+					setRoles(roleMap, simpleUserInfoResDTO);
+
+					Long commentId = tuple.get(c.id);
+					List<CommentResDTO> childComments = childMap.getOrDefault(commentId, null);
+
+					return CommentResDTO.builder()
+						.commentId(commentId)
+						.content(tuple.get(c.content))
+						.fromUserInfo(simpleUserInfoResDTO)
+						.toUsername(tuple.get(tu.name))
+						.createdDate(tuple.get(c.createDate))
+						.deleted(Boolean.TRUE.equals(tuple.get(c.deleted)))
+						.childComments(childComments)
+						.build();
+				}
+			).collect(Collectors.toList());
+	}
+
+	private Map<Long, List<CommentResDTO>> groupByGroupId(Map<Long, List<RoomRole>> roleMap,
+		List<Tuple> childCommentsTuple) {
+		return childCommentsTuple.stream()
+			.collect(Collectors.groupingBy(tuple -> tuple.get(c.groupId), Collectors.mapping(tuple -> {
+				SimpleUserInfoResDTO simpleUserInfoResDTO = tuple.get(2, SimpleUserInfoResDTO.class);
+				setRoles(roleMap, simpleUserInfoResDTO);
+
+				return CommentResDTO.builder()
+					.commentId(tuple.get(c.id))
+					.content(tuple.get(c.content))
+					.fromUserInfo(simpleUserInfoResDTO)
+					.toUsername(tuple.get(tu.name))
+					.createdDate(tuple.get(c.createDate))
+					.deleted(Boolean.TRUE.equals(tuple.get(c.deleted)))
+					.build();
+			}, Collectors.toList())));
+	}
+
+	private List<Tuple> findChildCommentTupleInGroupIds(Long roomId, List<Long> parentGroupIds) {
+		return queryFactory.select(
+				c.id,
+				c.content,
+				Projections.bean(SimpleUserInfoResDTO.class, fu.id, fu.name, fu.profile),
+				tu.name,
+				c.createDate,
+				c.deleted,
+				c.groupId
+			).from(c)
+			.innerJoin(c.fromUser, fu)
+			.leftJoin(c.toUser, tu)
+			.where(c.room.id.eq(roomId), c.toUser.isNotNull(), c.groupId.in(parentGroupIds))
+			.orderBy(c.groupId.asc())
+			.orderBy(c.createDate.asc())
+			.fetch();
+	}
+
+	private List<Tuple> findFirstDepthCommentTuples(Long roomId, Pageable pageable) {
+		return queryFactory.select(
 				c.id,
 				c.content,
 				Projections.bean(SimpleUserInfoResDTO.class, fu.id, fu.name, fu.profile),
@@ -45,37 +132,12 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 			).from(c)
 			.innerJoin(c.fromUser, fu)
 			.leftJoin(c.toUser, tu)
-			.where(c.room.id.eq(roomId))
+			.where(c.room.id.eq(roomId), c.toUser.isNull())
 			.orderBy(c.groupId.asc())
 			.orderBy(c.createDate.asc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
-
-		Map<Long, List<RoomRole>> roleMap = findRoleMapInRoom(roomId);
-
-		List<CommentResDTO> resDTOS = tuples.stream().
-			map(
-				tuple -> {
-					SimpleUserInfoResDTO simpleUserInfoResDTO = tuple.get(2, SimpleUserInfoResDTO.class);
-					setRoles(roleMap, simpleUserInfoResDTO);
-
-					return new CommentResDTO(tuple.get(c.id)
-						, tuple.get(c.content),
-						simpleUserInfoResDTO,
-						tuple.get(tu.name),
-						tuple.get(c.createDate),
-						Boolean.TRUE.equals(tuple.get(c.deleted)));
-				}
-			).collect(Collectors.toList());
-
-		long total = queryFactory
-			.select(c.count())
-			.from(c)
-			.where(c.room.id.eq(roomId))
-			.fetchOne();
-
-		return new PageImpl<>(resDTOS, pageable, total);
 	}
 
 	@Override
