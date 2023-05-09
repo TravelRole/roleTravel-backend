@@ -246,6 +246,12 @@ public class RoomService {
     }
 
     private void modifyRole(List<ParticipantRole> participantRoles, List<RoomRole> roomRoles) {
+        if (participantRoles.size() > roomRoles.size()) {
+            for (int i = 0 ; i < participantRoles.size() - roomRoles.size(); i++) {
+                participantRoleRepository.deleteById(participantRoles.get(i).getId());
+            }
+        }
+
         for (int i = 0; i < roomRoles.size(); i++) {
             if (i > participantRoles.size() - 1) {
                 ParticipantRole participantRole = participantRoles.get(0);
