@@ -1,10 +1,27 @@
 package com.travel.role.domain.board.entity;
 
-import com.travel.role.domain.room.entity.Room;
-import lombok.*;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import com.travel.role.domain.room.entity.Room;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Table(name = "accounting_info")
 @Getter
@@ -22,8 +39,9 @@ public class AccountingInfo {
     @JoinColumn(name = "room_id", nullable = false, updatable = false)
     private Room room;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 10)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
     @Column(name = "payment_name", length = 100)
     private String paymentName;
@@ -49,4 +67,8 @@ public class AccountingInfo {
     @JoinColumn(name = "book_info_id")
     private BookInfo bookInfo;
 
+    public void updatePaymentMethodAndPrice(PaymentMethod paymentMethod, int price) {
+        this.paymentMethod = paymentMethod;
+        this.price = price;
+    }
 }
