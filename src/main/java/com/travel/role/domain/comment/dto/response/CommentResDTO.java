@@ -1,6 +1,7 @@
 package com.travel.role.domain.comment.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.travel.role.domain.user.dto.SimpleUserInfoResDTO;
@@ -21,6 +22,8 @@ public class CommentResDTO {
 	private SimpleUserInfoResDTO fromUserInfo;
 
 	private String toUsername;
+
+	private List<CommentResDTO> childComments;
 
 	@JsonFormat(pattern = "yyyy/MM/dd hh:mm:ss")
 	private LocalDateTime createdDate;

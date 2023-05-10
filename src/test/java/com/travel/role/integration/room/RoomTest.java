@@ -3,23 +3,24 @@ package com.travel.role.integration.room;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
+import com.travel.role.domain.room.entity.RoomRole;
+import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.service.RoomService;
-import com.travel.role.domain.user.dto.auth.SignUpRequestDTO;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
 
@@ -36,51 +37,10 @@ class RoomTest {
     private RoomParticipantRepository roomParticipantRepository;
 
     @Autowired
+    private ParticipantRoleRepository participantRoleRepository;
+
+    @Autowired
     private RoomService roomService;
-
-    @BeforeEach
-    void before() {
-        SignUpRequestDTO signup1 = new SignUpRequestDTO("해찬", "haechan@naver.com", "1234", LocalDate.now());
-        SignUpRequestDTO signup2 = new SignUpRequestDTO("깐잽", "Ggan@naver.com", "1234", LocalDate.now());
-        SignUpRequestDTO signup3 = new SignUpRequestDTO("찬유", "ChanYoo@naver.com", "1234", LocalDate.now());
-        SignUpRequestDTO signup4 = new SignUpRequestDTO("유해", "Yoohae@naver.com", "1234", LocalDate.now());
-
-        User user1 = User.of(signup1, "1234");
-        User user2 = User.of(signup2, "1234");
-        User user3 = User.of(signup3, "1234");
-        User user4 = User.of(signup4, "1234");
-
-        user1 = userRepository.save(user1);
-        user2 = userRepository.save(user2);
-        user3 = userRepository.save(user3);
-        user4 = userRepository.save(user4);
-
-        MakeRoomRequestDTO makeRoom1 = new MakeRoomRequestDTO("room1", LocalDate.of(2023, 1, 1),
-                LocalDate.of(2023, 1, 3),
-                "광양", 1L);
-
-        MakeRoomRequestDTO makeRoom2 = new MakeRoomRequestDTO("room2", LocalDate.of(2023, 1, 5),
-                LocalDate.of(2023, 1, 10),
-                "스울", 2L);
-
-        Room room1 = Room.of(makeRoom1);
-        Room room2 = Room.of(makeRoom2);
-
-        room1 = roomRepository.save(room1);
-        room2 = roomRepository.save(room2);
-
-        RoomParticipant roomParticipant1 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room1);
-        RoomParticipant roomParticipant2 = new RoomParticipant(null, LocalDateTime.now(), true, user2, room1);
-        RoomParticipant roomParticipant3 = new RoomParticipant(null, LocalDateTime.now(), true, user3, room1);
-        RoomParticipant roomParticipant4 = new RoomParticipant(null, LocalDateTime.now(), true, user1, room2);
-        RoomParticipant roomParticipant5 = new RoomParticipant(null, LocalDateTime.now(), true, user4, room2);
-
-        roomParticipantRepository.save(roomParticipant1);
-        roomParticipantRepository.save(roomParticipant2);
-        roomParticipantRepository.save(roomParticipant3);
-        roomParticipantRepository.save(roomParticipant4);
-        roomParticipantRepository.save(roomParticipant5);
-    }
 
     @Test
     void before_each의_정보가_제대로_들어갔는지() {
@@ -90,21 +50,41 @@ class RoomTest {
         List<RoomParticipant> roomParticipantResult = roomParticipantRepository.findAll();
 
         //when, then
-        assertThat(userResult.size()).isEqualTo(4);
-        assertThat(roomResult.size()).isEqualTo(2);
-        assertThat(roomParticipantResult.size()).isEqualTo(5);
+        assertThat(userResult.size()).isEqualTo(12);
+        assertThat(roomResult.size()).isEqualTo(4);
+        assertThat(roomParticipantResult.size()).isEqualTo(16);
     }
 
     @Test
     void 방의_정보를_제대로_불러오는지() {
         // given
-        String email = "ChanYoo@naver.com";
+        String email = "gy@naver.com";
         // when
         List<RoomResponseDTO> roomList = roomService.getRoomList(email);
 
         // then
         assertThat(roomList.size()).isEqualTo(1);
-        assertThat(roomList.get(0).getRoomName()).isEqualTo("room1");
-        assertThat(roomList.get(0).getMembers().size()).isEqualTo(3);
+        assertThat(roomList.get(0).getRoomName()).isEqualTo("가아아아아평");
+        assertThat(roomList.get(0).getMembers().size()).isEqualTo(5);
+    }
+
+    @Test
+    void 방_총무_변경_테스트() {
+        //given
+        RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("Junsik@naver.com", List.of(RoomRole.NONE));
+        RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.RESERVATION));
+        RoomRoleDTO roomRoleDTO3 = new RoomRoleDTO("mogu@naver.com", List.of(RoomRole.ADMIN));
+        RoomRoleDTO roomRoleDTO4 = new RoomRoleDTO("dsl@naver.com", List.of(RoomRole.ACCOUNTING, RoomRole.SCHEDULE));
+
+        RoomModifiedRequestDTO roomModifiedRequestDTO = new RoomModifiedRequestDTO("광양 펜션잡고 놀자", LocalDate.of(2023, 6, 16),
+            LocalDate.of(2023, 6, 17),
+            List.of(roomRoleDTO1, roomRoleDTO2, roomRoleDTO3, roomRoleDTO4));
+
+        //when
+        roomService.modifyRoomInfo("Junsik@naver.com", roomModifiedRequestDTO, 4L);
+
+        //then
+        List<ParticipantRole> participantRoles = participantRoleRepository.findUserAndRoomByRoomId(4L);
+        assertThat(participantRoles.size()).isEqualTo(5);
     }
 }

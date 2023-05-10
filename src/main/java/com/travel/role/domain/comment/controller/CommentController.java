@@ -45,7 +45,7 @@ public class CommentController {
 	@GetMapping
 	public ResponseEntity<PageResDTO<CommentResDTO>> getComments(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId,
-		@PageableDefault(size = 10, page = 0) Pageable pageable) {
+		@PageableDefault(size = 5, page = 0) Pageable pageable) {
 
 		PageResDTO<CommentResDTO> resDTO = commentService.getCommentsInRoom(userPrincipal.getEmail(), roomId, pageable);
 

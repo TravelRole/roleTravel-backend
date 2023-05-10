@@ -1,15 +1,22 @@
 package com.travel.role.domain.room.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.global.domain.BaseCreateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Table(name = "ROOM_INFO")
 @Getter
@@ -73,6 +80,12 @@ public class Room extends BaseCreateTime {
 	public void updateInviteCode(String inviteCode, LocalDateTime now) {
 		this.roomInviteCode = inviteCode;
 		this.roomExpiredTime = now;
+	}
+
+	public void updateRoomNameAndDate(String roomName, LocalDate travelStartDate, LocalDate travelEndDate) {
+		this.roomName = roomName;
+		this.travelStartDate = travelStartDate;
+		this.travelEndDate = travelEndDate;
 	}
 
 	public void updateTravelExpense(int travelExpense) {

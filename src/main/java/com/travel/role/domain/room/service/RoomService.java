@@ -1,8 +1,27 @@
 package com.travel.role.domain.room.service;
 
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.querydsl.core.Tuple;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
+import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
@@ -16,6 +35,7 @@ import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.global.exception.room.AdminIsOnlyOneException;
 import com.travel.role.global.exception.room.AlreadyExistInRoomException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
@@ -23,17 +43,6 @@ import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.util.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-
-import static com.travel.role.global.exception.dto.ExceptionMessage.INVALID_DATE_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +55,7 @@ public class RoomService {
 	private final UserReadService userReadService;
 	private final RoomParticipantRepository roomParticipantRepository;
 	private final ParticipantRoleRepository participantRoleRepository;
+	private final ParticipantRoleReadService participantRoleReadService;
 	private final PasswordGenerator passwordGenerator;
 	private final RoomReadService roomReadService;
 
@@ -78,7 +88,7 @@ public class RoomService {
 	}
 
 	public void makeRoom(String email, MakeRoomRequestDTO makeRoomRequestDTO) {
-		validateDate(makeRoomRequestDTO);
+		validateDate(makeRoomRequestDTO.getTravelStartDate(), makeRoomRequestDTO.getTravelEndDate());
 		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomRepository.save(Room.of(makeRoomRequestDTO));
 		saveNewRoomParticipant(user, room);
@@ -104,11 +114,8 @@ public class RoomService {
 		participantRoleRepository.save(newParticipantRole);
 	}
 
-	private void validateDate(MakeRoomRequestDTO makeRoomRequestDTO) {
-		LocalDate start = makeRoomRequestDTO.getTravelStartDate();
-		LocalDate end = makeRoomRequestDTO.getTravelEndDate();
-
-		if (start.isAfter(end))
+	private void validateDate(LocalDate startDate, LocalDate endDate) {
+		if (startDate.isAfter(endDate))
 			throw new InvalidLocalDateException(INVALID_DATE_ERROR);
 	}
 
@@ -220,4 +227,113 @@ public class RoomService {
 		room.updateTravelExpense(requestDTO.getExpenses());
 	}
 
+	public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto, Long roomId) {
+		validRoomRoles(email, roomId, RoomRole.ADMIN);
+
+		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
+		List<String> adminList = validateUserRoleAndEmail(dto.getUserRoles());
+
+		Map<String, List<ParticipantRole>> participantMap = convertToParticipantRoleList(participantRoles);
+		if (adminList.size() == 1) {
+			deleteAdminUserRoles(participantMap, email, adminList.get(0));
+		}
+
+		modifyRoomNameAndDate(participantRoles.get(0).getRoom(), dto);
+		modifyRoles(participantMap, dto.getUserRoles());
+	}
+
+	private void deleteAdminUserRoles(Map<String, List<ParticipantRole>> participantMap, String email,
+		String adminEmail) {
+		if (adminEmail.equals(email)) {
+			return;
+		}
+
+		List<Long> ids = new ArrayList<>();
+		List<ParticipantRole> participantRoles = participantMap.get(adminEmail);
+		for (ParticipantRole participantRole : participantRoles) {
+			ids.add(participantRole.getId());
+			participantRoles.remove(participantRole);
+		}
+		participantRoleRepository.deleteAllByIdInQuery(ids);
+	}
+
+	private void validRoomRoles(String email, Long roomId, RoomRole roomRole) {
+		boolean isExists = participantRoleRepository.existsByUserEmailAndRoomIdAndRole(email, roomId, roomRole);
+		if (!isExists) {
+			throw new UserHaveNotPrivilegeException();
+		}
+	}
+
+	private void modifyRoomNameAndDate(Room room, RoomModifiedRequestDTO dto) {
+		validateDate(dto.getStartDate(), dto.getEndDate());
+		room.updateRoomNameAndDate(dto.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate());
+	}
+
+	private void modifyRoles(Map<String, List<ParticipantRole>> participantMap, List<RoomRoleDTO> userRoles) {
+		for (RoomRoleDTO userRole : userRoles) {
+			List<ParticipantRole> dbParticipant = participantMap.get(userRole.getEmail());
+			modifyRole(dbParticipant, userRole.getRoles());
+		}
+	}
+
+	private void modifyRole(List<ParticipantRole> participantRoles, List<RoomRole> roomRoles) {
+		if (participantRoles.size() > roomRoles.size()) {
+			List<Long> ids = new ArrayList<>();
+			for (int i = 0; i < participantRoles.size() - roomRoles.size(); i++) {
+				ids.add(participantRoles.get(i).getId());
+				participantRoles.remove(participantRoles.get(i));
+			}
+
+			if (ids.size() > 1) {
+				ids.remove(0);
+				participantRoleRepository.deleteAllByIdInQuery(ids);
+			}
+		}
+
+		for (int i = 0; i < roomRoles.size(); i++) {
+			if (i > participantRoles.size() - 1) {
+				ParticipantRole participantRole = participantRoles.get(0);
+				ParticipantRole newParticipantRole = new ParticipantRole(null, roomRoles.get(i),
+					participantRole.getUser(), participantRole.getRoom());
+				participantRoleRepository.save(newParticipantRole);
+			} else {
+				ParticipantRole participantRole = participantRoles.get(i);
+				participantRole.updateRole(roomRoles.get(i));
+			}
+		}
+	}
+
+	private Map<String, List<ParticipantRole>> convertToParticipantRoleList(List<ParticipantRole> participantRoles) {
+		Map<String, List<ParticipantRole>> result = new HashMap<>();
+
+		for (ParticipantRole participantRole : participantRoles) {
+			String email = participantRole.getUser().getEmail();
+			List<ParticipantRole> data;
+			if (!result.containsKey(email)) {
+				data = new ArrayList<>();
+
+			} else {
+				data = result.get(email);
+
+			}
+			data.add(participantRole);
+			result.put(email, data);
+		}
+		return result;
+	}
+
+	private List<String> validateUserRoleAndEmail(List<RoomRoleDTO> userRoles) {
+		List<String> admins = new ArrayList<>();
+
+		for (RoomRoleDTO userRole : userRoles) {
+			if (userRole.getRoles().contains(RoomRole.ADMIN))
+				admins.add(userRole.getEmail());
+		}
+
+		if (admins.size() >= 2) {
+			throw new AdminIsOnlyOneException();
+		}
+
+		return admins;
+	}
 }
