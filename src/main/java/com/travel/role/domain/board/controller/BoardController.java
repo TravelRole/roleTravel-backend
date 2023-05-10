@@ -1,52 +1,65 @@
 package com.travel.role.domain.board.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.board.dto.request.BookRequestDTO;
 import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.service.BoardService;
 import com.travel.role.global.auth.token.UserPrincipal;
-import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/board")
+@RequestMapping("/api/room/{roomId}/board")
 public class BoardController {
-    private final BoardService boardService;
+	private final BoardService boardService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addSchedule(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                            @RequestBody @Valid BoardRequestDTO boardRequestDTO) {
-        boardService.addSchedule(userPrincipal.getEmail(), boardRequestDTO);
-    }
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public void addSchedule(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("roomId") Long roomId,
+		@RequestBody @Valid BoardRequestDTO boardRequestDTO) {
+		boardService.addSchedule(userPrincipal.getEmail(), roomId, boardRequestDTO);
+	}
 
-    @GetMapping("/book")
-    public List<BookInfoResponseDTO> getScheduleInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                     @RequestParam("roomId") Long roomId,
-                                                     @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        return boardService.getBookInfo(userPrincipal.getEmail(), roomId, date);
-    }
+	@GetMapping("/book")
+	public List<BookInfoResponseDTO> getScheduleInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("roomId") Long roomId,
+		@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+		return boardService.getBookInfo(userPrincipal.getEmail(), roomId, date);
+	}
 
-    @PatchMapping("/book")
-    public void updateBookInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                               @RequestBody @Valid BookRequestDTO bookRequestDTO) {
-        boardService.updateBookInfo(userPrincipal.getEmail(), bookRequestDTO);
-    }
+	@PatchMapping("/book")
+	public void updateBookInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("roomId") Long roomId,
+		@RequestBody @Valid BookRequestDTO bookRequestDTO) {
+		boardService.modifyBookInfo(userPrincipal.getEmail(), roomId, bookRequestDTO);
+	}
 
-    @PatchMapping("/book/{roomId}/{bookInfoId}")
-    public void updateIsBook(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                             @PathVariable("roomId") Long roomId,
-                             @PathVariable("bookInfoId") Long bookInfoId,
-                             @RequestParam("isBook") Boolean isBook) {
-        boardService.updateIsBook(userPrincipal.getEmail(), roomId, bookInfoId, isBook);
-    }
+	@PatchMapping("/book/{bookInfoId}")
+	public void updateIsBook(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("roomId") Long roomId,
+		@PathVariable("bookInfoId") Long bookInfoId,
+		@RequestParam("isBooked") Boolean isBooked) {
+		boardService.modifyIsBooked(userPrincipal.getEmail(), roomId, bookInfoId, isBooked);
+	}
 
 }
