@@ -8,11 +8,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.travel.role.domain.comment.dto.response.CommentResDTO;
 import com.travel.role.domain.comment.entity.QComment;
@@ -28,54 +29,36 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 
 	private final JPAQueryFactory queryFactory;
 
+	private static final QComment c = new QComment("c");
+	private static final QUser fu = new QUser("fu");
+	private static final QUser tu = new QUser("tu");
+
 	@Override
 	public Page<CommentResDTO> findAllOrderByGroupIdAndCreateDate(Long roomId, Pageable pageable) {
 
-		QComment c = new QComment("c");
-		QUser fu = new QUser("fu");
-		QUser tu = new QUser("tu");
+		// 먼저 부모 댓글을 tuple 타입으로 불러옴
+		List<Tuple> parentTuples = findFirstDepthCommentTuples(roomId, pageable);
 
-		List<Tuple> tuples = queryFactory.select(
-				c.id,
-				c.content,
-				Projections.bean(SimpleUserInfoResDTO.class, fu.id, fu.name, fu.profile),
-				tu.name,
-				c.createDate,
-				c.deleted
-			).from(c)
-			.innerJoin(c.fromUser, fu)
-			.leftJoin(c.toUser, tu)
-			.where(c.room.id.eq(roomId))
-			.orderBy(c.groupId.asc())
-			.orderBy(c.createDate.asc())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetch();
+		// 부모 댓글들의 id 추출
+		List<Long> parentGroupIds = parentTuples.stream().map(tuple -> tuple.get(c.id)).collect(Collectors.toList());
 
+		// 각 유저들의 방에서의 역할 추출
 		Map<Long, List<RoomRole>> roleMap = findRoleMapInRoom(roomId);
 
-		List<CommentResDTO> resDTOS = tuples.stream().
-			map(
-				tuple -> {
-					SimpleUserInfoResDTO simpleUserInfoResDTO = tuple.get(2, SimpleUserInfoResDTO.class);
-					setRoles(roleMap, simpleUserInfoResDTO);
+		// 해당 groupId를 가진 자식 댓글들을 tuple 형태로 불러옴
+		List<Tuple> childCommentsTuple = findChildCommentTupleInGroupIds(roomId, parentGroupIds);
 
-					return new CommentResDTO(tuple.get(c.id)
-						, tuple.get(c.content),
-						simpleUserInfoResDTO,
-						tuple.get(tu.name),
-						tuple.get(c.createDate),
-						Boolean.TRUE.equals(tuple.get(c.deleted)));
-				}
-			).collect(Collectors.toList());
+		// key - groupId, 불러온 댓글들을 그루핑
+		Map<Long, List<CommentResDTO>> childMap = groupByGroupId(roleMap, childCommentsTuple);
 
-		long total = queryFactory
+		List<CommentResDTO> resDTOS = mappingToCommentResDTOList(parentTuples, roleMap, childMap);
+
+		JPAQuery<Long> countQuery = queryFactory
 			.select(c.count())
 			.from(c)
-			.where(c.room.id.eq(roomId))
-			.fetchOne();
+			.where(c.room.id.eq(roomId), c.toUser.isNull());
 
-		return new PageImpl<>(resDTOS, pageable, total);
+		return PageableExecutionUtils.getPage(resDTOS, pageable, countQuery::fetchOne);
 	}
 
 	@Override
@@ -101,6 +84,70 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 		}
 	}
 
+	private List<CommentResDTO> mappingToCommentResDTOList(List<Tuple> tuples, Map<Long, List<RoomRole>> roleMap,
+		Map<Long, List<CommentResDTO>> childMap) {
+		return tuples.stream().
+			map(
+				tuple -> {
+					SimpleUserInfoResDTO simpleUserInfoResDTO = tuple.get(2, SimpleUserInfoResDTO.class);
+					setRoles(roleMap, simpleUserInfoResDTO);
+
+					Long commentId = tuple.get(c.id);
+					List<CommentResDTO> childComments = childMap.getOrDefault(commentId, null);
+
+					return convertToCommentResDTO(tuple, simpleUserInfoResDTO, childComments);
+				}
+			).collect(Collectors.toList());
+	}
+
+	private Map<Long, List<CommentResDTO>> groupByGroupId(Map<Long, List<RoomRole>> roleMap,
+		List<Tuple> childCommentsTuple) {
+		return childCommentsTuple.stream()
+			.collect(Collectors.groupingBy(tuple -> tuple.get(c.groupId), Collectors.mapping(tuple -> {
+				SimpleUserInfoResDTO simpleUserInfoResDTO = tuple.get(2, SimpleUserInfoResDTO.class);
+				setRoles(roleMap, simpleUserInfoResDTO);
+
+				return convertToCommentResDTO(tuple, simpleUserInfoResDTO, null);
+			}, Collectors.toList())));
+	}
+
+	private List<Tuple> findChildCommentTupleInGroupIds(Long roomId, List<Long> parentGroupIds) {
+		return queryFactory.select(
+				c.id,
+				c.content,
+				Projections.bean(SimpleUserInfoResDTO.class, fu.id, fu.name, fu.profile),
+				tu.name,
+				c.createDate,
+				c.deleted,
+				c.groupId
+			).from(c)
+			.innerJoin(c.fromUser, fu)
+			.leftJoin(c.toUser, tu)
+			.where(c.room.id.eq(roomId), c.toUser.isNotNull(), c.groupId.in(parentGroupIds))
+			.orderBy(c.groupId.asc())
+			.orderBy(c.createDate.asc())
+			.fetch();
+	}
+
+	private List<Tuple> findFirstDepthCommentTuples(Long roomId, Pageable pageable) {
+		return queryFactory.select(
+				c.id,
+				c.content,
+				Projections.bean(SimpleUserInfoResDTO.class, fu.id, fu.name, fu.profile),
+				tu.name,
+				c.createDate,
+				c.deleted
+			).from(c)
+			.innerJoin(c.fromUser, fu)
+			.leftJoin(c.toUser, tu)
+			.where(c.room.id.eq(roomId), c.toUser.isNull())
+			.orderBy(c.groupId.asc())
+			.orderBy(c.createDate.asc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+	}
+
 	private void setRoles(Map<Long, List<RoomRole>> roleMap, SimpleUserInfoResDTO resDTO) {
 
 		Long userId = resDTO.getId();
@@ -115,5 +162,18 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 			.from(p)
 			.where(p.room.id.eq(roomId))
 			.transform(groupBy(p.user.id).as(list(p.roomRole)));
+	}
+
+	private CommentResDTO convertToCommentResDTO(Tuple tuple, SimpleUserInfoResDTO simpleUserInfoResDTO,
+		List<CommentResDTO> childComments) {
+		return CommentResDTO.builder()
+			.commentId(tuple.get(c.id))
+			.content(tuple.get(c.content))
+			.fromUserInfo(simpleUserInfoResDTO)
+			.toUsername(tuple.get(tu.name))
+			.createdDate(tuple.get(c.createDate))
+			.deleted(Boolean.TRUE.equals(tuple.get(c.deleted)))
+			.childComments(childComments)
+			.build();
 	}
 }
