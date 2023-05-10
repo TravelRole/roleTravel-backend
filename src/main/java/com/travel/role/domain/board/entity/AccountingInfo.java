@@ -22,8 +22,9 @@ public class AccountingInfo {
     @JoinColumn(name = "room_id", nullable = false, updatable = false)
     private Room room;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 10)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
     @Column(name = "payment_name", length = 100)
     private String paymentName;
@@ -49,4 +50,8 @@ public class AccountingInfo {
     @JoinColumn(name = "book_info_id")
     private BookInfo bookInfo;
 
+    public void updatePaymentMethodAndPrice(PaymentMethod paymentMethod, int price) {
+        this.paymentMethod = paymentMethod;
+        this.price = price;
+    }
 }

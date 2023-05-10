@@ -5,12 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum Category {
-	TRAFFIC,
-	ACCOMMODATION,
-	FOOD,
-	TOUR,
-	SHOPPING,
-	ETC;
-
+public enum PaymentMethod {
+	CARD,
+	CREDIT;
 }

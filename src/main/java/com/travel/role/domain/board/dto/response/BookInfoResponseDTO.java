@@ -12,26 +12,32 @@ public class BookInfoResponseDTO {
     private String placeName;
     private LocalTime time;
     private String link;
-    private String scheduleEtc;
+    private String bookEtc;
     private Integer price;
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
     private Category category;
     private String accountingEtc;
     private Boolean isBooked;
+    private Long bookInfoId;
+    private Long accountingId;
 
-    private BookInfoResponseDTO(Board board, ScheduleInfo scheduleInfo, AccountingInfo accountingInfo, BookInfo bookInfo) {
+    private BookInfoResponseDTO(Board board, ScheduleInfo scheduleInfo, AccountingInfo accountingInfo,
+                                BookInfo bookInfo) {
         this.placeName = scheduleInfo.getPlaceName();
         this.time = board.getScheduleDate().toLocalTime();
         this.link = board.getLink();
-        this.scheduleEtc = scheduleInfo.getScheduleEtc();
+        this.bookEtc = bookInfo.getBookEtc();
         this.price = accountingInfo.getPrice();
         this.paymentMethod = accountingInfo.getPaymentMethod();
         this.category = board.getCategory();
         this.accountingEtc = accountingInfo.getAccountingEtc();
         this.isBooked = bookInfo.getIsBooked();
+        this.bookInfoId = bookInfo.getId();
+        this.accountingId = accountingInfo.getId();
     }
 
-    public static BookInfoResponseDTO of(Board board, ScheduleInfo scheduleInfo,AccountingInfo accountingInfo, BookInfo bookInfo) {
+    public static BookInfoResponseDTO of(Board board, ScheduleInfo scheduleInfo, AccountingInfo accountingInfo,
+                                         BookInfo bookInfo) {
         return new BookInfoResponseDTO(board, scheduleInfo, accountingInfo, bookInfo);
     }
 
