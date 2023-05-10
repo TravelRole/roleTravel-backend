@@ -8,11 +8,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.travel.role.domain.comment.dto.response.CommentResDTO;
 import com.travel.role.domain.comment.entity.QComment;
@@ -52,13 +53,35 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 
 		List<CommentResDTO> resDTOS = mappingToCommentResDTOList(parentTuples, roleMap, childMap);
 
-		long total = queryFactory
+		JPAQuery<Long> countQuery = queryFactory
 			.select(c.count())
 			.from(c)
-			.where(c.room.id.eq(roomId), c.toUser.isNull())
+			.where(c.room.id.eq(roomId), c.toUser.isNull());
+
+		return PageableExecutionUtils.getPage(resDTOS, pageable, countQuery::fetchOne);
+	}
+
+	@Override
+	public void dynamicDeleteById(Long commentId) {
+
+		Long toUserId = queryFactory.select(comment.toUser.id)
+			.from(comment)
+			.where(comment.id.eq(commentId))
 			.fetchOne();
 
-		return new PageImpl<>(resDTOS, pageable, total);
+		if (toUserId == null) {
+			// 최상단 댓글이면 update
+			queryFactory.update(comment)
+				.set(comment.content, "")
+				.set(comment.deleted, true)
+				.where(comment.id.eq(commentId))
+				.execute();
+		} else {
+			// 자식 댓글이면 delete
+			queryFactory.delete(comment)
+				.where(comment.id.eq(commentId))
+				.execute();
+		}
 	}
 
 	private List<CommentResDTO> mappingToCommentResDTOList(List<Tuple> tuples, Map<Long, List<RoomRole>> roleMap,
@@ -72,15 +95,7 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 					Long commentId = tuple.get(c.id);
 					List<CommentResDTO> childComments = childMap.getOrDefault(commentId, null);
 
-					return CommentResDTO.builder()
-						.commentId(commentId)
-						.content(tuple.get(c.content))
-						.fromUserInfo(simpleUserInfoResDTO)
-						.toUsername(tuple.get(tu.name))
-						.createdDate(tuple.get(c.createDate))
-						.deleted(Boolean.TRUE.equals(tuple.get(c.deleted)))
-						.childComments(childComments)
-						.build();
+					return convertToCommentResDTO(tuple, simpleUserInfoResDTO, childComments);
 				}
 			).collect(Collectors.toList());
 	}
@@ -92,14 +107,7 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 				SimpleUserInfoResDTO simpleUserInfoResDTO = tuple.get(2, SimpleUserInfoResDTO.class);
 				setRoles(roleMap, simpleUserInfoResDTO);
 
-				return CommentResDTO.builder()
-					.commentId(tuple.get(c.id))
-					.content(tuple.get(c.content))
-					.fromUserInfo(simpleUserInfoResDTO)
-					.toUsername(tuple.get(tu.name))
-					.createdDate(tuple.get(c.createDate))
-					.deleted(Boolean.TRUE.equals(tuple.get(c.deleted)))
-					.build();
+				return convertToCommentResDTO(tuple, simpleUserInfoResDTO, null);
 			}, Collectors.toList())));
 	}
 
@@ -140,29 +148,6 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 			.fetch();
 	}
 
-	@Override
-	public void dynamicDeleteById(Long commentId) {
-
-		Long toUserId = queryFactory.select(comment.toUser.id)
-			.from(comment)
-			.where(comment.id.eq(commentId))
-			.fetchOne();
-
-		if (toUserId == null) {
-			// 최상단 댓글이면 update
-			queryFactory.update(comment)
-				.set(comment.content, "")
-				.set(comment.deleted, true)
-				.where(comment.id.eq(commentId))
-				.execute();
-		} else {
-			// 자식 댓글이면 delete
-			queryFactory.delete(comment)
-				.where(comment.id.eq(commentId))
-				.execute();
-		}
-	}
-
 	private void setRoles(Map<Long, List<RoomRole>> roleMap, SimpleUserInfoResDTO resDTO) {
 
 		Long userId = resDTO.getId();
@@ -177,5 +162,18 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 			.from(p)
 			.where(p.room.id.eq(roomId))
 			.transform(groupBy(p.user.id).as(list(p.roomRole)));
+	}
+
+	private CommentResDTO convertToCommentResDTO(Tuple tuple, SimpleUserInfoResDTO simpleUserInfoResDTO,
+		List<CommentResDTO> childComments) {
+		return CommentResDTO.builder()
+			.commentId(tuple.get(c.id))
+			.content(tuple.get(c.content))
+			.fromUserInfo(simpleUserInfoResDTO)
+			.toUsername(tuple.get(tu.name))
+			.createdDate(tuple.get(c.createDate))
+			.deleted(Boolean.TRUE.equals(tuple.get(c.deleted)))
+			.childComments(childComments)
+			.build();
 	}
 }
