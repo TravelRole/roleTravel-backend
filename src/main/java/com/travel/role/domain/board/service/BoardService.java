@@ -17,7 +17,7 @@ import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
-import com.travel.role.domain.board.entity.PaymentMethod;
+import com.travel.role.domain.accounting.entity.PaymentMethod;
 import com.travel.role.domain.board.entity.ScheduleInfo;
 import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.board.repository.BoardRepository;

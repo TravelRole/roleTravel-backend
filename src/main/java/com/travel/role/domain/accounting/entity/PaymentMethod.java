@@ -1,4 +1,4 @@
-package com.travel.role.domain.board.entity;
+package com.travel.role.domain.accounting.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

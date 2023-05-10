@@ -97,7 +97,7 @@ public class BoardServiceTest {
                 .when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
         //when
-        boardService.addSchedule("asd@gmail.com",createBoardRequestDTO());
+        boardService.addSchedule("asd@gmail.com", 1L, createBoardRequestDTO());
 
         //then
         then(boardRepository).should(times(1)).save(any(Board.class));
@@ -124,7 +124,7 @@ public class BoardServiceTest {
     }
 
     private BoardRequestDTO createBoardRequestDTO(){
-        return new BoardRequestDTO(1L,"우도","제주도",LocalDate.now().atTime(LocalTime.now()),null,true, Category.ETC,123.0,456.0,null);
+        return new BoardRequestDTO("우도","제주도",LocalDate.now().atTime(LocalTime.now()),null,true, Category.ETC,123.0,456.0,null);
     }
 
     private List<Board> findBoardList (){
