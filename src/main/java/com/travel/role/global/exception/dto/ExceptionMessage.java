@@ -61,4 +61,5 @@ public final class ExceptionMessage {
 	public static final String INVALID_PAYMENT_PRICE = "금액은 1원 이상이어야 합니다.";
 	public static final String INVALID_CATEGORY = "지정된 카테고리 내에서 입력해 주세요.";
 	public static final String INVALID_PAYMENT_METHOD = "지정된 결제수단 내에서 입력해 주세요";
+	public static final String INVALID_PAYMENT_TIME = "결제 시간을 yyyy-MM-dd HH:mm 형식으로 올바른 시간을 입력해 주세요.";
 }
