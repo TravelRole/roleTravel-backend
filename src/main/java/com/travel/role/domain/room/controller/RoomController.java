@@ -69,10 +69,10 @@ public class RoomController {
 		return roomService.getTime(roomId);
 	}
 
-	@PutMapping("/room")
+	@PutMapping("/room/{room_id}")
 	public void modifyRoomInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@RequestBody RoomModifiedRequestDTO roomModifiedRequestDTO) {
-		roomService.modifyRoomInfo(userPrincipal.getEmail(), roomModifiedRequestDTO);
+		@RequestBody RoomModifiedRequestDTO roomModifiedRequestDTO, @PathVariable("room_id") Long roomId) {
+		roomService.modifyRoomInfo(userPrincipal.getEmail(), roomModifiedRequestDTO, roomId);
 	}
 
 	@PutMapping("/room/{room_id}/expenses")

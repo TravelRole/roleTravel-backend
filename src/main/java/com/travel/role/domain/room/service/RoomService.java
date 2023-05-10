@@ -44,8 +44,6 @@ import com.travel.role.global.util.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.travel.role.global.exception.dto.ExceptionMessage.INVALID_DATE_ERROR;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -229,8 +227,7 @@ public class RoomService {
 		room.updateTravelExpense(requestDTO.getExpenses());
 	}
 
-	public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto) {
-		Long roomId = dto.getRoomId();
+	public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto, Long roomId) {
 		validRoomRoles(email, roomId, RoomRole.ADMIN);
 
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);

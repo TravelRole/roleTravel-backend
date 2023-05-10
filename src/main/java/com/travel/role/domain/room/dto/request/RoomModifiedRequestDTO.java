@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomModifiedRequestDTO {
-	private Long roomId;
 	private String roomName;
 	private LocalDate startDate;
 	private LocalDate endDate;

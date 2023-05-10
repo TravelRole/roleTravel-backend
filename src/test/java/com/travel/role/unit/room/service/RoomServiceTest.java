@@ -163,7 +163,7 @@ class RoomServiceTest {
 			.willReturn(false);
 
 		// when, then
-		assertThatThrownBy(() -> roomService.modifyRoomInfo("haechan@naver.com", createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1))))
+		assertThatThrownBy(() -> roomService.modifyRoomInfo("haechan@naver.com", createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1)),1L))
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
@@ -174,7 +174,7 @@ class RoomServiceTest {
 			.willReturn(true);
 
 		//when, then
-		assertThatThrownBy(() -> roomService.modifyRoomInfo("chan@naver.com", createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1))))
+		assertThatThrownBy(() -> roomService.modifyRoomInfo("chan@naver.com", createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1)),1L))
 			.isInstanceOf(AdminIsOnlyOneException.class);
 	}
 
@@ -182,7 +182,7 @@ class RoomServiceTest {
 		RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.ADMIN));
 		RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("chan@naver.com", List.of(RoomRole.ADMIN));
 		List<RoomRoleDTO> roomRoleDTOS = List.of(roomRoleDTO1, roomRoleDTO2);
-		return new RoomModifiedRequestDTO(1L, "경주로 고고", startDate, endDate, roomRoleDTOS);
+		return new RoomModifiedRequestDTO("경주로 고고", startDate, endDate, roomRoleDTOS);
 	}
 	private static UserPrincipal makeUserPrincipal() {
 		return new UserPrincipal(1L, "haechan@naver.com", "1234", null);
