@@ -84,7 +84,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(InvalidLocalDateException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ExceptionResponse invalidLocalDateException(Exception e) {
+	public ExceptionResponse invalidLocalDateException(InvalidLocalDateException e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 
