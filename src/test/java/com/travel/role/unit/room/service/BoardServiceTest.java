@@ -1,9 +1,11 @@
 package com.travel.role.unit.room.service;
 
+import com.travel.role.domain.accounting.entity.AccountingInfo;
+import com.travel.role.domain.accounting.entity.Category;
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.entity.*;
-import com.travel.role.domain.board.repository.AccountingInfoRepository;
+import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
 import com.travel.role.domain.board.repository.ScheduleInfoRepository;

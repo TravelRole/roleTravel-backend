@@ -1,5 +1,7 @@
 package com.travel.role.domain.board.dto.response;
 
+import com.travel.role.domain.accounting.entity.AccountingInfo;
+import com.travel.role.domain.accounting.entity.Category;
 import com.travel.role.domain.board.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +33,7 @@ public class BookInfoResponseDTO {
         this.isBooked = bookInfo.getIsBooked();
     }
 
-    public static BookInfoResponseDTO of(Board board, ScheduleInfo scheduleInfo,AccountingInfo accountingInfo, BookInfo bookInfo) {
+    public static BookInfoResponseDTO of(Board board, ScheduleInfo scheduleInfo, AccountingInfo accountingInfo, BookInfo bookInfo) {
         return new BookInfoResponseDTO(board, scheduleInfo, accountingInfo, bookInfo);
     }
 

@@ -2,11 +2,11 @@ package com.travel.role.domain.board.service;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
-import com.travel.role.domain.board.entity.AccountingInfo;
+import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.entity.ScheduleInfo;
-import com.travel.role.domain.board.repository.AccountingInfoRepository;
+import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
 import com.travel.role.domain.board.repository.ScheduleInfoRepository;
