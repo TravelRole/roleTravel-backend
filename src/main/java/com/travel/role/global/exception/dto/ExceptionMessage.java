@@ -5,6 +5,9 @@ public final class ExceptionMessage {
 	private ExceptionMessage() {
 	}
 
+	// common
+	public static final String INVALID_DATE_FORMAT = "날짜 형식은 yyyy-MM-dd 형식으로 올바른 값을 입력해 주세요";
+
 	public static final String NOT_EXISTS_TOKEN = "토큰 값이 존재하지 않습니다.";
 	public static final String USERNAME_NOT_FOUND = "해당하는 유저가 존재하지 않습니다.";
 	public static final String INVALID_TOKEN = "유효하지 않은 토큰입니다.";
