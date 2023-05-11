@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
-import com.travel.role.domain.board.dto.request.BookRequestDTO;
+import com.travel.role.domain.board.dto.request.BookInfoRequestDTO;
+import com.travel.role.domain.board.dto.request.BookedRequestDTO;
 import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.service.BoardService;
 import com.travel.role.global.auth.token.UserPrincipal;
@@ -50,16 +51,16 @@ public class BoardController {
 	@PatchMapping("/book")
 	public void updateBookInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("roomId") Long roomId,
-		@RequestBody @Valid BookRequestDTO bookRequestDTO) {
-		boardService.modifyBookInfo(userPrincipal.getEmail(), roomId, bookRequestDTO);
+		@RequestBody @Valid BookInfoRequestDTO bookInfoRequestDTO) {
+		boardService.modifyBookInfo(userPrincipal.getEmail(), roomId, bookInfoRequestDTO);
 	}
 
-	@PatchMapping("/book/{bookInfoId}")
+	@PatchMapping("/booked")
 	public void updateIsBook(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("roomId") Long roomId,
-		@PathVariable("bookInfoId") Long bookInfoId,
-		@RequestParam("isBooked") Boolean isBooked) {
-		boardService.modifyIsBooked(userPrincipal.getEmail(), roomId, bookInfoId, isBooked);
+		@RequestBody @Valid BookedRequestDTO bookedRequestDTO
+	) {
+		boardService.modifyIsBookedAndPaymentTime(userPrincipal.getEmail(), roomId, bookedRequestDTO);
 	}
 
 }
