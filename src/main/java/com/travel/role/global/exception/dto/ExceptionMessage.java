@@ -35,6 +35,7 @@ public final class ExceptionMessage {
 	public static final String EARLY_DATE_ERROR = "일정보다 이른 날짜입니다.";
 	public static final String LATE_DATE_ERROR = "일정보다 늦은 날짜입니다.";
 	public static final String ADMIN_IS_ONLY_ONE = "총무는 한명만 가능합니다.";
+	public static final String ROOM_NAME_NOT_EMPTY = "방 이름은 필수값 입니다.";
 	// comment
 	public static final String COMMENT_NOT_EMPTY = "댓글 내용은 필수값 입니다.";
 	public static final String COMMENT_NOT_FOUND = "해당하는 댓글이 존재하지 않습니다.";
