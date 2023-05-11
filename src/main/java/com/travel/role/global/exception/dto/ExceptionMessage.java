@@ -55,6 +55,8 @@ public final class ExceptionMessage {
 	public static final String ACCOUNTING_INFO_ID_VALUE_NOT_EMPTY = "회계 정보 아이디는 필수값 입니다.";
 	public static final String BOOK_INFO_NOT_FOUND = "해당하는 예약정보가 존재하지 않습니다.";
 	public static final String ACCOUNTING_INFO_NOT_FOUND = "해당하는 회계정보가 존재하지 않습니다.";
+	public static final String PAYMENT_TIME_NOT_FOUND = "결제 내역은 필수 값 입니다.";
+	public static final String IS_BOOKED_NOT_FOUND = "예약 여부는 필수 값 입니다";
 
 	// accounting
 	public static final String INVALID_PAYMENT_NAME_SIZE = "지출 내역은 1자 이상, 20자 이하이어야 합니다.";

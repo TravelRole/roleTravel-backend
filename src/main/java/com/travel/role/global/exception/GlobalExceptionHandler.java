@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.amazonaws.SdkClientException;
+import com.travel.role.global.exception.auth.InvalidTokenException;
+import com.travel.role.global.exception.auth.NotExistTokenException;
+import com.travel.role.global.exception.board.AccountingInfoNotFoundException;
+import com.travel.role.global.exception.board.BookInfoNotFoundException;
 import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
 import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
 import com.travel.role.global.exception.common.S3ImageNotFoundException;
@@ -27,8 +31,6 @@ import com.travel.role.global.exception.user.PlaceInfoNotFoundException;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.user.UserNotParticipateRoomException;
-import com.travel.role.global.exception.auth.InvalidTokenException;
-import com.travel.role.global.exception.auth.NotExistTokenException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -88,17 +90,17 @@ public class GlobalExceptionHandler {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 
-    @ExceptionHandler(UserNotParticipateRoomException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ExceptionResponse userNotParticipateRoomHandler(Exception e) {
-        return new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED, LocalDateTime.now());
-    }
+	@ExceptionHandler(UserNotParticipateRoomException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ExceptionResponse userNotParticipateRoomHandler(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.UNAUTHORIZED, LocalDateTime.now());
+	}
 
-    @ExceptionHandler(InputValueNotMatchException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse inputValueNotMatchException(InputValueNotMatchException e) {
-        return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
-    }
+	@ExceptionHandler(InputValueNotMatchException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse inputValueNotMatchException(InputValueNotMatchException e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
 
 	@ExceptionHandler(SdkClientException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -117,6 +119,7 @@ public class GlobalExceptionHandler {
 	public ExceptionResponse userHaveNotPrivilegeException(UserHaveNotPrivilegeException e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
+
 	@ExceptionHandler(RoomInfoNotFoundException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse roomInfoNotFoundException(Exception e) {
@@ -150,6 +153,18 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(AlreadyExistInRoomException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse alreadyExistInRoomException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(AccountingInfoNotFoundException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse accountingInfoNotFoundException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(BookInfoNotFoundException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse bookInfoNotFoundException(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
