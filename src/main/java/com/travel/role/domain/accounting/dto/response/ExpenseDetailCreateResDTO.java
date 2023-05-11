@@ -1,6 +1,6 @@
 package com.travel.role.domain.accounting.dto.response;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.Category;
@@ -21,9 +21,9 @@ public class ExpenseDetailCreateResDTO {
 	private PaymentMethod paymentMethod;
 	private Category category;
 	private String accountEtc;
-	private LocalDateTime paymentTime;
+	private LocalDate paymentTime;
 
-	public static ExpenseDetailCreateResDTO from(AccountingInfo accountingInfo){
+	public static ExpenseDetailCreateResDTO from(AccountingInfo accountingInfo) {
 
 		return ExpenseDetailCreateResDTO.builder()
 			.id(accountingInfo.getId())

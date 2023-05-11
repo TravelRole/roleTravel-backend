@@ -1,6 +1,6 @@
 package com.travel.role.domain.board.dto.request;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
@@ -21,8 +21,8 @@ public class BookedRequestDTO {
 	private Long accountingInfoId;
 
 	@NotNull(message = ExceptionMessage.PAYMENT_TIME_NOT_FOUND)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-	private LocalDateTime paymentTime;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate paymentTime;
 
 	@NotNull(message = ExceptionMessage.IS_BOOKED_NOT_FOUND)
 	private Boolean isBooked;

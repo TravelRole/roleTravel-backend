@@ -1,6 +1,6 @@
 package com.travel.role.domain.accounting.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -55,7 +55,7 @@ public class AccountingInfo {
 	private String accountingEtc;
 
 	@Column(name = "payment_time")
-	private LocalDateTime paymentTime;
+	private LocalDate paymentTime;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 100)
@@ -74,7 +74,7 @@ public class AccountingInfo {
 		this.price = price;
 	}
 
-	public void updatePaymentTime(LocalDateTime paymentTime) {
+	public void updatePaymentTime(LocalDate paymentTime) {
 		this.paymentTime = paymentTime;
 	}
 }
