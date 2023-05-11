@@ -68,6 +68,8 @@ tasks.named('test') {
 
     // 설정한 VM Options 를 TEST에 적용
     systemProperties System.properties
+    // 배포 옵션
+    systemProperty 'jasypt.password', findProperty("jasypt.password")
 }
 
 // querydsl start
