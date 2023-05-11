@@ -2,7 +2,7 @@ package com.travel.role.domain.accounting.dto.request;
 
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -35,7 +35,7 @@ public class ExpenseDetailCreateReqDTO {
 
 	private String accountEtc;
 
-	private LocalDateTime paymentTime;
+	private LocalDate paymentTime;
 
 	@JsonCreator
 	public ExpenseDetailCreateReqDTO(
@@ -46,7 +46,7 @@ public class ExpenseDetailCreateReqDTO {
 		@JsonProperty("accountEtc") String accountEtc,
 		@JsonProperty("paymentTime") String paymentTimeStr) {
 
-		LocalDateTime paymentTime = FormatterUtil.stringToLocalDateTime(paymentTimeStr, "yyyy-MM-dd HH:mm",
+		LocalDate paymentTime = FormatterUtil.stringToLocalDate(paymentTimeStr, "yyyy-MM-dd",
 			INVALID_PAYMENT_TIME);
 
 		this.paymentName = paymentName;
