@@ -73,7 +73,7 @@ public class RoomController {
 
 	@PutMapping("/room/{room_id}")
 	public void modifyRoomInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@RequestBody RoomModifiedRequestDTO roomModifiedRequestDTO, @PathVariable("room_id") Long roomId) {
+		@RequestBody @Valid RoomModifiedRequestDTO roomModifiedRequestDTO, @PathVariable("room_id") Long roomId) {
 		roomService.modifyRoomInfo(userPrincipal.getEmail(), roomModifiedRequestDTO, roomId);
 	}
 
