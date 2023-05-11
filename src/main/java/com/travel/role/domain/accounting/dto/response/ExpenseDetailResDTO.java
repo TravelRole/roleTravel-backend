@@ -21,7 +21,10 @@ public class ExpenseDetailResDTO {
 	private String accountingEtc;
 	private String bookEtc;
 
-	public static ExpenseDetailResDTO of(AccountingInfo accountingInfo, BookInfo bookInfo){
+	public static ExpenseDetailResDTO from(AccountingInfo accountingInfo) {
+
+		BookInfo bookInfo = accountingInfo.getBookInfo();
+		String bookEtc = bookInfo == null ? null : bookInfo.getBookEtc();
 
 		return ExpenseDetailResDTO.builder()
 			.id(accountingInfo.getId())
@@ -29,7 +32,7 @@ public class ExpenseDetailResDTO {
 			.category(accountingInfo.getCategory())
 			.price(accountingInfo.getPrice())
 			.accountingEtc(accountingInfo.getAccountingEtc())
-			.bookEtc(bookInfo.getBookEtc())
+			.bookEtc(bookEtc)
 			.build();
 	}
 }
