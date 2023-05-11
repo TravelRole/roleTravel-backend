@@ -19,6 +19,7 @@ import com.travel.role.domain.accounting.dto.request.ExpenseDetailCreateReqDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailCreateResDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailsResDTO;
 import com.travel.role.domain.accounting.entity.PaymentMethod;
+import com.travel.role.domain.accounting.service.AccountingInfoReadService;
 import com.travel.role.domain.accounting.service.AccountingInfoService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountingInfoController {
 
 	private final AccountingInfoService accountingInfoService;
+	private final AccountingInfoReadService accountingInfoReadService;
 
 	@GetMapping
 	public ResponseEntity<ExpenseDetailsResDTO> getExpenseDetails(
@@ -39,7 +41,10 @@ public class AccountingInfoController {
 		@RequestParam(name = "paymentMethod", required = false) PaymentMethod paymentMethod
 	) {
 
-		return ResponseEntity.ok(null);
+		ExpenseDetailsResDTO resDTO = accountingInfoReadService.getExpenseDetails(userPrincipal.getEmail(),
+			roomId, searchDate, paymentMethod);
+
+		return ResponseEntity.ok(resDTO);
 	}
 
 	@PostMapping
