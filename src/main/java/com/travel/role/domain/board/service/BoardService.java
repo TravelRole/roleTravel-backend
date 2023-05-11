@@ -3,6 +3,7 @@ package com.travel.role.domain.board.service;
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -11,15 +12,16 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.board.dto.request.BoardRequestDTO;
-import com.travel.role.domain.board.dto.request.BookRequestDTO;
-import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
+import com.travel.role.domain.accounting.entity.PaymentMethod;
+import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
+import com.travel.role.domain.board.dto.request.BoardRequestDTO;
+import com.travel.role.domain.board.dto.request.BookInfoRequestDTO;
+import com.travel.role.domain.board.dto.request.BookedRequestDTO;
+import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
-import com.travel.role.domain.accounting.entity.PaymentMethod;
 import com.travel.role.domain.board.entity.ScheduleInfo;
-import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
 import com.travel.role.domain.board.repository.ScheduleInfoRepository;
@@ -49,16 +51,16 @@ public class BoardService {
 	private final ParticipantRoleRepository participantRoleRepository;
 	private final RoomParticipantReadService roomParticipantReadService;
 
-	public void modifyBookInfo(String email, Long roomId, BookRequestDTO bookRequestDTO) {
+	public void modifyBookInfo(String email, Long roomId, BookInfoRequestDTO bookInfoRequestDTO) {
 
 		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(user, room);
 		validateRoomRole(user, room);
 
-		modifyPaymentMethodAndPrice(bookRequestDTO.getAccountingInfoId(), bookRequestDTO.getPaymentMethod(),
-			bookRequestDTO.getPrice());
-		modifyEtc(bookRequestDTO.getBookInfoId(), bookRequestDTO.getBookEtc());
+		modifyPaymentMethodAndPrice(bookInfoRequestDTO.getAccountingInfoId(), bookInfoRequestDTO.getPaymentMethod(),
+			bookInfoRequestDTO.getPrice());
+		modifyEtc(bookInfoRequestDTO.getBookInfoId(), bookInfoRequestDTO.getBookEtc());
 	}
 
 	private void modifyPaymentMethodAndPrice(Long id, PaymentMethod paymentMethod, Integer price) {
@@ -71,15 +73,26 @@ public class BoardService {
 		bookInfo.updateEtc(etc);
 	}
 
-	public void modifyIsBooked(String email, Long roomId, Long bookInfoId, Boolean isBooked) {
+	public void modifyIsBookedAndPaymentTime(String email, Long roomId, BookedRequestDTO bookedRequestDTO) {
 
 		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(user, room);
 		validateRoomRole(user, room);
 
+		modifyIsBooked(bookedRequestDTO.getBookInfoId(), !bookedRequestDTO.getIsBooked());
+		if (!bookedRequestDTO.getIsBooked())
+			modifyPaymentTime(bookedRequestDTO.getAccountingInfoId(), bookedRequestDTO.getPaymentTime());
+	}
+
+	private void modifyIsBooked(Long bookInfoId, Boolean isBooked) {
 		BookInfo bookInfo = boardReadService.findBookInfoByIdOrElseThrow(bookInfoId);
-		bookInfo.updateIsBook(!isBooked);
+		bookInfo.updateIsBooked(isBooked);
+	}
+
+	private void modifyPaymentTime(Long accountingInfoId, LocalDateTime paymentTime) {
+		AccountingInfo accountingInfo = boardReadService.findAccountingInfoByIdOrElseThrow(accountingInfoId);
+		accountingInfo.updatePaymentTime(paymentTime);
 	}
 
 	private void validateRoomRole(User user, Room room) {

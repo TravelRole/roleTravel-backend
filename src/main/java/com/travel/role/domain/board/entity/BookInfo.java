@@ -22,23 +22,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookInfo {
-    @Id
-    @Column(name = "book_info_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@Column(name = "book_info_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(name = "is_booked", nullable = false, columnDefinition = "TINYINT(1)")
-    @ColumnDefault(value = "0")
-    private Boolean isBooked;
+	@Column(name = "is_booked", nullable = false, columnDefinition = "TINYINT(1)")
+	@ColumnDefault(value = "0")
+	private Boolean isBooked;
 
-    @Column(name = "book_etc", length = 100)
-    private String bookEtc;
+	@Column(name = "book_etc", length = 100)
+	private String bookEtc;
 
-    public void updateEtc(String etc) {
-        this.bookEtc = etc;
-    }
+	public void updateEtc(String etc) {
+		this.bookEtc = etc;
+	}
 
-    public void updateIsBook(Boolean isBooked) {
-        this.isBooked = isBooked;
-    }
+	public void updateIsBooked(Boolean isBooked) {
+		this.isBooked = isBooked;
+	}
 }
