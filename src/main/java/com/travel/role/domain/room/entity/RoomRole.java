@@ -1,5 +1,7 @@
 package com.travel.role.domain.room.entity;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.AllArgsConstructor;
@@ -20,5 +22,10 @@ public enum RoomRole {
 	@JsonValue
 	public String getResponseValue() {
 		return this.responseValue;
+	}
+
+	public static List<RoomRole> getAccountingRoles(){
+
+		return List.of(ACCOUNTING, ADMIN);
 	}
 }

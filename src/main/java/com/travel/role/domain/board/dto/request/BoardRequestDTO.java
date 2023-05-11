@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.travel.role.domain.board.entity.Category;
+import com.travel.role.domain.accounting.entity.Category;
 import com.travel.role.global.exception.dto.ExceptionMessage;
 
 import lombok.AllArgsConstructor;

@@ -3,7 +3,7 @@ package com.travel.role.domain.board.dto.request;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.travel.role.domain.board.entity.PaymentMethod;
+import com.travel.role.domain.accounting.entity.PaymentMethod;
 import com.travel.role.global.exception.dto.ExceptionMessage;
 
 import lombok.Getter;

@@ -1,5 +1,7 @@
 package com.travel.role.domain.board.entity;
 
+import com.travel.role.domain.accounting.entity.AccountingInfo;
+import com.travel.role.domain.accounting.entity.Category;
 import com.travel.role.domain.board.dto.request.BoardRequestDTO;
 import com.travel.role.domain.room.entity.Room;
 import lombok.*;

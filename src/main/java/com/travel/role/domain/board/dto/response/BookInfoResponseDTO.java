@@ -1,5 +1,8 @@
 package com.travel.role.domain.board.dto.response;
 
+import com.travel.role.domain.accounting.entity.AccountingInfo;
+import com.travel.role.domain.accounting.entity.Category;
+import com.travel.role.domain.accounting.entity.PaymentMethod;
 import com.travel.role.domain.board.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +24,7 @@ public class BookInfoResponseDTO {
     private Long bookInfoId;
     private Long accountingId;
 
-    private BookInfoResponseDTO(Board board, ScheduleInfo scheduleInfo, AccountingInfo accountingInfo,
-                                BookInfo bookInfo) {
+    private BookInfoResponseDTO(Board board, ScheduleInfo scheduleInfo, AccountingInfo accountingInfo, BookInfo bookInfo) {
         this.placeName = scheduleInfo.getPlaceName();
         this.time = board.getScheduleDate().toLocalTime();
         this.link = board.getLink();

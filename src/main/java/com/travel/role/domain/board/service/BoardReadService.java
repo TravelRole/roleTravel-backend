@@ -3,9 +3,9 @@ package com.travel.role.domain.board.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.board.entity.AccountingInfo;
+import com.travel.role.domain.accounting.entity.AccountingInfo;
+import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.board.entity.BookInfo;
-import com.travel.role.domain.board.repository.AccountingInfoRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
 import com.travel.role.global.exception.board.AccountingInfoNotFoundException;
 import com.travel.role.global.exception.board.BookInfoNotFoundException;
