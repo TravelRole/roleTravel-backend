@@ -22,6 +22,7 @@ import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
+import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
@@ -56,6 +57,7 @@ public class RoomService {
 	private final RoomParticipantRepository roomParticipantRepository;
 	private final ParticipantRoleRepository participantRoleRepository;
 	private final ParticipantRoleReadService participantRoleReadService;
+	private final RoomParticipantReadService roomParticipantReadService;
 	private final PasswordGenerator passwordGenerator;
 	private final RoomReadService roomReadService;
 
@@ -215,6 +217,15 @@ public class RoomService {
 			starDate = starDate.plusDays(1);
 		}
 		return result;
+	}
+
+	public ExpenseResponseDTO getExpenses(String email, Long roomId){
+
+		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(loginUser, room);
+
+		return ExpenseResponseDTO.from(room);
 	}
 
 	public void modifyExpenses(String email, Long roomId, ExpensesRequestDTO requestDTO) {

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
+import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
@@ -73,6 +75,15 @@ public class RoomController {
 	public void modifyRoomInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@RequestBody RoomModifiedRequestDTO roomModifiedRequestDTO, @PathVariable("room_id") Long roomId) {
 		roomService.modifyRoomInfo(userPrincipal.getEmail(), roomModifiedRequestDTO, roomId);
+	}
+
+	@GetMapping("/room/{room_id}/expenses")
+	public ResponseEntity<ExpenseResponseDTO> readExpenses(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") Long roomId) {
+
+		ExpenseResponseDTO responseDTO = roomService.getExpenses(userPrincipal.getEmail(), roomId);
+
+		return ResponseEntity.ok(responseDTO);
 	}
 
 	@PutMapping("/room/{room_id}/expenses")
