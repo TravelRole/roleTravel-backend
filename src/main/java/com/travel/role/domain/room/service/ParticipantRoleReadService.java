@@ -6,7 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.room.entity.ParticipantRole;
+import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
+import com.travel.role.domain.user.entity.User;
+import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -23,5 +27,12 @@ public class ParticipantRoleReadService {
 			throw new RoomInfoNotFoundException();
 		}
 		return participantRoles;
+	}
+
+	public void validUserRoleInRoom(User user, Room room, List<RoomRole> roomRoles) {
+
+		if (!participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room, roomRoles)) {
+			throw new UserHaveNotPrivilegeException();
+		}
 	}
 }
