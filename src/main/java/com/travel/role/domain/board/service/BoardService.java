@@ -3,7 +3,6 @@ package com.travel.role.domain.board.service;
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -90,7 +89,7 @@ public class BoardService {
 		bookInfo.updateIsBooked(isBooked);
 	}
 
-	private void modifyPaymentTime(Long accountingInfoId, LocalDateTime paymentTime) {
+	private void modifyPaymentTime(Long accountingInfoId, LocalDate paymentTime) {
 		AccountingInfo accountingInfo = boardReadService.findAccountingInfoByIdOrElseThrow(accountingInfoId);
 		accountingInfo.updatePaymentTime(paymentTime);
 	}
