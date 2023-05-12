@@ -354,6 +354,23 @@ public class RoomService {
 		validRoomRoles(email, roomId, RoomRole.ADMIN);
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
 
+		Map<String, List<RoomRole>> map = getEmailAndRolesMap(
+			participantRoles);
+
+		List<RoomRoleDTO> roomRoleDTOS = convertToRoomRoleDTOS(map);
+
+		return RoomInfoResponseDTO.from(participantRoles.get(0).getRoom(), roomRoleDTOS);
+	}
+
+	private static List<RoomRoleDTO> convertToRoomRoleDTOS(Map<String, List<RoomRole>> map) {
+		List<RoomRoleDTO> roomRoleDTOS = new ArrayList<>();
+		for (String key : map.keySet()) {
+			roomRoleDTOS.add(new RoomRoleDTO(key, map.get(key)));
+		}
+		return roomRoleDTOS;
+	}
+
+	private static Map<String, List<RoomRole>> getEmailAndRolesMap(List<ParticipantRole> participantRoles) {
 		Map<String, List<RoomRole>> map = new HashMap<>();
 		for (ParticipantRole participantRole : participantRoles) {
 			String participantEmail = participantRole.getUser().getEmail();
@@ -366,12 +383,6 @@ public class RoomService {
 				roles.add(participantRole.getRoomRole());
 			}
 		}
-
-		List<RoomRoleDTO> roomRoleDTOS = new ArrayList<>();
-		for (String key : map.keySet()) {
-			roomRoleDTOS.add(new RoomRoleDTO(key, map.get(key)));
-		}
-
-		return RoomInfoResponseDTO.from(participantRoles.get(0).getRoom(), roomRoleDTOS);
+		return map;
 	}
 }
