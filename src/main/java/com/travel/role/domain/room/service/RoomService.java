@@ -374,7 +374,7 @@ public class RoomService {
 		Map<String, List<RoomRole>> map = new HashMap<>();
 		for (ParticipantRole participantRole : participantRoles) {
 			String participantEmail = participantRole.getUser().getEmail();
-			if (map.containsKey(participantEmail)) {
+			if (!map.containsKey(participantEmail)) {
 				List<RoomRole> roles = new ArrayList<>();
 				roles.add(participantRole.getRoomRole());
 				map.put(participantEmail, roles);
