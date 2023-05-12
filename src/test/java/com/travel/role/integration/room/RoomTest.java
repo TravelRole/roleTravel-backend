@@ -14,6 +14,7 @@ import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.dto.response.RoomRoleInfoDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
@@ -93,7 +94,7 @@ class RoomTest {
     void 방_수정_정보_테스트() {
         // given
         RoomInfoResponseDTO roomInfo = roomService.getRoomInfo("Junsik@naver.com", 4L);
-        List<RoomRoleDTO> roles = roomInfo.getRoles();
+        List<RoomRoleInfoDTO> roles = roomInfo.getRoles();
         // when, then
         assertThat(roles.size()).isEqualTo(4);
         assertThat(roomInfo.getRoomName()).isEqualTo("여수에서 간장게장");

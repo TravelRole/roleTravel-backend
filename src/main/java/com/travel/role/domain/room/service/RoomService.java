@@ -27,6 +27,7 @@ import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
 import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.dto.response.RoomRoleInfoDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
@@ -354,32 +355,32 @@ public class RoomService {
 		validRoomRoles(email, roomId, RoomRole.ADMIN);
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
 
-		Map<String, List<RoomRole>> map = getEmailAndRolesMap(
+		Map<User, List<RoomRole>> map = getUserAndRolesMap(
 			participantRoles);
 
-		List<RoomRoleDTO> roomRoleDTOS = convertToRoomRoleDTOS(map);
+		List<RoomRoleInfoDTO> roomRoleDTOS = convertToRoomRoleDTOS(map);
 
 		return RoomInfoResponseDTO.from(participantRoles.get(0).getRoom(), roomRoleDTOS);
 	}
 
-	private static List<RoomRoleDTO> convertToRoomRoleDTOS(Map<String, List<RoomRole>> map) {
-		List<RoomRoleDTO> roomRoleDTOS = new ArrayList<>();
-		for (String key : map.keySet()) {
-			roomRoleDTOS.add(new RoomRoleDTO(key, map.get(key)));
+	private static List<RoomRoleInfoDTO> convertToRoomRoleDTOS(Map<User, List<RoomRole>> map) {
+		List<RoomRoleInfoDTO> roomRoleDTOS = new ArrayList<>();
+		for (User key : map.keySet()) {
+			roomRoleDTOS.add(new RoomRoleInfoDTO(key.getName(), key.getEmail(), map.get(key)));
 		}
 		return roomRoleDTOS;
 	}
 
-	private static Map<String, List<RoomRole>> getEmailAndRolesMap(List<ParticipantRole> participantRoles) {
-		Map<String, List<RoomRole>> map = new HashMap<>();
+	private static Map<User, List<RoomRole>> getUserAndRolesMap(List<ParticipantRole> participantRoles) {
+		Map<User, List<RoomRole>> map = new HashMap<>();
 		for (ParticipantRole participantRole : participantRoles) {
-			String participantEmail = participantRole.getUser().getEmail();
-			if (!map.containsKey(participantEmail)) {
+			User user = participantRole.getUser();
+			if (!map.containsKey(user)) {
 				List<RoomRole> roles = new ArrayList<>();
 				roles.add(participantRole.getRoomRole());
-				map.put(participantEmail, roles);
+				map.put(user, roles);
 			} else {
-				List<RoomRole> roles = map.get(participantEmail);
+				List<RoomRole> roles = map.get(user);
 				roles.add(participantRole.getRoomRole());
 			}
 		}
