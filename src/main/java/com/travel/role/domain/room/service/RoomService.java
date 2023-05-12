@@ -25,6 +25,7 @@ import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
+import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
@@ -346,5 +347,32 @@ public class RoomService {
 		}
 
 		return admins;
+	}
+
+	@Transactional(readOnly = true)
+	public RoomInfoResponseDTO getRoomInfo(String email, Long roomId) {
+		validRoomRoles(email, roomId, RoomRole.ADMIN);
+		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
+
+		Map<String, List<RoomRole>> map = new HashMap<>();
+		for (ParticipantRole participantRole : participantRoles) {
+			String participantEmail = participantRole.getUser().getEmail();
+			if (map.containsKey(participantEmail)) {
+				List<RoomRole> roles = new ArrayList<>();
+				roles.add(participantRole.getRoomRole());
+				map.put(participantEmail, roles);
+			} else {
+				List<RoomRole> roles = map.get(participantEmail);
+				roles.add(participantRole.getRoomRole());
+			}
+		}
+
+		List<RoomRoleDTO> roomRoleDTOS = new ArrayList<>();
+		for (String key : map.keySet()) {
+			roomRoleDTOS.add(new RoomRoleDTO(key, map.get(key)));
+		}
+
+		Room room = participantRoles.get(0).getRoom();
+		return new RoomInfoResponseDTO(room.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate(), roomRoleDTOS);
 	}
 }

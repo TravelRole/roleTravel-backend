@@ -98,6 +98,6 @@ public class RoomController {
 	@GetMapping("/room/{room_id}")
 	public RoomInfoResponseDTO roomInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId) {
-		return null;
+		return roomService.getRoomInfo(userPrincipal.getEmail(), roomId);
 	}
 }
