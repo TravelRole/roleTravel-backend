@@ -36,13 +36,13 @@ values (12, '2023-01-06 09:00:00', '2023-01-06 09:00:00', '1999-02-01',
         'dsl@naver.com', '김보성', '1234');
 
 insert into room_info(room_id, created_at, location, room_expired_time, room_image, room_invite_code, room_name, travel_end_date, tarvel_start_date, travel_expense)
-values (1, '2023-01-03 09:00:00', '가평군', '2023-01-03 09:00:00' , 2, 'D1gvDteD24HcY5Zc2N53', '가아아아아평', '2023-08-10', '2023-08-15', 300000);
+values (1, '2023-01-03 09:00:00', '가평군', '2023-01-03 09:00:00' , 2, 'D1gvDteD24HcY5Zc2N53', '가아아아아평', '2023-08-15', '2023-08-10', 300000);
 insert into room_info(room_id, created_at, location, room_expired_time, room_image, room_invite_code, room_name, travel_end_date, tarvel_start_date, travel_expense)
-values (2, '2023-01-04 09:00:00', '부산시', '2023-01-04 09:00:00' , 3, 'K1vGh36D5DQvxv7az8nq', '부우우우우산', '2023-12-25', '2023-12-26', 600000);
+values (2, '2023-01-04 09:00:00', '부산시', '2023-01-04 09:00:00' , 3, 'K1vGh36D5DQvxv7az8nq', '부우우우우산', '2023-12-26', '2023-12-25', 600000);
 insert into room_info(room_id, created_at, location, room_expired_time, room_image, room_invite_code, room_name, travel_end_date, tarvel_start_date, travel_expense)
-values (3, '2023-01-01 09:00:00', '광양시', '2023-01-01 09:00:00' , 1, 'YUHywrA8qPKeZFZvqqzH', '광양에서 불고기먹자', '2023-06-11', '2023-06-15', 550000);
+values (3, '2023-01-01 09:00:00', '광양시', '2023-01-01 09:00:00' , 1, 'YUHywrA8qPKeZFZvqqzH', '광양에서 불고기먹자', '2023-06-15', '2023-06-11', 550000);
 insert into room_info(room_id, created_at, location, room_expired_time, room_image, room_invite_code, room_name, travel_end_date, tarvel_start_date, travel_expense)
-values (4, '2023-01-02 09:00:00', '순천시', '2023-01-02 09:00:00' , 1, 'KWOENdA8qPKeZFZvqqzH', '여수에서 간장게장', '2023-06-25', '2023-06-26', 420000);
+values (4, '2023-01-02 09:00:00', '순천시', '2023-01-02 09:00:00' , 1, 'KWOENdA8qPKeZFZvqqzH', '여수에서 간장게장', '2023-06-26', '2023-06-25', 420000);
 
 insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
 values (1, false, '2023-01-03 09:00:00', 1, 1);
