@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
+import com.travel.role.domain.room.entity.Room;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,4 +21,8 @@ public class RoomInfoResponseDTO {
 	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate endDate;
 	private List<RoomRoleDTO> roles;
+
+	public static RoomInfoResponseDTO from(Room room, List<RoomRoleDTO> roles) {
+		return new RoomInfoResponseDTO(room.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate(), roles);
+	}
 }

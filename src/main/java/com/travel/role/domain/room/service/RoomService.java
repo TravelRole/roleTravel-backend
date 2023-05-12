@@ -372,7 +372,6 @@ public class RoomService {
 			roomRoleDTOS.add(new RoomRoleDTO(key, map.get(key)));
 		}
 
-		Room room = participantRoles.get(0).getRoom();
-		return new RoomInfoResponseDTO(room.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate(), roomRoleDTOS);
+		return RoomInfoResponseDTO.from(participantRoles.get(0).getRoom(), roomRoleDTOS);
 	}
 }
