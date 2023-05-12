@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
+import com.travel.role.domain.room.dto.response.AllPlanResponseDTO;
 import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
@@ -92,5 +93,12 @@ public class RoomController {
 		@RequestBody @Valid ExpensesRequestDTO requestDTO) {
 
 		roomService.modifyExpenses(userPrincipal.getEmail(), roomId, requestDTO);
+	}
+
+	@GetMapping("/room/{room_id}/all-plan")
+	public List<AllPlanResponseDTO> getAllPlan(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") Long roomId) {
+
+		return roomService.getAllPlan(userPrincipal.getEmail(), roomId);
 	}
 }

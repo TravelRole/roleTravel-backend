@@ -22,6 +22,7 @@ import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
+import com.travel.role.domain.room.dto.response.AllPlanResponseDTO;
 import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
@@ -346,5 +347,9 @@ public class RoomService {
 		}
 
 		return admins;
+	}
+
+	public List<AllPlanResponseDTO> getAllPlan(String email, Long roomId) {
+		return null;
 	}
 }
