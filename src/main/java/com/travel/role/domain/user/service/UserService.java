@@ -38,7 +38,7 @@ public class UserService {
 
 		User findUser = userReadService.findUserByEmailOrElseThrow(email);
 
-		return new UserProfileResponseDTO(findUser.getName(), findUser.getEmail(), findUser.getProfile());
+		return new UserProfileResponseDTO(findUser.getId(), findUser.getName(), findUser.getEmail(), findUser.getProfile());
 	}
 
 	@Transactional(readOnly = true)
