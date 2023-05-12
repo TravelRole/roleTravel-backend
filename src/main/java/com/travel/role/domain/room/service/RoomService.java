@@ -352,7 +352,10 @@ public class RoomService {
 
 	@Transactional(readOnly = true)
 	public RoomInfoResponseDTO getRoomInfo(String email, Long roomId) {
-		validRoomRoles(email, roomId, RoomRole.ADMIN);
+		User user = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(user, room);
+
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
 
 		Map<User, List<RoomRole>> map = getUserAndRolesMap(
@@ -360,7 +363,7 @@ public class RoomService {
 
 		List<RoomRoleInfoDTO> roomRoleDTOS = convertToRoomRoleDTOS(map);
 
-		return RoomInfoResponseDTO.from(participantRoles.get(0).getRoom(), roomRoleDTOS);
+		return RoomInfoResponseDTO.from(room, roomRoleDTOS);
 	}
 
 	private static List<RoomRoleInfoDTO> convertToRoomRoleDTOS(Map<User, List<RoomRole>> map) {
