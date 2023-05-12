@@ -97,7 +97,7 @@ class RoomTest {
         List<RoomRoleInfoDTO> roles = roomInfo.getRoles();
         // when, then
         assertThat(roles.size()).isEqualTo(4);
-        assertThat(roomInfo.getRoomName()).isEqualTo("여수에서 간장게장");
+        assertThat(roomInfo.getLocation()).isEqualTo("순천시");
         assertThat(roomInfo.getStartDate()).isEqualTo(LocalDate.of(2023,6,25));
         assertThat(roomInfo.getEndDate()).isEqualTo(LocalDate.of(2023,6,26));
 
