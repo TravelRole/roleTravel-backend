@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -224,7 +226,7 @@ public class RoomService {
 		return result;
 	}
 
-	public ExpenseResponseDTO getExpenses(String email, Long roomId){
+	public ExpenseResponseDTO getExpenses(String email, Long roomId) {
 
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
@@ -361,33 +363,31 @@ public class RoomService {
 
 		List<Board> boards = boardRepository.findScheduleAndAccountByRoomOrderByAsc(room);
 
-		List<AllPlanResponseDTO> result = new ArrayList<>();
-		int count = 0;
+		Map<LocalDate, AllPlanResponseDTO> resultMap = new TreeMap<>();
 		for (Board board : boards) {
 			LocalDateTime scheduleDate = board.getScheduleDate();
-			AllPlanResponseDTO currentData = result.get(count);
-			if (result.isEmpty()) {
-				result.add(makeNewAllPlan(board, scheduleDate));
-			} else if(currentData.getDate().equals(scheduleDate.toLocalDate())) {
+			if (!resultMap.containsKey(scheduleDate.toLocalDate())) {
+				resultMap.put(scheduleDate.toLocalDate(), makeNewAllPlan(board, scheduleDate));
+			} else {
+				AllPlanResponseDTO currentData = resultMap.get(scheduleDate.toLocalDate());
 				List<ScheduleDTO> schedules = currentData.getSchedules();
-				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+				schedules.add(
+					ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
 				if (board.getAccountingInfo() != null) {
 					currentData.addTravelExpense(board.getAccountingInfo().getPrice());
 				}
-			} else {
-				result.add(makeNewAllPlan(board, scheduleDate));
-				count++;
 			}
 		}
 
-		return result;
+		return resultMap.keySet().stream().map(resultMap::get).collect(Collectors.toList());
 	}
 
 	private AllPlanResponseDTO makeNewAllPlan(Board board, LocalDateTime scheduleDate) {
 		List<ScheduleDTO> schedules = new ArrayList<>();
 		schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
 
-		AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(), convertToKoreanDayOfWeek(scheduleDate.toLocalDate()), 0, schedules);
+		AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(),
+			convertToKoreanDayOfWeek(scheduleDate.toLocalDate()), 0, schedules);
 		if (board.getAccountingInfo() != null) {
 			allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
 		}
