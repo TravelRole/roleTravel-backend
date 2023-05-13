@@ -375,13 +375,14 @@ public class RoomService {
 	private void addToResultMap(Map<LocalDate, AllPlanResponseDTO> resultMap, Board board, LocalDateTime scheduleDate) {
 		if (!resultMap.containsKey(scheduleDate.toLocalDate())) {
 			resultMap.put(scheduleDate.toLocalDate(), makeNewAllPlan(board, scheduleDate));
-		} else {
-			AllPlanResponseDTO currentData = resultMap.get(scheduleDate.toLocalDate());
-			List<ScheduleDTO> schedules = currentData.getSchedules();
-			schedules.add(
-				ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
-			addExpense(board, currentData);
+			return;
 		}
+
+		AllPlanResponseDTO currentData = resultMap.get(scheduleDate.toLocalDate());
+		List<ScheduleDTO> schedules = currentData.getSchedules();
+		schedules.add(
+			ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+		addExpense(board, currentData);
 	}
 
 	private AllPlanResponseDTO makeNewAllPlan(Board board, LocalDateTime scheduleDate) {
