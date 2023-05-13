@@ -218,7 +218,7 @@ public class RoomService {
 
 		for (Long i = 1L; i <= day + 1; i++) {
 			result.add(TimeResponseDTO.from(i, starDate,
-				starDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN)));
+				convertToKoreanDayOfWeek(starDate)));
 			starDate = starDate.plusDays(1);
 		}
 		return result;
@@ -365,10 +365,9 @@ public class RoomService {
 		int count = 0;
 		for (Board board : boards) {
 			LocalDateTime scheduleDate = board.getScheduleDate();
-			String dayOfTheWeek = scheduleDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
 			AllPlanResponseDTO currentData = result.get(count);
 			if (result.isEmpty()) {
-				result.add(makeNewAllPlan(board, scheduleDate, dayOfTheWeek));
+				result.add(makeNewAllPlan(board, scheduleDate));
 			} else if(currentData.getDate().equals(scheduleDate.toLocalDate())) {
 				List<ScheduleDTO> schedules = currentData.getSchedules();
 				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
@@ -376,7 +375,7 @@ public class RoomService {
 					currentData.addTravelExpense(board.getAccountingInfo().getPrice());
 				}
 			} else {
-				result.add(makeNewAllPlan(board, scheduleDate, dayOfTheWeek));
+				result.add(makeNewAllPlan(board, scheduleDate));
 				count++;
 			}
 		}
@@ -384,15 +383,18 @@ public class RoomService {
 		return result;
 	}
 
-	private AllPlanResponseDTO makeNewAllPlan(Board board, LocalDateTime scheduleDate,
-		String dayOfTheWeek) {
+	private AllPlanResponseDTO makeNewAllPlan(Board board, LocalDateTime scheduleDate) {
 		List<ScheduleDTO> schedules = new ArrayList<>();
 		schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
 
-		AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(), dayOfTheWeek, 0, schedules);
+		AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(), convertToKoreanDayOfWeek(scheduleDate.toLocalDate()), 0, schedules);
 		if (board.getAccountingInfo() != null) {
 			allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
 		}
 		return allPlanResponseDTO;
+	}
+
+	private String convertToKoreanDayOfWeek(LocalDate localDate) {
+		return localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
 	}
 }
