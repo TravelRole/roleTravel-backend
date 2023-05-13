@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
+import com.travel.role.domain.board.entity.Board;
+import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
@@ -27,6 +29,7 @@ import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.dto.response.ScheduleDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
@@ -61,6 +64,7 @@ public class RoomService {
 	private final RoomParticipantReadService roomParticipantReadService;
 	private final PasswordGenerator passwordGenerator;
 	private final RoomReadService roomReadService;
+	private final BoardRepository boardRepository;
 
 	public List<RoomResponseDTO> getRoomList(String email) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(email);
@@ -349,7 +353,46 @@ public class RoomService {
 		return admins;
 	}
 
+	@Transactional(readOnly = true)
 	public List<AllPlanResponseDTO> getAllPlan(String email, Long roomId) {
-		return null;
+		User user = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(user, room);
+
+		List<Board> boards = boardRepository.findScheduleAndAccountByRoomOrderByAsc(room);
+
+		List<AllPlanResponseDTO> result = new ArrayList<>();
+		int count = 0;
+		for (Board board : boards) {
+			LocalDateTime scheduleDate = board.getScheduleDate();
+			String dayOfTheWeek = scheduleDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+			AllPlanResponseDTO currentData = result.get(count);
+			if (result.isEmpty()) {
+				List<ScheduleDTO> schedules = new ArrayList<>();
+				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+
+				AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(), dayOfTheWeek, 0, schedules);
+				if (board.getAccountingInfo() != null) {
+					allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
+				}
+			} else if(currentData.getDate().equals(scheduleDate.toLocalDate())) {
+				List<ScheduleDTO> schedules = currentData.getSchedules();
+				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+				if (board.getAccountingInfo() != null) {
+					currentData.addTravelExpense(board.getAccountingInfo().getPrice());
+				}
+			} else {
+				List<ScheduleDTO> schedules = new ArrayList<>();
+				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+
+				AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(), dayOfTheWeek, 0, schedules);
+				if (board.getAccountingInfo() != null) {
+					allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
+				}
+				count++;
+			}
+		}
+
+		return result;
 	}
 }

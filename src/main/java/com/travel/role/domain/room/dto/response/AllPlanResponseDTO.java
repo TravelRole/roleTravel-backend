@@ -16,4 +16,8 @@ public class AllPlanResponseDTO {
 	private String dayOfTheWeek;
 	private Integer travelExpense;
 	private List<ScheduleDTO> schedules;
+
+	public void addTravelExpense(int expense) {
+		this.travelExpense += expense;
+	}
 }
