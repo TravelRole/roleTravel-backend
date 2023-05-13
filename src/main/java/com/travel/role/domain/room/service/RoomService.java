@@ -366,20 +366,22 @@ public class RoomService {
 		Map<LocalDate, AllPlanResponseDTO> resultMap = new TreeMap<>();
 		for (Board board : boards) {
 			LocalDateTime scheduleDate = board.getScheduleDate();
-			if (!resultMap.containsKey(scheduleDate.toLocalDate())) {
-				resultMap.put(scheduleDate.toLocalDate(), makeNewAllPlan(board, scheduleDate));
-			} else {
-				AllPlanResponseDTO currentData = resultMap.get(scheduleDate.toLocalDate());
-				List<ScheduleDTO> schedules = currentData.getSchedules();
-				schedules.add(
-					ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
-				if (board.getAccountingInfo() != null) {
-					currentData.addTravelExpense(board.getAccountingInfo().getPrice());
-				}
-			}
+			addToResultMap(resultMap, board, scheduleDate);
 		}
 
 		return resultMap.keySet().stream().map(resultMap::get).collect(Collectors.toList());
+	}
+
+	private void addToResultMap(Map<LocalDate, AllPlanResponseDTO> resultMap, Board board, LocalDateTime scheduleDate) {
+		if (!resultMap.containsKey(scheduleDate.toLocalDate())) {
+			resultMap.put(scheduleDate.toLocalDate(), makeNewAllPlan(board, scheduleDate));
+		} else {
+			AllPlanResponseDTO currentData = resultMap.get(scheduleDate.toLocalDate());
+			List<ScheduleDTO> schedules = currentData.getSchedules();
+			schedules.add(
+				ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+			addExpense(board, currentData);
+		}
 	}
 
 	private AllPlanResponseDTO makeNewAllPlan(Board board, LocalDateTime scheduleDate) {
@@ -388,10 +390,14 @@ public class RoomService {
 
 		AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(),
 			convertToKoreanDayOfWeek(scheduleDate.toLocalDate()), 0, schedules);
+		addExpense(board, allPlanResponseDTO);
+		return allPlanResponseDTO;
+	}
+
+	private void addExpense(Board board, AllPlanResponseDTO allPlanResponseDTO) {
 		if (board.getAccountingInfo() != null) {
 			allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
 		}
-		return allPlanResponseDTO;
 	}
 
 	private String convertToKoreanDayOfWeek(LocalDate localDate) {
