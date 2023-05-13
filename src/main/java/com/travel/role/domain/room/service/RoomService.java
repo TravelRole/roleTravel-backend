@@ -368,14 +368,7 @@ public class RoomService {
 			String dayOfTheWeek = scheduleDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
 			AllPlanResponseDTO currentData = result.get(count);
 			if (result.isEmpty()) {
-				List<ScheduleDTO> schedules = new ArrayList<>();
-				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
-
-				AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(), dayOfTheWeek, 0, schedules);
-				if (board.getAccountingInfo() != null) {
-					allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
-				}
-				result.add(allPlanResponseDTO);
+				result.add(makeNewAllPlan(board, scheduleDate, dayOfTheWeek));
 			} else if(currentData.getDate().equals(scheduleDate.toLocalDate())) {
 				List<ScheduleDTO> schedules = currentData.getSchedules();
 				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
@@ -383,18 +376,23 @@ public class RoomService {
 					currentData.addTravelExpense(board.getAccountingInfo().getPrice());
 				}
 			} else {
-				List<ScheduleDTO> schedules = new ArrayList<>();
-				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
-
-				AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(), dayOfTheWeek, 0, schedules);
-				if (board.getAccountingInfo() != null) {
-					allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
-				}
-				result.add(allPlanResponseDTO);
+				result.add(makeNewAllPlan(board, scheduleDate, dayOfTheWeek));
 				count++;
 			}
 		}
 
 		return result;
+	}
+
+	private AllPlanResponseDTO makeNewAllPlan(Board board, LocalDateTime scheduleDate,
+		String dayOfTheWeek) {
+		List<ScheduleDTO> schedules = new ArrayList<>();
+		schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+
+		AllPlanResponseDTO allPlanResponseDTO = new AllPlanResponseDTO(scheduleDate.toLocalDate(), dayOfTheWeek, 0, schedules);
+		if (board.getAccountingInfo() != null) {
+			allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
+		}
+		return allPlanResponseDTO;
 	}
 }
