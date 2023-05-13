@@ -96,7 +96,7 @@ public class RoomController {
 	}
 
 	@GetMapping("/room/{room_id}/all-plan")
-	public List<AllPlanResponseDTO> getAllPlan(@AuthenticationPrincipal UserPrincipal userPrincipal,
+	public AllPlanResponseDTO getAllPlan(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId) {
 
 		return roomService.getAllPlan(userPrincipal.getEmail(), roomId);
