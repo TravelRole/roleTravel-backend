@@ -375,6 +375,7 @@ public class RoomService {
 				if (board.getAccountingInfo() != null) {
 					allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
 				}
+				result.add(allPlanResponseDTO);
 			} else if(currentData.getDate().equals(scheduleDate.toLocalDate())) {
 				List<ScheduleDTO> schedules = currentData.getSchedules();
 				schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
@@ -389,6 +390,7 @@ public class RoomService {
 				if (board.getAccountingInfo() != null) {
 					allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
 				}
+				result.add(allPlanResponseDTO);
 				count++;
 			}
 		}
