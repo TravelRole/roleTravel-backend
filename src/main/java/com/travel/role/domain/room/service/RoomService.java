@@ -361,7 +361,7 @@ public class RoomService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(user, room);
 
-		List<Board> boards = boardRepository.findScheduleAndAccountByRoomOrderByAsc(room);
+		List<Board> boards = boardRepository.findScheduleAndAccountByRoomOrderByAsc(room.getId());
 
 		Map<LocalDate, AllPlanDTO> resultMap = new TreeMap<>();
 		for (Board board : boards) {
