@@ -22,7 +22,7 @@ public class ScheduleDTO {
 	private String scheduleEtc;
 
 	public static ScheduleDTO from(ScheduleInfo scheduleInfo, AccountingInfo accountingInfo, LocalTime time) {
-		Boolean isBooked = accountingInfo == null ?
+		Boolean isBooked = accountingInfo != null ?
 			accountingInfo.getBookInfo() != null ?
 				null : accountingInfo.getBookInfo().getIsBooked() : null;
 
