@@ -7,7 +7,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:13306/travel?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:13306/travel?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=KST
     username: ENC(XrpSHS7ui0UHI0+lHi+gfQ==)
     password: ENC(kTCBipfR9pT65kKfvf2cfw==)
 
@@ -29,7 +29,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(xX2NII+W8Klp6f5JFOs1RwKKdfUeoZtMUiUrt5axw+Xr96Xge3qfpg+RbLM8LE7FoyTWyGBhXvR78WKR/7djFjkfD2aFHrRzDpr1ePl8fEmRmkD502mZVmXQLHA9gmH5hmH4QQ2wxkSxPHlu0dEVcFEE2hBXvO6ZWbUgGiFE6AhP7ImYNn+GASJeo41Ty2GOn/ErYQzTv6XfrTLkWcKhlXJj5POu9LV1KEraPKf4z9cZQCywtojNOQ==)
+    url: ENC(RstF+uggx1NCW1PNZT3/ufnjfYbj7dcFbx6YJ2UFlZpNin1Jr8nZyLRoBMrs66LWMnihAg4CoGkcI3PftHavK5usFPgpXWrNoVmeUTTNl0h08lM7fqXJR0aONia8RwXLqCYARNL4rEydiw7Sip1z3a0c15j8vEhrYPFjElRykLkEwugIx+PZrDLikizmP5FQ1SjD8MjB3ATfBHBiIqQm+CQFryVoj0CEb+5v2JIF96YmbaXtHfqOPQ==)
     username: ENC(zpu19pDvBBlJ4Vln6GVoAQ==)
     password: ENC(zO8mdpjWkI7QZYrrUHzW5ehsEzJORh7BP+K2ojEH2VQ=)
 
