@@ -25,7 +25,9 @@ import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
+import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.dto.response.RoomRoleInfoDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
@@ -346,5 +348,45 @@ public class RoomService {
 		}
 
 		return admins;
+	}
+
+	@Transactional(readOnly = true)
+	public RoomInfoResponseDTO getRoomInfo(String email, Long roomId) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(user, room);
+
+		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
+
+		Map<User, List<RoomRole>> map = getUserAndRolesMap(
+			participantRoles);
+
+		List<RoomRoleInfoDTO> roomRoleDTOS = convertToRoomRoleDTOS(map);
+
+		return RoomInfoResponseDTO.of(room, roomRoleDTOS);
+	}
+
+	private static List<RoomRoleInfoDTO> convertToRoomRoleDTOS(Map<User, List<RoomRole>> map) {
+		List<RoomRoleInfoDTO> roomRoleDTOS = new ArrayList<>();
+		for (User key : map.keySet()) {
+			roomRoleDTOS.add(new RoomRoleInfoDTO(key.getName(), key.getEmail(), map.get(key)));
+		}
+		return roomRoleDTOS;
+	}
+
+	private static Map<User, List<RoomRole>> getUserAndRolesMap(List<ParticipantRole> participantRoles) {
+		Map<User, List<RoomRole>> map = new HashMap<>();
+		for (ParticipantRole participantRole : participantRoles) {
+			User user = participantRole.getUser();
+			if (!map.containsKey(user)) {
+				List<RoomRole> roles = new ArrayList<>();
+				roles.add(participantRole.getRoomRole());
+				map.put(user, roles);
+			} else {
+				List<RoomRole> roles = map.get(user);
+				roles.add(participantRole.getRoomRole());
+			}
+		}
+		return map;
 	}
 }

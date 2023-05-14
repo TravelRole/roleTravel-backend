@@ -22,6 +22,7 @@ import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
+import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.service.RoomService;
@@ -92,5 +93,11 @@ public class RoomController {
 		@RequestBody @Valid ExpensesRequestDTO requestDTO) {
 
 		roomService.modifyExpenses(userPrincipal.getEmail(), roomId, requestDTO);
+	}
+
+	@GetMapping("/room/{room_id}")
+	public RoomInfoResponseDTO roomInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") Long roomId) {
+		return roomService.getRoomInfo(userPrincipal.getEmail(), roomId);
 	}
 }
