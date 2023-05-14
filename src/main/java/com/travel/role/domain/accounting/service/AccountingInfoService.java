@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.accounting.dto.request.ExpenseDetailCreateReqDTO;
+import com.travel.role.domain.accounting.dto.request.ExpenseDetailModifyReqDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailCreateResDTO;
+import com.travel.role.domain.accounting.dto.response.ExpenseDetailModifyResDTO;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.room.entity.Room;
@@ -27,6 +29,7 @@ public class AccountingInfoService {
 	private final RoomParticipantReadService roomParticipantReadService;
 	private final ParticipantRoleReadService participantRoleReadService;
 	private final RoomReadService roomReadService;
+	private final AccountingInfoReadService accountingInfoReadService;
 
 	public ExpenseDetailCreateResDTO createExpenseDetail(Long roomId, String email,
 		ExpenseDetailCreateReqDTO requestDTO) {
@@ -41,5 +44,28 @@ public class AccountingInfoService {
 		accountingInfo = accountingInfoRepository.save(accountingInfo);
 
 		return ExpenseDetailCreateResDTO.from(accountingInfo);
+	}
+
+	public ExpenseDetailModifyResDTO modifyExpenseDetail(String email, Long roomId, Long accountingInfoId,
+		ExpenseDetailModifyReqDTO requestDTO) {
+
+		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+
+		roomParticipantReadService.checkParticipant(loginUser, room);
+		participantRoleReadService.validUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
+
+		AccountingInfo findAccountingInfo = accountingInfoReadService.findAccountingInfoByIdOrElseThrow(
+			accountingInfoId);
+
+		findAccountingInfo.update(
+			requestDTO.getPaymentMethod(),
+			requestDTO.getPaymentName(),
+			requestDTO.getPrice(),
+			requestDTO.getCategory(),
+			requestDTO.getAccountEtc()
+		);
+
+		return ExpenseDetailModifyResDTO.from(findAccountingInfo);
 	}
 }
