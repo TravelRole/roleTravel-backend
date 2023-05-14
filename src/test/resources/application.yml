@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:13309/test?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=KST
+    url: jdbc:mysql://localhost:13309/test?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: test
 
@@ -18,6 +18,8 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
+        jdbc:
+          time_zone: Asia/Seoul
     defer-datasource-initialization: true
   sql:
     init:
