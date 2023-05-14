@@ -20,6 +20,7 @@ public class ExpenseDetailResDTO {
 	private Integer price;
 	private String accountingEtc;
 	private String bookEtc;
+	private boolean fromBook;
 
 	public static ExpenseDetailResDTO from(AccountingInfo accountingInfo) {
 
@@ -33,6 +34,7 @@ public class ExpenseDetailResDTO {
 			.price(accountingInfo.getPrice())
 			.accountingEtc(accountingInfo.getAccountingEtc())
 			.bookEtc(bookEtc)
+			.fromBook(bookInfo != null)
 			.build();
 	}
 }
