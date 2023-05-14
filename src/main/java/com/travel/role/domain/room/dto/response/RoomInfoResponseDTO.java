@@ -21,7 +21,7 @@ public class RoomInfoResponseDTO {
 	private LocalDate endDate;
 	private List<RoomRoleInfoDTO> roles;
 
-	public static RoomInfoResponseDTO from(Room room, List<RoomRoleInfoDTO> roles) {
+	public static RoomInfoResponseDTO of(Room room, List<RoomRoleInfoDTO> roles) {
 		return new RoomInfoResponseDTO(room.getLocation(), room.getTravelStartDate(), room.getTravelEndDate(), roles);
 	}
 }

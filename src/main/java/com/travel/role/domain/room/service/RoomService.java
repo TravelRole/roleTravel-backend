@@ -363,7 +363,7 @@ public class RoomService {
 
 		List<RoomRoleInfoDTO> roomRoleDTOS = convertToRoomRoleDTOS(map);
 
-		return RoomInfoResponseDTO.from(room, roomRoleDTOS);
+		return RoomInfoResponseDTO.of(room, roomRoleDTOS);
 	}
 
 	private static List<RoomRoleInfoDTO> convertToRoomRoleDTOS(Map<User, List<RoomRole>> map) {
