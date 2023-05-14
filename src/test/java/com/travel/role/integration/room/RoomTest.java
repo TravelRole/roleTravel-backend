@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
+import com.travel.role.domain.room.dto.response.AllPlanDTO;
+import com.travel.role.domain.room.dto.response.AllPlanResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
@@ -86,5 +88,22 @@ class RoomTest {
         //then
         List<ParticipantRole> participantRoles = participantRoleRepository.findUserAndRoomByRoomId(4L);
         assertThat(participantRoles.size()).isEqualTo(5);
+    }
+
+    @Test
+    void 모든_여행계획_일정_가져오기_테스트() {
+        // when
+        AllPlanResponseDTO allPlan = roomService.getAllPlan("kmimi@naver.com", 1L);
+
+        int scheduleCount = 0;
+        for (AllPlanDTO data : allPlan.getData()) {
+            scheduleCount += data.getSchedules().size();
+        }
+
+        // then
+        assertThat(allPlan.getTotalExpense()).isEqualTo(1360000);
+        assertThat(scheduleCount).isEqualTo(15);
+        assertThat(allPlan.getData().size()).isEqualTo(5);
+        assertThat(allPlan.getData().get(0).getDate()).isEqualTo(LocalDate.of(2023, 8, 10));
     }
 }
