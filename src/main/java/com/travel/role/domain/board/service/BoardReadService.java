@@ -14,6 +14,7 @@ import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
 import com.travel.role.global.exception.board.AccountingInfoNotFoundException;
+import com.travel.role.global.exception.board.BoardNotFoundException;
 import com.travel.role.global.exception.board.BookInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -22,31 +23,37 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BoardReadService {
-    private final AccountingInfoRepository accountingInfoRepository;
-    private final BookInfoRepository bookInfoRepository;
-    private final BoardRepository boardRepository;
+	private final AccountingInfoRepository accountingInfoRepository;
+	private final BookInfoRepository bookInfoRepository;
+	private final BoardRepository boardRepository;
 
-    public BookInfo findBookInfoByIdOrElseThrow(Long bookInfoId) {
+	public BookInfo findBookInfoByIdOrElseThrow(Long bookInfoId) {
 
-        return bookInfoRepository.findById(bookInfoId)
-            .orElseThrow(BookInfoNotFoundException::new);
-    }
+		return bookInfoRepository.findById(bookInfoId)
+			.orElseThrow(BookInfoNotFoundException::new);
+	}
 
-    public AccountingInfo findAccountingInfoByIdOrElseThrow(Long accountingInfoId) {
+	public AccountingInfo findAccountingInfoByIdOrElseThrow(Long accountingInfoId) {
 
-        return accountingInfoRepository.findById(accountingInfoId)
-            .orElseThrow(AccountingInfoNotFoundException::new);
-    }
+		return accountingInfoRepository.findById(accountingInfoId)
+			.orElseThrow(AccountingInfoNotFoundException::new);
+	}
 
-    public List<Board> findBookInfoForDate(Long roomId, LocalDate date) {
+	public List<Board> findBookInfoForDate(Long roomId, LocalDate date) {
 
-        return boardRepository.findBoardByRoomIdAndScheduleDate(roomId, date.atStartOfDay(),
-            date.atTime(LocalTime.MAX));
-    }
+		return boardRepository.findBoardByRoomIdAndScheduleDate(roomId, date.atStartOfDay(),
+			date.atTime(LocalTime.MAX));
+	}
 
-    public List<Board> findScheduleForDate(Long roomId, LocalDate date) {
+	public List<Board> findScheduleForDate(Long roomId, LocalDate date) {
 
-        return boardRepository.findScheduleByRoomIdAndScheduleDate(roomId, date.atStartOfDay(),
-            date.atTime(LocalTime.MAX));
-    }
+		return boardRepository.findScheduleByRoomIdAndScheduleDate(roomId, date.atStartOfDay(),
+			date.atTime(LocalTime.MAX));
+	}
+
+	public Board findBoardByIdOrElseThrow(Long boardId) {
+
+		return boardRepository.findById(boardId)
+			.orElseThrow(BoardNotFoundException::new);
+	}
 }
