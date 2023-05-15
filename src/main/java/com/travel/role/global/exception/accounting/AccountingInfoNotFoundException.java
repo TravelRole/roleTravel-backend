@@ -1,4 +1,4 @@
-package com.travel.role.global.exception.board;
+package com.travel.role.global.exception.accounting;
 
 import com.travel.role.global.exception.dto.ExceptionMessage;
 
