@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class WantPlaceResponseDTO {
-    private List<WantPlaceDTO> wantPlaces = new ArrayList<>();
-    private boolean isScheduler;
+	private List<WantPlaceDTO> wantPlaces = new ArrayList<>();
+	private Boolean isScheduler;
 
-    private WantPlaceResponseDTO(List<WantPlaceDTO> wantPlaces, boolean isScheduler) {
-        this.wantPlaces = wantPlaces;
-        this.isScheduler = isScheduler;
-    }
+	private WantPlaceResponseDTO(List<WantPlaceDTO> wantPlaces, Boolean isScheduler) {
+		this.wantPlaces = wantPlaces;
+		this.isScheduler = isScheduler;
+	}
 
-    public static WantPlaceResponseDTO of(List<WantPlaceDTO> wantPlaces, boolean isScheduler) {
-        return new WantPlaceResponseDTO(wantPlaces, isScheduler);
-    }
+	public static WantPlaceResponseDTO of(List<WantPlaceDTO> wantPlaces, Boolean isScheduler) {
+		return new WantPlaceResponseDTO(wantPlaces, isScheduler);
+	}
 }

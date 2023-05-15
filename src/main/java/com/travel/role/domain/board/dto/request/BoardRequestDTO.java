@@ -40,4 +40,7 @@ public class BoardRequestDTO {
 	private Double longitude;
 
 	private String etc;
+
+	@NotNull(message = ExceptionMessage.MAP_PLACE_ID_VALUE_NOT_EMPTY)
+	private Long mapPlaceId;
 }

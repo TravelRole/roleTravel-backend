@@ -153,36 +153,36 @@ values (14, 'SHOPPING', '2023-08-14 17:25:00', 1);
 insert into board(board_id, category, schedule_date, room_id)
 values (15, 'FOOD', '2023-08-14 18:00:00', 1);
 
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (1, 34.123, 127.232, '경기 가평군 상면 축령로45번길 114-22', '워터파크 아이린 키즈풀빌라', '꼭 9일전에 예약할것');
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (2, 34.123, 127.232, '경기 가평군 가평읍 북한강변로 1078-8', '남이금강막국수', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (3, 34.123, 127.232, '경기 가평군 상면 수목원로 209 1층', '본가곱돌숯불닭갈비', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (4, 34.123, 127.232, '경기 가평군 청평면 양진길 7', '도선재', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (5, 34.123, 127.232, '강원 춘천시 남산면 남이섬길 1', '남이섬', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (6, 34.123, 127.232, '경기 가평군 설악면 음동길 23', '금강막국수 가평막국수', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (7, 34.123, 127.232, '경기 가평군 조종면 청군로 1323', '진주회관', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (8, 34.123, 127.232, '경기 가평군 가평읍 장터2길 10', '가평잣고을전통시장', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (9, 34.123, 127.232, '경기 가평군 상면 행현리 384-2', '도담숯불닭갈비', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (10, 34.123, 127.232, '경기 가평군 설악면 자잠로 229', '스위티안 스테이크하우스', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (11, 34.123, 127.232, '경기 가평군 가평읍 북한강변로 813', '가평빠지', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (12, 34.123, 127.232, '경기 가평군 상면 수목원로 123', '가평달맞이빵', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (13, 34.123, 127.232, '경기 가평군 설악면 어비산길99번길 75-7 산골농원', '산골농원', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (14, 34.123, 127.232, '경기 가평군 가평읍 금대리 85-5', '클럽비발디 수상레저', null);
-insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc)
-values (15, 34.123, 127.232, '경기 가평군 가평읍 보납로 459-158 동기간', '동기간', null);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (1, 34.123, 127.232, '경기 가평군 상면 축령로45번길 114-22', '워터파크 아이린 키즈풀빌라', '꼭 9일전에 예약할것', 4444);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (2, 34.123, 127.232, '경기 가평군 가평읍 북한강변로 1078-8', '남이금강막국수', null, 3333);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (3, 34.123, 127.232, '경기 가평군 상면 수목원로 209 1층', '본가곱돌숯불닭갈비', null, 2222);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (4, 34.123, 127.232, '경기 가평군 청평면 양진길 7', '도선재', null, 1111);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (5, 34.123, 127.232, '강원 춘천시 남산면 남이섬길 1', '남이섬', null, 5655);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (6, 34.123, 127.232, '경기 가평군 설악면 음동길 23', '금강막국수 가평막국수', null, 5678);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (7, 34.123, 127.232, '경기 가평군 조종면 청군로 1323', '진주회관', null, 3468);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (8, 34.123, 127.232, '경기 가평군 가평읍 장터2길 10', '가평잣고을전통시장', null, 3462);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (9, 34.123, 127.232, '경기 가평군 상면 행현리 384-2', '도담숯불닭갈비', null, 3457);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (10, 34.123, 127.232, '경기 가평군 설악면 자잠로 229', '스위티안 스테이크하우스', null, 3456);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (11, 34.123, 127.232, '경기 가평군 가평읍 북한강변로 813', '가평빠지', null, 2346);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (12, 34.123, 127.232, '경기 가평군 상면 수목원로 123', '가평달맞이빵', null, 2345);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (13, 34.123, 127.232, '경기 가평군 설악면 어비산길99번길 75-7 산골농원', '산골농원', null, 12356);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (14, 34.123, 127.232, '경기 가평군 가평읍 금대리 85-5', '클럽비발디 수상레저', null, 1235);
+insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
+values (15, 34.123, 127.232, '경기 가평군 가평읍 보납로 459-158 동기간', '동기간', null, 1234);
 
 insert into book_info(book_info_id, book_etc, is_booked)
 values (1, "예매 입금날짜가 다름", true);
@@ -199,7 +199,7 @@ values (6, true, true);
 
 insert into accounting_info(accounting_info_id, accounting_etc, category, payment_method, payment_name, payment_time,
                             price, board_id, book_info_id, room_id)
-    values (1, null, 'ACCOMMODATION', 'CARD', null, '2023-04-10', 450000, 1, 1, 1);
+values (1, null, 'ACCOMMODATION', 'CARD', null, '2023-04-10', 450000, 1, 1, 1);
 insert into accounting_info(accounting_info_id, accounting_etc, category, payment_method, payment_name, payment_time,
                             price, board_id, book_info_id, room_id)
 values (2, null, 'FOOD', 'CARD', null, '2023-04-10', 170000, 2, 2, 1);

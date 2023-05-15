@@ -62,6 +62,7 @@ class RoomServiceTest {
 	private RoomRepository roomRepository;
 	@Mock
 	private ParticipantRoleReadService participantRoleReadService;
+
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
 		// given
@@ -122,7 +123,9 @@ class RoomServiceTest {
 			.willReturn(makeInvalidInviteDateRoom());
 
 		//when,then
-		assertThatThrownBy(() -> {roomService.checkRoomInviteCode("haechan@naver.com", "1234");})
+		assertThatThrownBy(() -> {
+			roomService.checkRoomInviteCode("haechan@naver.com", "1234");
+		})
 			.isInstanceOf(InvalidInviteCode.class);
 	}
 
@@ -137,7 +140,9 @@ class RoomServiceTest {
 			.willReturn(false);
 
 		//when, then
-		assertThatThrownBy(() -> {roomService.inviteUser("haechan@naver.com", "1234", List.of("ADMIN"));})
+		assertThatThrownBy(() -> {
+			roomService.inviteUser("haechan@naver.com", "1234", List.of("ADMIN"));
+		})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
@@ -152,7 +157,9 @@ class RoomServiceTest {
 			.willReturn(false);
 
 		//when, then
-		assertThatThrownBy(() -> {roomService.inviteUser("haechan@naver.com", "1234", List.of("HAECHAN"));})
+		assertThatThrownBy(() -> {
+			roomService.inviteUser("haechan@naver.com", "1234", List.of("HAECHAN"));
+		})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
@@ -163,7 +170,8 @@ class RoomServiceTest {
 			.willReturn(false);
 
 		// when, then
-		assertThatThrownBy(() -> roomService.modifyRoomInfo("haechan@naver.com", createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1)),1L))
+		assertThatThrownBy(() -> roomService.modifyRoomInfo("haechan@naver.com",
+			createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1)), 1L))
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
@@ -174,7 +182,8 @@ class RoomServiceTest {
 			.willReturn(true);
 
 		//when, then
-		assertThatThrownBy(() -> roomService.modifyRoomInfo("chan@naver.com", createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1)),1L))
+		assertThatThrownBy(() -> roomService.modifyRoomInfo("chan@naver.com",
+			createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1)), 1L))
 			.isInstanceOf(AdminIsOnlyOneException.class);
 	}
 
@@ -184,6 +193,7 @@ class RoomServiceTest {
 		List<RoomRoleDTO> roomRoleDTOS = List.of(roomRoleDTO1, roomRoleDTO2);
 		return new RoomModifiedRequestDTO("경주로 고고","경주", startDate, endDate, roomRoleDTOS);
 	}
+
 	private static UserPrincipal makeUserPrincipal() {
 		return new UserPrincipal(1L, "haechan@naver.com", "1234", null);
 	}
@@ -199,7 +209,7 @@ class RoomServiceTest {
 	}
 
 	private static User makeUser() {
-		return new User(1L, "해찬", "haechan@naver.com", "1234", null , LocalDate.now());
+		return new User(1L, "해찬", "haechan@naver.com", "1234", null, LocalDate.now());
 	}
 
 	@ExtendWith(MockitoExtension.class)
@@ -225,7 +235,8 @@ class RoomServiceTest {
 			User user1 = new User(1L, "kh", "asd@gmail.com", "1234", null, LocalDate.now());
 			User user2 = new User(2L, "hk", "asdd@gmail.com", "1234", null, LocalDate.now());
 
-			Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234", LocalDateTime.now());
+			Room room2 = new Room(1L, "1번 방", LocalDate.now(), LocalDate.now(), null, "제주", "1234",
+				LocalDateTime.now());
 
 			RoomParticipant roomParticipant1 = new RoomParticipant(1L, LocalDateTime.now(), true, user1, room2);
 			RoomParticipant roomParticipant2 = new RoomParticipant(1L, LocalDateTime.now(), true, user2, room2);
@@ -235,9 +246,9 @@ class RoomServiceTest {
 			WantPlace wantPlace = WantPlace.of(room, getWantPlaceRequestDto());
 
 			given(userReadService.findUserByEmailOrElseThrow(anyString()))
-					.willReturn(user2);
+				.willReturn(user2);
 			given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
-					.willReturn(room);
+				.willReturn(room);
 			doNothing()
 				.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
@@ -256,7 +267,7 @@ class RoomServiceTest {
 		private static WantPlaceRequestDTO getWantPlaceRequestDto() {
 			return new WantPlaceRequestDTO(
 				1L, "제주도", "제주도", "1234",
-				123.0, 456.0,"섬","색당로2314");
+				123.0, 456.0, "섬", "색당로2314", 12345L);
 		}
 	}
 }

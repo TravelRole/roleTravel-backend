@@ -3,7 +3,7 @@ package com.travel.role.domain.room.dto.response;
 import java.time.LocalTime;
 
 import com.travel.role.domain.accounting.entity.AccountingInfo;
-import com.travel.role.domain.board.entity.ScheduleInfo;
+import com.travel.role.domain.schedule.entity.ScheduleInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
