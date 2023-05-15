@@ -3,7 +3,6 @@ package com.travel.role.unit.room.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -128,7 +127,7 @@ public class BoardServiceTest {
 
 	private BoardRequestDTO createBoardRequestDTO() {
 		return new BoardRequestDTO("우도", "제주도", LocalDate.now().atTime(LocalTime.now()), null, true, Category.ETC,
-			123.0, 456.0, null);
+			123.0, 456.0, null, 12345L);
 	}
 
 	private List<Board> findBoardList() {
