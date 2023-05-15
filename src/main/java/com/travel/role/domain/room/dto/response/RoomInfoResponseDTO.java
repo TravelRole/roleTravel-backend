@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomInfoResponseDTO {
+	private String roomName;
 	private String location;
 	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate startDate;
@@ -22,6 +23,6 @@ public class RoomInfoResponseDTO {
 	private List<RoomRoleInfoDTO> roles;
 
 	public static RoomInfoResponseDTO of(Room room, List<RoomRoleInfoDTO> roles) {
-		return new RoomInfoResponseDTO(room.getLocation(), room.getTravelStartDate(), room.getTravelEndDate(), roles);
+		return new RoomInfoResponseDTO(room.getRoomName(),room.getLocation(), room.getTravelStartDate(), room.getTravelEndDate(), roles);
 	}
 }

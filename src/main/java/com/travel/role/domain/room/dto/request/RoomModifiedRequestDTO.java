@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 public class RoomModifiedRequestDTO {
 	@NotBlank(message = ROOM_NAME_NOT_EMPTY)
 	private String roomName;
+	@NotBlank(message = PLACE_NAME_VALUE_NOT_EMPTY)
+	private String location;
 	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate startDate;
 	@JsonFormat(pattern = "yyyy/MM/dd")
