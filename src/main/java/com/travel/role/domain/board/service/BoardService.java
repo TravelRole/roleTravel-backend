@@ -115,8 +115,7 @@ public class BoardService {
 
 	private List<BookInfoResponseDTO> getBookInfoResult(List<Board> boardList) {
 		return boardList.stream()
-			.map(board -> BookInfoResponseDTO.of(board, board.getScheduleInfo(), board.getAccountingInfo(),
-				board.getAccountingInfo().getBookInfo()))
+			.map(board -> BookInfoResponseDTO.from(board))
 			.collect(Collectors.toList());
 	}
 
