@@ -24,7 +24,7 @@ public class ScheduleDTO {
 	public static ScheduleDTO from(ScheduleInfo scheduleInfo, AccountingInfo accountingInfo, LocalTime time) {
 		Boolean isBooked = accountingInfo != null ?
 			accountingInfo.getBookInfo() != null ?
-				null : accountingInfo.getBookInfo().getIsBooked() : null;
+				accountingInfo.getBookInfo().getIsBooked() : null : null;
 
 		return ScheduleDTO.builder()
 			.placeName(scheduleInfo.getPlaceName())
