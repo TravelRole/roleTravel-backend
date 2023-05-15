@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
+import com.travel.role.domain.room.dto.response.AllPlanDTO;
+import com.travel.role.domain.room.dto.response.AllPlanResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomRoleInfoDTO;
@@ -91,7 +93,24 @@ class RoomTest {
     }
 
     @Test
-    void 방_수정_정보_테스트() {
+    void 모든_여행계획_일정_가져오기_테스트() {
+        // when
+        AllPlanResponseDTO allPlan = roomService.getAllPlan("kmimi@naver.com", 1L);
+
+        int scheduleCount = 0;
+        for (AllPlanDTO data : allPlan.getData()) {
+            scheduleCount += data.getSchedules().size();
+        }
+
+        // then
+        assertThat(allPlan.getTotalExpense()).isEqualTo(1360000);
+        assertThat(scheduleCount).isEqualTo(15);
+        assertThat(allPlan.getData().size()).isEqualTo(5);
+        assertThat(allPlan.getData().get(0).getDate()).isEqualTo(LocalDate.of(2023, 8, 10));
+    }
+
+    @Test
+    void 방_수정_정보_가져오는_테스트() {
         // given
         RoomInfoResponseDTO roomInfo = roomService.getRoomInfo("Junsik@naver.com", 4L);
         List<RoomRoleInfoDTO> roles = roomInfo.getRoles();
@@ -100,6 +119,5 @@ class RoomTest {
         assertThat(roomInfo.getLocation()).isEqualTo("순천시");
         assertThat(roomInfo.getStartDate()).isEqualTo(LocalDate.of(2023,6,25));
         assertThat(roomInfo.getEndDate()).isEqualTo(LocalDate.of(2023,6,26));
-
     }
 }

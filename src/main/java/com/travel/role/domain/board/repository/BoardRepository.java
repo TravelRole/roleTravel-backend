@@ -33,4 +33,13 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	List<Board> findScheduleByRoomIdAndScheduleDate
 		(@Param("roomId") Long roomId, @Param("startOfDay") LocalDateTime startOfDay,
 			@Param("endOfDay") LocalDateTime endOfDay);
+
+	@Query(value = "SELECT DISTINCT b, si, ai, bi"
+		+ " FROM Board b"
+		+ " LEFT JOIN FETCH b.scheduleInfo si"
+		+ " LEFT JOIN FETCH b.accountingInfo ai"
+		+ " LEFT JOIN FETCH ai.bookInfo bi"
+		+ " WHERE b.room.id = :roomId"
+		+ " ORDER BY b.scheduleDate ASC")
+	List<Board> findScheduleAndAccountByRoomOrderByAsc(@Param("roomId") Long roomId);
 }

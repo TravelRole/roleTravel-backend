@@ -13,20 +13,26 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
+import com.travel.role.domain.board.entity.Board;
+import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
+import com.travel.role.domain.room.dto.response.AllPlanDTO;
+import com.travel.role.domain.room.dto.response.AllPlanResponseDTO;
 import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
 import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
 import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
+import com.travel.role.domain.room.dto.response.ScheduleDTO;
 import com.travel.role.domain.room.dto.response.RoomRoleInfoDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
@@ -62,6 +68,7 @@ public class RoomService {
 	private final RoomParticipantReadService roomParticipantReadService;
 	private final PasswordGenerator passwordGenerator;
 	private final RoomReadService roomReadService;
+	private final BoardRepository boardRepository;
 
 	public List<RoomResponseDTO> getRoomList(String email) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(email);
@@ -215,13 +222,13 @@ public class RoomService {
 
 		for (Long i = 1L; i <= day + 1; i++) {
 			result.add(TimeResponseDTO.from(i, starDate,
-				starDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN)));
+				convertToKoreanDayOfWeek(starDate)));
 			starDate = starDate.plusDays(1);
 		}
 		return result;
 	}
 
-	public ExpenseResponseDTO getExpenses(String email, Long roomId){
+	public ExpenseResponseDTO getExpenses(String email, Long roomId) {
 
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
@@ -364,6 +371,64 @@ public class RoomService {
 		List<RoomRoleInfoDTO> roomRoleDTOS = convertToRoomRoleDTOS(map);
 
 		return RoomInfoResponseDTO.of(room, roomRoleDTOS);
+	}
+
+	@Transactional(readOnly = true)
+	public AllPlanResponseDTO getAllPlan(String email, Long roomId) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(user, room);
+
+		List<Board> boards = boardRepository.findScheduleAndAccountByRoomOrderByAsc(room.getId());
+
+		Map<LocalDate, AllPlanDTO> resultMap = new TreeMap<>();
+		for (Board board : boards) {
+			LocalDateTime scheduleDate = board.getScheduleDate();
+			addToResultMap(resultMap, board, scheduleDate);
+		}
+
+		Integer totalExpense = 0;
+		List<AllPlanDTO> result = new ArrayList<>();
+		for (LocalDate localDate : resultMap.keySet()) {
+			AllPlanDTO allPlanDTO = resultMap.get(localDate);
+			result.add(allPlanDTO);
+			totalExpense += allPlanDTO.getTravelExpense();
+		}
+
+		return new AllPlanResponseDTO(totalExpense, result);
+	}
+
+	private void addToResultMap(Map<LocalDate, AllPlanDTO> resultMap, Board board, LocalDateTime scheduleDate) {
+		if (!resultMap.containsKey(scheduleDate.toLocalDate())) {
+			resultMap.put(scheduleDate.toLocalDate(), makeNewAllPlan(board, scheduleDate));
+			return;
+		}
+
+		AllPlanDTO currentData = resultMap.get(scheduleDate.toLocalDate());
+		List<ScheduleDTO> schedules = currentData.getSchedules();
+		schedules.add(
+			ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+		addExpense(board, currentData);
+	}
+
+	private AllPlanDTO makeNewAllPlan(Board board, LocalDateTime scheduleDate) {
+		List<ScheduleDTO> schedules = new ArrayList<>();
+		schedules.add(ScheduleDTO.from(board.getScheduleInfo(), board.getAccountingInfo(), scheduleDate.toLocalTime()));
+
+		AllPlanDTO allPlanResponseDTO = new AllPlanDTO(scheduleDate.toLocalDate(),
+			convertToKoreanDayOfWeek(scheduleDate.toLocalDate()), 0, schedules);
+		addExpense(board, allPlanResponseDTO);
+		return allPlanResponseDTO;
+	}
+
+	private void addExpense(Board board, AllPlanDTO allPlanResponseDTO) {
+		if (board.getAccountingInfo() != null) {
+			allPlanResponseDTO.addTravelExpense(board.getAccountingInfo().getPrice());
+		}
+	}
+
+	private String convertToKoreanDayOfWeek(LocalDate localDate) {
+		return localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
 	}
 
 	private static List<RoomRoleInfoDTO> convertToRoomRoleDTOS(Map<User, List<RoomRole>> map) {

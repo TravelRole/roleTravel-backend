@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailResDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailsResDTO;
+import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.PaymentMethod;
 import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.room.entity.Room;
@@ -16,6 +17,7 @@ import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.global.exception.board.AccountingInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +30,12 @@ public class AccountingInfoReadService {
 	private final RoomReadService roomReadService;
 	private final RoomParticipantReadService roomParticipantReadService;
 	private final AccountingInfoRepository accountingInfoRepository;
+
+	public AccountingInfo findAccountingInfoByIdOrElseThrow(Long accountingInfoId){
+
+		return accountingInfoRepository.findById(accountingInfoId)
+			.orElseThrow(AccountingInfoNotFoundException::new);
+	}
 
 	public ExpenseDetailsResDTO getExpenseDetails(String email, Long roomId, LocalDate searchDate,
 		PaymentMethod paymentMethod) {
