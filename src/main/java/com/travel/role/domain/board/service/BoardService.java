@@ -3,7 +3,6 @@ package com.travel.role.domain.board.service;
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,8 +108,7 @@ public class BoardService {
 
 		validateDate(room.getTravelStartDate(), room.getTravelEndDate(), date);
 
-		return getBookInfoResult(
-			boardRepository.findBoardByRoomIdAndScheduleDate(roomId, date.atStartOfDay(), date.atTime(LocalTime.MAX)));
+		return getBookInfoResult(boardReadService.findBookInfoForDate(roomId, date));
 	}
 
 	private List<BookInfoResponseDTO> getBookInfoResult(List<Board> boardList) {
