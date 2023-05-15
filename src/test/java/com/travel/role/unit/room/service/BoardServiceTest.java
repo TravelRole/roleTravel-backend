@@ -25,6 +25,7 @@ import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
+import com.travel.role.domain.board.service.BoardReadService;
 import com.travel.role.domain.board.service.BoardService;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
@@ -52,6 +53,9 @@ public class BoardServiceTest {
 	private BookInfoRepository bookInfoRepository;
 
 	@Mock
+	private BoardReadService boardReadService;
+
+	@Mock
 	private ScheduleInfoRepository scheduleInfoRepository;
 
 	@Mock
@@ -70,8 +74,7 @@ public class BoardServiceTest {
 			.willReturn(user);
 		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
 			.willReturn(room);
-		given(boardRepository.findBoardByRoomIdAndScheduleDate(room.getId(), date.atStartOfDay(),
-			date.atTime(LocalTime.MAX)))
+		given(boardReadService.findBookInfoForDate(anyLong(), any(LocalDate.class)))
 			.willReturn(findBoardList());
 		doNothing()
 			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
