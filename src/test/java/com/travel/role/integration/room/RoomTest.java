@@ -17,6 +17,7 @@ import com.travel.role.domain.room.dto.response.AllPlanResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomRoleInfoDTO;
+import com.travel.role.domain.room.dto.response.SidebarResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
@@ -119,5 +120,20 @@ class RoomTest {
         assertThat(roomInfo.getLocation()).isEqualTo("순천시");
         assertThat(roomInfo.getStartDate()).isEqualTo(LocalDate.of(2023,6,25));
         assertThat(roomInfo.getEndDate()).isEqualTo(LocalDate.of(2023,6,26));
+    }
+
+    @Test
+    void 사이드바_정보_가져오는_테스트() {
+        // given
+        String email = "mogu@naver.com";
+        Long roomId = 4L;
+
+        // when
+        SidebarResponseDTO sidebar = roomService.getSidebar(email, roomId);
+
+        // then
+        assertThat(sidebar.getRoomImage()).isEqualTo(1);
+        assertThat(sidebar.getRoomName()).isEqualTo("여수에서 간장게장");
+        assertThat(sidebar.getRoles()).contains(RoomRole.RESERVATION, RoomRole.SCHEDULE);
     }
 }
