@@ -68,4 +68,15 @@ public class AccountingInfoService {
 
 		return ExpenseDetailModifyResDTO.from(findAccountingInfo);
 	}
+
+	public void deleteExpenseDetail(String email, Long roomId, Long accountingInfoId){
+
+		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+
+		roomParticipantReadService.checkParticipant(loginUser, room);
+		participantRoleReadService.validUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
+
+		accountingInfoRepository.deleteById(accountingInfoId);
+	}
 }
