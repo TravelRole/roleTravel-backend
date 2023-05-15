@@ -16,6 +16,7 @@ import com.amazonaws.SdkClientException;
 import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;
 import com.travel.role.global.exception.board.AccountingInfoNotFoundException;
+import com.travel.role.global.exception.board.BoardNotFoundException;
 import com.travel.role.global.exception.board.BookInfoNotFoundException;
 import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
 import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
@@ -165,6 +166,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(BookInfoNotFoundException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse bookInfoNotFoundException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(BoardNotFoundException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse boardNotFoundException(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
