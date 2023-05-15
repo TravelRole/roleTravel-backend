@@ -10,13 +10,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.travel.role.domain.accounting.dto.request.ExpenseDetailCreateReqDTO;
+import com.travel.role.domain.accounting.dto.request.ExpenseDetailModifyReqDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailCreateResDTO;
+import com.travel.role.domain.accounting.dto.response.ExpenseDetailModifyResDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailsResDTO;
 import com.travel.role.domain.accounting.entity.PaymentMethod;
 import com.travel.role.domain.accounting.service.AccountingInfoReadService;
@@ -34,15 +37,13 @@ public class AccountingInfoController {
 	private final AccountingInfoReadService accountingInfoReadService;
 
 	@GetMapping
-	public ResponseEntity<ExpenseDetailsResDTO> getExpenseDetails(
-		@AuthenticationPrincipal UserPrincipal userPrincipal,
+	public ResponseEntity<ExpenseDetailsResDTO> getExpenseDetails(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("roomId") Long roomId,
 		@RequestParam(name = "date") LocalDate searchDate,
-		@RequestParam(name = "paymentMethod", required = false) PaymentMethod paymentMethod
-	) {
+		@RequestParam(name = "paymentMethod", required = false) PaymentMethod paymentMethod) {
 
-		ExpenseDetailsResDTO resDTO = accountingInfoReadService.getExpenseDetails(userPrincipal.getEmail(),
-			roomId, searchDate, paymentMethod);
+		ExpenseDetailsResDTO resDTO = accountingInfoReadService.getExpenseDetails(
+			userPrincipal.getEmail(), roomId, searchDate, paymentMethod);
 
 		return ResponseEntity.ok(resDTO);
 	}
@@ -54,10 +55,21 @@ public class AccountingInfoController {
 		@RequestBody @Valid ExpenseDetailCreateReqDTO requestDTO) {
 
 		ExpenseDetailCreateResDTO resDTO = accountingInfoService.createExpenseDetail(
-			roomId,
-			userPrincipal.getEmail(),
-			requestDTO);
+			roomId, userPrincipal.getEmail(), requestDTO);
 
 		return new ResponseEntity<>(resDTO, HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{accounting_id}")
+	public ResponseEntity<ExpenseDetailModifyResDTO> modifyExpenseDetail(
+		@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("roomId") Long roomId,
+		@PathVariable("accounting_id") Long accountingId,
+		@RequestBody @Valid ExpenseDetailModifyReqDTO requestDTO) {
+
+		ExpenseDetailModifyResDTO resDTO = accountingInfoService.modifyExpenseDetail(
+			userPrincipal.getEmail(), roomId, accountingId, requestDTO);
+
+		return ResponseEntity.ok(resDTO);
 	}
 }

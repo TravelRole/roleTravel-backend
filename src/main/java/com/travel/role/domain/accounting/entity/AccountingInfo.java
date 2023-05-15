@@ -77,4 +77,14 @@ public class AccountingInfo {
 	public void updatePaymentTime(LocalDate paymentTime) {
 		this.paymentTime = paymentTime;
 	}
+
+	public void update(PaymentMethod paymentMethod, String paymentName, int price, Category category,
+		String accountingEtc) {
+
+		this.paymentMethod = paymentMethod;
+		this.paymentName = paymentName;
+		this.price = price;
+		this.category = category;
+		this.accountingEtc = accountingEtc;
+	}
 }
