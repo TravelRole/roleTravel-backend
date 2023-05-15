@@ -80,7 +80,7 @@ class RoomTest {
         RoomRoleDTO roomRoleDTO3 = new RoomRoleDTO("mogu@naver.com", List.of(RoomRole.ADMIN));
         RoomRoleDTO roomRoleDTO4 = new RoomRoleDTO("dsl@naver.com", List.of(RoomRole.ACCOUNTING, RoomRole.SCHEDULE));
 
-        RoomModifiedRequestDTO roomModifiedRequestDTO = new RoomModifiedRequestDTO("광양 펜션잡고 놀자", LocalDate.of(2023, 6, 16),
+        RoomModifiedRequestDTO roomModifiedRequestDTO = new RoomModifiedRequestDTO("광양 펜션잡고 놀자", "경주", LocalDate.of(2023, 6, 16),
             LocalDate.of(2023, 6, 17),
             List.of(roomRoleDTO1, roomRoleDTO2, roomRoleDTO3, roomRoleDTO4));
 

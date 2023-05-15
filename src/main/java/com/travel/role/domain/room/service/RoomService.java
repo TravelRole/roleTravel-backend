@@ -258,7 +258,7 @@ public class RoomService {
 			deleteAdminUserRoles(participantMap, email, adminList.get(0));
 		}
 
-		modifyRoomNameAndDate(participantRoles.get(0).getRoom(), dto);
+		modifyRoomNameAndDateAndLocation(participantRoles.get(0).getRoom(), dto);
 		modifyRoles(participantMap, dto.getUserRoles());
 	}
 
@@ -284,9 +284,9 @@ public class RoomService {
 		}
 	}
 
-	private void modifyRoomNameAndDate(Room room, RoomModifiedRequestDTO dto) {
+	private void modifyRoomNameAndDateAndLocation(Room room, RoomModifiedRequestDTO dto) {
 		validateDate(dto.getStartDate(), dto.getEndDate());
-		room.updateRoomNameAndDate(dto.getRoomName(), room.getTravelStartDate(), room.getTravelEndDate());
+		room.updateRoomNameAndDate(dto.getRoomName(), dto.getLocation() ,room.getTravelStartDate(), room.getTravelEndDate());
 	}
 
 	private void modifyRoles(Map<String, List<ParticipantRole>> participantMap, List<RoomRoleDTO> userRoles) {
