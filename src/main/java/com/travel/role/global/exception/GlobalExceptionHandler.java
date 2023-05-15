@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.amazonaws.SdkClientException;
+import com.travel.role.global.exception.accounting.AccountingInfoCannotBeDeletedException;
+import com.travel.role.global.exception.accounting.AccountingInfoCannotBeModifiedException;
 import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;
-import com.travel.role.global.exception.board.AccountingInfoNotFoundException;
+import com.travel.role.global.exception.accounting.AccountingInfoNotFoundException;
 import com.travel.role.global.exception.board.BookInfoNotFoundException;
 import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
 import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
@@ -165,6 +167,18 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(BookInfoNotFoundException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse bookInfoNotFoundException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(AccountingInfoCannotBeDeletedException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse accountingInfoCannotBeDeletedException(AccountingInfoCannotBeDeletedException e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(AccountingInfoCannotBeModifiedException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse accountingInfoCannotBeModifiedException(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
