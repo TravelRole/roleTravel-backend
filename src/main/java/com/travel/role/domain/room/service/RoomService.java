@@ -456,7 +456,13 @@ public class RoomService {
 		return map;
 	}
 
+	@Transactional(readOnly = true)
 	public SidebarResponseDTO getSidebar(String email, Long roomId) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+
+		roomParticipantReadService.checkParticipant(user, room);
+
 		return null;
 	}
 }
