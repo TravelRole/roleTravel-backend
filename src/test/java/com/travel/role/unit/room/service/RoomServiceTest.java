@@ -191,7 +191,7 @@ class RoomServiceTest {
 		RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.ADMIN));
 		RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("chan@naver.com", List.of(RoomRole.ADMIN));
 		List<RoomRoleDTO> roomRoleDTOS = List.of(roomRoleDTO1, roomRoleDTO2);
-		return new RoomModifiedRequestDTO("경주로 고고", startDate, endDate, roomRoleDTOS);
+		return new RoomModifiedRequestDTO("경주로 고고","경주", startDate, endDate, roomRoleDTOS);
 	}
 
 	private static UserPrincipal makeUserPrincipal() {

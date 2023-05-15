@@ -82,7 +82,8 @@ public class Room extends BaseCreateTime {
 		this.roomExpiredTime = now;
 	}
 
-	public void updateRoomNameAndDate(String roomName, LocalDate travelStartDate, LocalDate travelEndDate) {
+	public void updateRoomNameAndDate(String roomName, String location, LocalDate travelStartDate, LocalDate travelEndDate) {
+		this.location = location;
 		this.roomName = roomName;
 		this.travelStartDate = travelStartDate;
 		this.travelEndDate = travelEndDate;
