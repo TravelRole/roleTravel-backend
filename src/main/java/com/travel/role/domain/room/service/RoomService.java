@@ -34,6 +34,7 @@ import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.ScheduleDTO;
 import com.travel.role.domain.room.dto.response.RoomRoleInfoDTO;
+import com.travel.role.domain.room.dto.response.SidebarResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
@@ -453,5 +454,9 @@ public class RoomService {
 			}
 		}
 		return map;
+	}
+
+	public SidebarResponseDTO getSidebar(String email, Long roomId) {
+		return null;
 	}
 }
