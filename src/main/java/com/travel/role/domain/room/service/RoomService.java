@@ -436,7 +436,16 @@ public class RoomService {
 	private static List<RoomRoleInfoDTO> convertToRoomRoleDTOS(Map<User, List<RoomRole>> map) {
 		List<RoomRoleInfoDTO> roomRoleDTOS = new ArrayList<>();
 		for (User key : map.keySet()) {
-			roomRoleDTOS.add(new RoomRoleInfoDTO(key.getName(), key.getEmail(), key.getProfile(), map.get(key)));
+			List<RoomRole> roles = map.get(key);
+			RoomRoleInfoDTO newRoomRoleInfo = new RoomRoleInfoDTO(key.getName(), key.getEmail(), key.getProfile(),
+				roles);
+
+			if (roles.contains(RoomRole.ADMIN)) {
+				roomRoleDTOS.add(0, newRoomRoleInfo);
+			} else {
+				roomRoleDTOS.add(newRoomRoleInfo);
+			}
+
 		}
 		return roomRoleDTOS;
 	}
