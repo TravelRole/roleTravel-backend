@@ -460,9 +460,10 @@ public class RoomService {
 	public SidebarResponseDTO getSidebar(String email, Long roomId) {
 		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
-
 		roomParticipantReadService.checkParticipant(user, room);
 
-		return null;
+		List<RoomRole> roles = participantRoleReadService.findRoomRolesByUserAndRoom(user, room);
+
+		return SidebarResponseDTO.of(room, roles);
 	}
 }
