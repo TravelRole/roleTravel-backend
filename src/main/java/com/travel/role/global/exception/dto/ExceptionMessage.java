@@ -68,4 +68,7 @@ public final class ExceptionMessage {
 	public static final String INVALID_CATEGORY = "지정된 카테고리 내에서 입력해 주세요.";
 	public static final String INVALID_PAYMENT_METHOD = "지정된 결제수단 내에서 입력해 주세요";
 	public static final String INVALID_PAYMENT_TIME = "결제 시간을 yyyy-MM-dd HH:mm 형식으로 올바른 시간을 입력해 주세요.";
+
+	//schedule
+	public static final String MAP_PLACE_ID_VALUE_NOT_EMPTY = "카카오맵 장소 아이디는 필수값 입니다.";
 }
