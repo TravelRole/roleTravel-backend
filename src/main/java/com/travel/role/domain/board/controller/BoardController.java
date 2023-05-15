@@ -42,7 +42,7 @@ public class BoardController {
 	}
 
 	@GetMapping("/book")
-	public List<BookInfoResponseDTO> getScheduleInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
+	public List<BookInfoResponseDTO> getBookInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("roomId") Long roomId,
 		@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		return boardService.getBookInfo(userPrincipal.getEmail(), roomId, date);
@@ -62,5 +62,4 @@ public class BoardController {
 	) {
 		boardService.modifyIsBookedAndPaymentTime(userPrincipal.getEmail(), roomId, bookedRequestDTO);
 	}
-
 }
