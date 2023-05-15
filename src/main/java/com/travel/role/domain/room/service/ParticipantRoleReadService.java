@@ -1,6 +1,7 @@
 package com.travel.role.domain.room.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +35,12 @@ public class ParticipantRoleReadService {
 		if (!participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room, roomRoles)) {
 			throw new UserHaveNotPrivilegeException();
 		}
+	}
+
+	public List<RoomRole> findRoomRolesByUserAndRoom(User user, Room room) {
+
+		List<ParticipantRole> participantRoles = participantRoleRepository.findByUserAndRoom(user, room);
+		return participantRoles.stream().map(participantRole -> participantRole.getRoomRole())
+			.collect(Collectors.toList());
 	}
 }

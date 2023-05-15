@@ -26,4 +26,6 @@ public interface ParticipantRoleRepository extends JpaRepository<ParticipantRole
     @Query("DELETE FROM ParticipantRole pr WHERE pr.id in :ids")
     void deleteAllByIdInQuery(@Param("ids") List<Long> ids);
 
+    List<ParticipantRole> findByUserAndRoom(User user, Room room);
+
 }

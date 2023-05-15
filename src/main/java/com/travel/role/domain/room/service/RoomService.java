@@ -34,6 +34,7 @@ import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.ScheduleDTO;
 import com.travel.role.domain.room.dto.response.RoomRoleInfoDTO;
+import com.travel.role.domain.room.dto.response.SidebarResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
@@ -454,5 +455,16 @@ public class RoomService {
 			}
 		}
 		return map;
+	}
+
+	@Transactional(readOnly = true)
+	public SidebarResponseDTO getSidebar(String email, Long roomId) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(user, room);
+
+		List<RoomRole> roles = participantRoleReadService.findRoomRolesByUserAndRoom(user, room);
+
+		return SidebarResponseDTO.of(room, roles);
 	}
 }
