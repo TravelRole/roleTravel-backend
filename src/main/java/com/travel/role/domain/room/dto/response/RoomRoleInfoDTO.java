@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class RoomRoleInfoDTO {
 	private String name;
 	private String email;
+	private String profile;
 	private List<RoomRole> roles;
 }
