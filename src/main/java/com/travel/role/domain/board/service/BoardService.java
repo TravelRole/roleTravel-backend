@@ -20,15 +20,15 @@ import com.travel.role.domain.board.dto.request.BookedRequestDTO;
 import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
-import com.travel.role.domain.board.entity.ScheduleInfo;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
-import com.travel.role.domain.board.repository.ScheduleInfoRepository;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
+import com.travel.role.domain.schedule.entity.ScheduleInfo;
+import com.travel.role.domain.schedule.repository.ScheduleInfoRepository;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
@@ -152,5 +152,4 @@ public class BoardService {
 		if (date.isAfter(endDate))
 			throw new InvalidLocalDateException(LATE_DATE_ERROR);
 	}
-
 }
