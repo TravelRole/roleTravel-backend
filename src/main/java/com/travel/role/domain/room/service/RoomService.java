@@ -286,7 +286,8 @@ public class RoomService {
 
 	private void modifyRoomNameAndDateAndLocation(Room room, RoomModifiedRequestDTO dto) {
 		validateDate(dto.getStartDate(), dto.getEndDate());
-		room.updateRoomNameAndDate(dto.getRoomName(), dto.getLocation() ,room.getTravelStartDate(), room.getTravelEndDate());
+		room.updateRoomNameAndDate(dto.getRoomName(), dto.getLocation(), room.getTravelStartDate(),
+			room.getTravelEndDate());
 	}
 
 	private void modifyRoles(Map<String, List<ParticipantRole>> participantMap, List<RoomRoleDTO> userRoles) {
@@ -434,7 +435,7 @@ public class RoomService {
 	private static List<RoomRoleInfoDTO> convertToRoomRoleDTOS(Map<User, List<RoomRole>> map) {
 		List<RoomRoleInfoDTO> roomRoleDTOS = new ArrayList<>();
 		for (User key : map.keySet()) {
-			roomRoleDTOS.add(new RoomRoleInfoDTO(key.getName(), key.getEmail(), map.get(key)));
+			roomRoleDTOS.add(new RoomRoleInfoDTO(key.getName(), key.getEmail(), key.getProfile(), map.get(key)));
 		}
 		return roomRoleDTOS;
 	}
