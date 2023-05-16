@@ -16,6 +16,8 @@ import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
+import com.travel.role.global.exception.accounting.AccountingInfoCannotBeDeletedException;
+import com.travel.role.global.exception.accounting.AccountingInfoCannotBeModifiedException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,6 +60,10 @@ public class AccountingInfoService {
 		AccountingInfo findAccountingInfo = accountingInfoReadService.findAccountingInfoByIdOrElseThrow(
 			accountingInfoId);
 
+		if (findAccountingInfo.isLinkedWithBookInfo()) {
+			throw new AccountingInfoCannotBeModifiedException();
+		}
+
 		findAccountingInfo.update(
 			requestDTO.getPaymentMethod(),
 			requestDTO.getPaymentName(),
@@ -69,7 +75,7 @@ public class AccountingInfoService {
 		return ExpenseDetailModifyResDTO.from(findAccountingInfo);
 	}
 
-	public void deleteExpenseDetail(String email, Long roomId, Long accountingInfoId){
+	public void deleteExpenseDetail(String email, Long roomId, Long accountingInfoId) {
 
 		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
@@ -77,6 +83,13 @@ public class AccountingInfoService {
 		roomParticipantReadService.checkParticipant(loginUser, room);
 		participantRoleReadService.validUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
 
-		accountingInfoRepository.deleteById(accountingInfoId);
+		AccountingInfo findAccountingInfo = accountingInfoReadService.findAccountingInfoByIdOrElseThrow(
+			accountingInfoId);
+
+		if (findAccountingInfo.isLinkedWithBookInfo()) {
+			throw new AccountingInfoCannotBeDeletedException();
+		}
+
+		accountingInfoRepository.delete(findAccountingInfo);
 	}
 }

@@ -17,7 +17,7 @@ import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
-import com.travel.role.global.exception.board.AccountingInfoNotFoundException;
+import com.travel.role.global.exception.accounting.AccountingInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

@@ -13,7 +13,7 @@ import com.travel.role.domain.board.entity.Board;
 import com.travel.role.domain.board.entity.BookInfo;
 import com.travel.role.domain.board.repository.BoardRepository;
 import com.travel.role.domain.board.repository.BookInfoRepository;
-import com.travel.role.global.exception.board.AccountingInfoNotFoundException;
+import com.travel.role.global.exception.accounting.AccountingInfoNotFoundException;
 import com.travel.role.global.exception.board.BoardNotFoundException;
 import com.travel.role.global.exception.board.BookInfoNotFoundException;
 
