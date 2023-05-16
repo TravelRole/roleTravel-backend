@@ -40,7 +40,7 @@ public class AccountingInfoService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 
 		roomParticipantReadService.checkParticipant(loginUser, room);
-		participantRoleReadService.validUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
+		participantRoleReadService.validateUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
 
 		AccountingInfo accountingInfo = requestDTO.toAccountingInfo(room);
 		accountingInfo = accountingInfoRepository.save(accountingInfo);
@@ -55,7 +55,7 @@ public class AccountingInfoService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 
 		roomParticipantReadService.checkParticipant(loginUser, room);
-		participantRoleReadService.validUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
+		participantRoleReadService.validateUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
 
 		AccountingInfo findAccountingInfo = accountingInfoReadService.findAccountingInfoByIdOrElseThrow(
 			accountingInfoId);
@@ -81,7 +81,7 @@ public class AccountingInfoService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 
 		roomParticipantReadService.checkParticipant(loginUser, room);
-		participantRoleReadService.validUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
+		participantRoleReadService.validateUserRoleInRoom(loginUser, room, RoomRole.getAccountingRoles());
 
 		AccountingInfo findAccountingInfo = accountingInfoReadService.findAccountingInfoByIdOrElseThrow(
 			accountingInfoId);

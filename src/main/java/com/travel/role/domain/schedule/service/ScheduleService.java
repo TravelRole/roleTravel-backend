@@ -42,7 +42,7 @@ public class ScheduleService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 
 		roomParticipantReadService.checkParticipant(user, room);
-		participantRoleReadService.validUserRoleInRoom(user, room, RoomRole.getScheduleRoles());
+		participantRoleReadService.validateUserRoleInRoom(user, room, RoomRole.getScheduleRoles());
 
 		deleteScheduleById(scheduleIds);
 	}
@@ -61,6 +61,7 @@ public class ScheduleService {
 
 		User user = userReadService.findUserByEmailOrElseThrow(email);
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+
 		roomParticipantReadService.checkParticipant(user, room);
 		boardService.validateDate(room.getTravelStartDate(), room.getTravelEndDate(), date);
 

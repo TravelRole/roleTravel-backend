@@ -30,7 +30,7 @@ public class ParticipantRoleReadService {
 		return participantRoles;
 	}
 
-	public void validUserRoleInRoom(User user, Room room, List<RoomRole> roomRoles) {
+	public void validateUserRoleInRoom(User user, Room room, List<RoomRole> roomRoles) {
 
 		if (!participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room, roomRoles)) {
 			throw new UserHaveNotPrivilegeException();
