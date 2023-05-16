@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,6 @@ import com.travel.role.domain.schedule.dto.response.ScheduleResponseDTO;
 import com.travel.role.domain.schedule.repository.ScheduleInfoRepository;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
-import com.travel.role.global.exception.board.BoardNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,15 +48,13 @@ public class ScheduleService {
 	}
 
 	private void deleteScheduleById(List<Long> scheduleIds) {
-		try {
-			for (Long id : scheduleIds) {
-				Board board = boardReadService.findBoardByIdOrElseThrow(id);
-				if (board.getAccountingInfo() == null)
-					boardRepository.deleteById(id);
-			}
-		} catch (EmptyResultDataAccessException e) {
-			throw new BoardNotFoundException();
+
+		for (Long id : scheduleIds) {
+			Board board = boardReadService.findBoardByIdOrElseThrow(id);
+			if (board.getAccountingInfo() == null)
+				boardRepository.deleteById(id);
 		}
+
 	}
 
 	public List<ScheduleResponseDTO> getSchedule(String email, Long roomId, LocalDate date) {
