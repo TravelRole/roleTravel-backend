@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.amazonaws.SdkClientException;
 import com.travel.role.global.exception.accounting.AccountingInfoCannotBeDeletedException;
 import com.travel.role.global.exception.accounting.AccountingInfoCannotBeModifiedException;
+import com.travel.role.global.exception.accounting.AccountingInfoNotFoundException;
 import com.travel.role.global.exception.auth.InvalidTokenException;
 import com.travel.role.global.exception.auth.NotExistTokenException;
-import com.travel.role.global.exception.accounting.AccountingInfoNotFoundException;
+import com.travel.role.global.exception.board.BoardNotFoundException;
 import com.travel.role.global.exception.board.BookInfoNotFoundException;
 import com.travel.role.global.exception.comment.CommentInfoNotFoundException;
 import com.travel.role.global.exception.common.ResourceOperationAccessDeniedException;
@@ -33,6 +34,7 @@ import com.travel.role.global.exception.user.PlaceInfoNotFoundException;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.user.UserNotParticipateRoomException;
+import com.travel.role.global.exception.wantPlace.WantPlaceNotFound;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -170,6 +172,12 @@ public class GlobalExceptionHandler {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 
+	@ExceptionHandler(BoardNotFoundException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse boardNotFoundException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
 	@ExceptionHandler(AccountingInfoCannotBeDeletedException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse accountingInfoCannotBeDeletedException(AccountingInfoCannotBeDeletedException e) {
@@ -179,6 +187,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(AccountingInfoCannotBeModifiedException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse accountingInfoCannotBeModifiedException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(WantPlaceNotFound.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse wantPlaceNotFound(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }

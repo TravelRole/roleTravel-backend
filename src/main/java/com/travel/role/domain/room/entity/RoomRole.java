@@ -24,8 +24,13 @@ public enum RoomRole {
 		return this.responseValue;
 	}
 
-	public static List<RoomRole> getAccountingRoles(){
+	public static List<RoomRole> getAccountingRoles() {
 
 		return List.of(ACCOUNTING, ADMIN);
+	}
+
+	public static List<RoomRole> getScheduleRoles() {
+
+		return List.of(SCHEDULE, ADMIN);
 	}
 }
