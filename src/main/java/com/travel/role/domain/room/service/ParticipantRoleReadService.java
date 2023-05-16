@@ -37,6 +37,11 @@ public class ParticipantRoleReadService {
 		}
 	}
 
+	public boolean getRole(User user, Room room, List<RoomRole> roomRoles) {
+
+		return participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room, roomRoles);
+	}
+
 	public List<RoomRole> findRoomRolesByUserAndRoom(User user, Room room) {
 
 		List<ParticipantRole> participantRoles = participantRoleRepository.findByUserAndRoom(user, room);
