@@ -87,4 +87,9 @@ public class AccountingInfo {
 		this.category = category;
 		this.accountingEtc = accountingEtc;
 	}
+
+	public boolean isLinkedWithBookInfo() {
+
+		return this.bookInfo != null;
+	}
 }
