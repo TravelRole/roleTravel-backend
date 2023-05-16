@@ -10,13 +10,13 @@ import org.springframework.data.repository.query.Param;
 import com.travel.role.domain.wantplace.entity.WantPlace;
 
 public interface WantPlaceRepository extends JpaRepository<WantPlace, Long> {
-	@Query("SELECT DISTINCT w " +
+	@Query(value = "SELECT DISTINCT w " +
 		"FROM WantPlace w " +
 		"JOIN FETCH w.room r " +
 		"WHERE r.id = :roomId ORDER BY w.createDate ASC")
 	List<WantPlace> findWantPlaceByRoomId(@Param("roomId") Long roomId);
 
 	@Modifying
-	@Query("DELETE FROM WantPlace w where w.id = :placeId ")
+	@Query(value = "DELETE FROM WantPlace w where w.id = :placeId ")
 	void deleteWantPlaceById(@Param("placeId") Long placeId);
 }

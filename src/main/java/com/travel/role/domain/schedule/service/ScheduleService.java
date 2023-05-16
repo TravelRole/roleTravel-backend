@@ -49,12 +49,8 @@ public class ScheduleService {
 
 	private void deleteScheduleById(List<Long> scheduleIds) {
 
-		for (Long id : scheduleIds) {
-			Board board = boardReadService.findBoardByIdOrElseThrow(id);
-			if (board.getAccountingInfo() == null)
-				boardRepository.deleteById(id);
-		}
-
+		scheduleInfoRepository.deleteAllByIds(scheduleIds);
+		boardRepository.deleteAllByIds(scheduleIds);
 	}
 
 	public List<ScheduleResponseDTO> getSchedule(String email, Long roomId, LocalDate date) {
