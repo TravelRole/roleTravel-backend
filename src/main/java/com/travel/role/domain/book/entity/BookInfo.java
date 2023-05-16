@@ -1,4 +1,4 @@
-package com.travel.role.domain.board.entity;
+package com.travel.role.domain.book.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

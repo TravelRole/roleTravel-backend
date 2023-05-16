@@ -15,9 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.travel.role.domain.board.entity.Board;
-import com.travel.role.domain.board.entity.BookInfo;
+import com.travel.role.domain.book.entity.BookInfo;
 import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.schedule.entity.Board;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

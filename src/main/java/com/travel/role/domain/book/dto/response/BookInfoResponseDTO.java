@@ -1,10 +1,10 @@
-package com.travel.role.domain.board.dto.response;
+package com.travel.role.domain.book.dto.response;
 
 import java.time.LocalTime;
 
 import com.travel.role.domain.accounting.entity.Category;
 import com.travel.role.domain.accounting.entity.PaymentMethod;
-import com.travel.role.domain.board.entity.Board;
+import com.travel.role.domain.schedule.entity.Board;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -9,8 +9,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.travel.role.domain.board.dto.request.BoardRequestDTO;
-import com.travel.role.domain.board.entity.Board;
+import com.travel.role.domain.book.dto.request.BookInfoRequestDTO;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -47,17 +46,17 @@ public class ScheduleInfo {
 	@JoinColumn(name = "board_id")
 	private Board board;
 
-	public static ScheduleInfo of(Board board, BoardRequestDTO boardRequestDTO) {
-		return new ScheduleInfo(board, boardRequestDTO);
+	public static ScheduleInfo of(Board board, BookInfoRequestDTO bookInfoRequestDTO) {
+		return new ScheduleInfo(board, bookInfoRequestDTO);
 	}
 
-	private ScheduleInfo(Board board, BoardRequestDTO boardRequestDTO) {
+	private ScheduleInfo(Board board, BookInfoRequestDTO bookInfoRequestDTO) {
 		this.board = board;
-		this.latitude = boardRequestDTO.getLatitude();
-		this.longitude = boardRequestDTO.getLongitude();
-		this.placeName = boardRequestDTO.getPlaceName();
-		this.placeAddress = boardRequestDTO.getPlaceAddress();
-		this.scheduleEtc = boardRequestDTO.getEtc();
-		this.mapPlaceId = boardRequestDTO.getMapPlaceId();
+		this.latitude = bookInfoRequestDTO.getLatitude();
+		this.longitude = bookInfoRequestDTO.getLongitude();
+		this.placeName = bookInfoRequestDTO.getPlaceName();
+		this.placeAddress = bookInfoRequestDTO.getPlaceAddress();
+		this.scheduleEtc = bookInfoRequestDTO.getEtc();
+		this.mapPlaceId = bookInfoRequestDTO.getMapPlaceId();
 	}
 }

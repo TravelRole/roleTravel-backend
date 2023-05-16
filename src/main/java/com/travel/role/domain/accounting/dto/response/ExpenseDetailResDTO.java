@@ -3,7 +3,7 @@ package com.travel.role.domain.accounting.dto.response;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.Category;
 import com.travel.role.domain.accounting.entity.PaymentMethod;
-import com.travel.role.domain.board.entity.BookInfo;
+import com.travel.role.domain.book.entity.BookInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
