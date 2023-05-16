@@ -3,7 +3,6 @@ package com.travel.role.domain.wantplace.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ import com.travel.role.domain.wantplace.dto.response.WantPlaceDTO;
 import com.travel.role.domain.wantplace.dto.response.WantPlaceResponseDTO;
 import com.travel.role.domain.wantplace.entity.WantPlace;
 import com.travel.role.domain.wantplace.repository.WantPlaceRepository;
-import com.travel.role.global.exception.wantPlace.WantPlaceNotFound;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,7 +38,7 @@ public class WantPlaceService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(user, room);
 
-		deleteWantPlaceById(placeId);
+		wantPlaceRepository.deleteWantPlaceById(placeId);
 	}
 
 	public WantPlaceResponseDTO getWantPlaceList(String email, Long roomId) {
@@ -66,16 +64,7 @@ public class WantPlaceService {
 
 		return participantRoleReadService.getRole(user, room, RoomRole.getScheduleRoles());
 	}
-
-	private void deleteWantPlaceById(Long placeId) {
-
-		try {
-			wantPlaceRepository.deleteById(placeId);
-		} catch (EmptyResultDataAccessException e) {
-			throw new WantPlaceNotFound();
-		}
-	}
-
+	
 	private List<WantPlaceDTO> getWantPlaceList(Long roomId) {
 
 		return wantPlaceReadService.findWantPlaceByRoomId(roomId)

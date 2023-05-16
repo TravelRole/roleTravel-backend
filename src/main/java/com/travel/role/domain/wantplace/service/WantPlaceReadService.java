@@ -14,10 +14,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class WantPlaceReadService {
-	private WantPlaceRepository wantPlaceRepository;
+	private final WantPlaceRepository wantPlaceRepository;
 
 	public List<WantPlace> findWantPlaceByRoomId(Long roomId) {
 
 		return wantPlaceRepository.findWantPlaceByRoomId(roomId);
 	}
+
 }
