@@ -34,6 +34,7 @@ import com.travel.role.global.exception.user.PlaceInfoNotFoundException;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 import com.travel.role.global.exception.user.UserInfoNotFoundException;
 import com.travel.role.global.exception.user.UserNotParticipateRoomException;
+import com.travel.role.global.exception.wantPlace.WantPlaceNotFound;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -186,6 +187,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(AccountingInfoCannotBeModifiedException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse accountingInfoCannotBeModifiedException(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(WantPlaceNotFound.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse wantPlaceNotFound(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
