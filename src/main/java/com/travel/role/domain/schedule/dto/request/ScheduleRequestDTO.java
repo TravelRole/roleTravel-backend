@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ScheduleRequestDTO {
 
-	private Long boardId;
-
 	@NotBlank(message = ExceptionMessage.PLACE_NAME_VALUE_NOT_EMPTY)
 	private String placeName;
 
