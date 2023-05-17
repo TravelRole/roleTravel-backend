@@ -59,4 +59,8 @@ public class ScheduleInfo {
 		this.scheduleEtc = scheduleRequestDTO.getEtc();
 		this.mapPlaceId = scheduleRequestDTO.getMapPlaceId();
 	}
+
+	public void updateEtc(String scheduleEtc) {
+		this.scheduleEtc = scheduleEtc;
+	}
 }
