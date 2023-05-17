@@ -11,4 +11,5 @@ public interface CommentQuerydsl {
 
 	void dynamicDeleteById(Long commentId);
 
+	void dynamicDeleteByUserIdAndRoomId(Long userId, Long roomId);
 }

@@ -21,6 +21,7 @@ import com.travel.role.domain.room.entity.QParticipantRole;
 import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.user.dto.SimpleUserInfoResDTO;
 import com.travel.role.domain.user.entity.QUser;
+import com.travel.role.domain.user.entity.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -84,6 +85,23 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 		}
 	}
 
+	@Override
+	public void dynamicDeleteByUserIdAndRoomId(Long userId, Long roomId) {
+
+		// 최상단 댓글이면 update
+		queryFactory.update(comment)
+			.set(comment.content, "")
+			.set(comment.deleted, true)
+			.set(comment.fromUser, (User)null)
+			.where(comment.room.id.eq(roomId), comment.fromUser.id.eq(userId), comment.toUser.isNull())
+			.execute();
+
+		// 자식 댓글이면 delete
+		queryFactory.delete(comment)
+			.where(comment.room.id.eq(roomId), comment.fromUser.id.eq(userId), comment.toUser.isNotNull())
+			.execute();
+	}
+
 	private List<CommentResDTO> mappingToCommentResDTOList(List<Tuple> tuples, Map<Long, List<RoomRole>> roleMap,
 		Map<Long, List<CommentResDTO>> childMap) {
 		return tuples.stream().
@@ -121,7 +139,7 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 				c.deleted,
 				c.groupId
 			).from(c)
-			.innerJoin(c.fromUser, fu)
+			.leftJoin(c.fromUser, fu)
 			.leftJoin(c.toUser, tu)
 			.where(c.room.id.eq(roomId), c.toUser.isNotNull(), c.groupId.in(parentGroupIds))
 			.orderBy(c.groupId.asc())
@@ -138,7 +156,7 @@ public class CommentQuerydslImpl implements CommentQuerydsl {
 				c.createDate,
 				c.deleted
 			).from(c)
-			.innerJoin(c.fromUser, fu)
+			.leftJoin(c.fromUser, fu)
 			.leftJoin(c.toUser, tu)
 			.where(c.room.id.eq(roomId), c.toUser.isNull())
 			.orderBy(c.groupId.asc())
