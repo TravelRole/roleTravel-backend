@@ -191,7 +191,7 @@ class RoomServiceTest {
 		RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.ADMIN));
 		RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("chan@naver.com", List.of(RoomRole.ADMIN));
 		List<RoomRoleDTO> roomRoleDTOS = List.of(roomRoleDTO1, roomRoleDTO2);
-		return new RoomModifiedRequestDTO("경주로 고고","경주", startDate, endDate, roomRoleDTOS);
+		return new RoomModifiedRequestDTO("경주로 고고", "경주", startDate, endDate, roomRoleDTOS);
 	}
 
 	private static UserPrincipal makeUserPrincipal() {
@@ -267,7 +267,7 @@ class RoomServiceTest {
 		private static WantPlaceRequestDTO getWantPlaceRequestDto() {
 			return new WantPlaceRequestDTO(
 				1L, "제주도", "제주도", "1234",
-				123.0, 456.0, "섬", "색당로2314", 12345L);
+				123.0, 456.0, "섬", "색당로2314", 12345L, "www.naver.com");
 		}
 	}
 }

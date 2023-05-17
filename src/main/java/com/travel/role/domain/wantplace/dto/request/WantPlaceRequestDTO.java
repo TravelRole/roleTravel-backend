@@ -37,4 +37,6 @@ public class WantPlaceRequestDTO {
 
 	@NotNull(message = ExceptionMessage.MAP_PLACE_ID_VALUE_NOT_EMPTY)
 	private Long mapPlaceId;
+
+	private String link;
 }

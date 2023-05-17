@@ -17,6 +17,7 @@ public class WantPlaceDTO {
 	private String category;
 	private String lotNumberAddress;
 	private Long mapPlaceId;
+	private String link;
 
 	private WantPlaceDTO(WantPlace wantPlace) {
 		this.placeId = wantPlace.getId();
@@ -28,6 +29,7 @@ public class WantPlaceDTO {
 		this.category = wantPlace.getCategory();
 		this.lotNumberAddress = wantPlace.getLotNumberAddress();
 		this.mapPlaceId = wantPlace.getMapPlaceId();
+		this.link = wantPlace.getLink();
 	}
 
 	public static WantPlaceDTO from(WantPlace wantPlace) {

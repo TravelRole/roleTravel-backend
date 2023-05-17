@@ -57,6 +57,9 @@ public class WantPlace extends BaseTime {
 	@Column(name = "map_place_id", nullable = false)
 	private Long mapPlaceId;
 
+	@Column
+	private String link;
+
 	private WantPlace(Room room, WantPlaceRequestDTO wantPlaceRequestDTO) {
 		this.room = room;
 		this.placeName = wantPlaceRequestDTO.getPlaceName();
@@ -67,6 +70,7 @@ public class WantPlace extends BaseTime {
 		this.category = wantPlaceRequestDTO.getCategory();
 		this.lotNumberAddress = wantPlaceRequestDTO.getLotNumberAddress();
 		this.mapPlaceId = wantPlaceRequestDTO.getMapPlaceId();
+		this.link = wantPlaceRequestDTO.getLink();
 	}
 
 	public static WantPlace of(Room room, WantPlaceRequestDTO wantPlaceRequestDTO) {
