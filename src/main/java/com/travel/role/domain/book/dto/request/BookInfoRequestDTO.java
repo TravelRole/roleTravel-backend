@@ -1,4 +1,4 @@
-package com.travel.role.domain.board.dto.request;
+package com.travel.role.domain.book.dto.request;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardRequestDTO {
+public class BookInfoRequestDTO {
 
 	@NotBlank(message = ExceptionMessage.PLACE_NAME_VALUE_NOT_EMPTY)
 	private String placeName;

@@ -1,4 +1,4 @@
-package com.travel.role.domain.board.controller;
+package com.travel.role.domain.book.controller;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.role.domain.board.dto.request.BoardRequestDTO;
-import com.travel.role.domain.board.dto.request.BookInfoRequestDTO;
-import com.travel.role.domain.board.dto.request.BookedRequestDTO;
-import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
-import com.travel.role.domain.board.service.BoardService;
+import com.travel.role.domain.book.dto.request.BookInfoRequestDTO;
+import com.travel.role.domain.book.dto.request.BookModifyRequestDTO;
+import com.travel.role.domain.book.dto.request.BookedRequestDTO;
+import com.travel.role.domain.book.dto.response.BookInfoResponseDTO;
+import com.travel.role.domain.book.service.BookService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
@@ -30,29 +30,29 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/room/{roomId}/board")
-public class BoardController {
-	private final BoardService boardService;
+public class BookController {
+	private final BookService bookService;
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void addSchedule(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("roomId") Long roomId,
-		@RequestBody @Valid BoardRequestDTO boardRequestDTO) {
-		boardService.addSchedule(userPrincipal.getEmail(), roomId, boardRequestDTO);
+		@RequestBody @Valid BookInfoRequestDTO bookInfoRequestDTO) {
+		bookService.addSchedule(userPrincipal.getEmail(), roomId, bookInfoRequestDTO);
 	}
 
 	@GetMapping("/book")
 	public List<BookInfoResponseDTO> getBookInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("roomId") Long roomId,
 		@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-		return boardService.getBookInfo(userPrincipal.getEmail(), roomId, date);
+		return bookService.getBookInfo(userPrincipal.getEmail(), roomId, date);
 	}
 
 	@PatchMapping("/book")
 	public void updateBookInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("roomId") Long roomId,
-		@RequestBody @Valid BookInfoRequestDTO bookInfoRequestDTO) {
-		boardService.modifyBookInfo(userPrincipal.getEmail(), roomId, bookInfoRequestDTO);
+		@RequestBody @Valid BookModifyRequestDTO bookModifyRequestDTO) {
+		bookService.modifyBookInfo(userPrincipal.getEmail(), roomId, bookModifyRequestDTO);
 	}
 
 	@PatchMapping("/booked")
@@ -60,6 +60,6 @@ public class BoardController {
 		@PathVariable("roomId") Long roomId,
 		@RequestBody @Valid BookedRequestDTO bookedRequestDTO
 	) {
-		boardService.modifyIsBookedAndPaymentTime(userPrincipal.getEmail(), roomId, bookedRequestDTO);
+		bookService.modifyIsBookedAndPaymentTime(userPrincipal.getEmail(), roomId, bookedRequestDTO);
 	}
 }

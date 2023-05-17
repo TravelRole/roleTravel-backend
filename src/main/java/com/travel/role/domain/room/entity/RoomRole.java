@@ -33,4 +33,9 @@ public enum RoomRole {
 
 		return List.of(SCHEDULE, ADMIN);
 	}
+
+	public static List<RoomRole> getReservationRoles() {
+
+		return List.of(RESERVATION, ADMIN);
+	}
 }
