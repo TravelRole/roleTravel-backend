@@ -82,6 +82,11 @@ public class CommentService {
 		commentRepository.dynamicDeleteById(commentId);
 	}
 
+	public void deleteCommentsByRoomIdAndUserId(Long roomId, Long userId) {
+
+		commentRepository.dynamicDeleteByUserIdAndRoomId(roomId, userId);
+	}
+
 	private Comment createComment(User fromUser, Room room, Long parentId, String content) {
 
 		Comment newComment;
