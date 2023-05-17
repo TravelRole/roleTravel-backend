@@ -19,6 +19,7 @@ public class BookModifyRequestDTO {
 	@NotNull(message = ExceptionMessage.ACCOUNTING_INFO_ID_VALUE_NOT_EMPTY)
 	private Long accountingInfoId;
 
+	@NotNull(message = ExceptionMessage.INVALID_PAYMENT_METHOD)
 	private PaymentMethod paymentMethod;
 
 	@Min(value = 0, message = ExceptionMessage.EXPENSE_MUST_GREATER_THAN_OR_EQUAL_TO_ZERO)

@@ -1,7 +1,5 @@
 package com.travel.role.domain.book.service;
 
-import static com.travel.role.global.exception.dto.ExceptionMessage.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,27 +9,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.PaymentMethod;
-import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.accounting.service.AccountingInfoReadService;
-import com.travel.role.domain.book.dto.request.BookInfoRequestDTO;
 import com.travel.role.domain.book.dto.request.BookModifyRequestDTO;
 import com.travel.role.domain.book.dto.request.BookedRequestDTO;
 import com.travel.role.domain.book.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.book.entity.BookInfo;
-import com.travel.role.domain.book.repository.BookInfoRepository;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.service.ParticipantRoleReadService;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.schedule.entity.Board;
-import com.travel.role.domain.schedule.entity.ScheduleInfo;
-import com.travel.role.domain.schedule.repository.BoardRepository;
-import com.travel.role.domain.schedule.repository.ScheduleInfoRepository;
-import com.travel.role.domain.schedule.service.BoardReadService;
+import com.travel.role.domain.schedule.service.ScheduleService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
-import com.travel.role.global.exception.room.InvalidLocalDateException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,11 +33,7 @@ public class BookService {
 	private final UserReadService userReadService;
 	private final RoomReadService roomReadService;
 	private final BookReadService bookReadService;
-	private final BoardReadService boardReadService;
-	private final BoardRepository boardRepository;
-	private final BookInfoRepository bookInfoRepository;
-	private final ScheduleInfoRepository scheduleInfoRepository;
-	private final AccountingInfoRepository accountingInfoRepository;
+	private final ScheduleService scheduleService;
 	private final AccountingInfoReadService accountingInfoReadService;
 	private final RoomParticipantReadService roomParticipantReadService;
 	private final ParticipantRoleReadService participantRoleReadService;
@@ -105,9 +92,9 @@ public class BookService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(user, room);
 
-		validateDate(room.getTravelStartDate(), room.getTravelEndDate(), date);
+		scheduleService.validateDate(room.getTravelStartDate(), room.getTravelEndDate(), date);
 
-		return getBookInfoResult(boardReadService.findBookInfoForDate(roomId, date));
+		return getBookInfoResult(bookReadService.findBookInfoForDate(roomId, date));
 	}
 
 	private List<BookInfoResponseDTO> getBookInfoResult(List<Board> boardList) {
@@ -117,37 +104,4 @@ public class BookService {
 			.collect(Collectors.toList());
 	}
 
-	public void addSchedule(String email, Long roomId, BookInfoRequestDTO bookInfoRequestDTO) {
-
-		User user = userReadService.findUserByEmailOrElseThrow(email);
-		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
-		roomParticipantReadService.checkParticipant(user, room);
-		validateDate(room.getTravelStartDate(), room.getTravelEndDate(),
-			bookInfoRequestDTO.getScheduleDate().toLocalDate());
-
-		Board board = boardRepository.save(Board.of(room, bookInfoRequestDTO));
-		scheduleInfoRepository.save(ScheduleInfo.of(board, bookInfoRequestDTO));
-
-		if (bookInfoRequestDTO.getIsBookRequired()) {
-			BookInfo bookInfo = bookInfoRepository.save(BookInfo.builder()
-				.isBooked(false)
-				.build());
-			accountingInfoRepository.save(AccountingInfo.builder()
-				.board(board)
-				.bookInfo(bookInfo)
-				.category(bookInfoRequestDTO.getCategory())
-				.paymentName(bookInfoRequestDTO.getPlaceName())
-				.price(0)
-				.room(room)
-				.build());
-		}
-	}
-
-	public void validateDate(LocalDate startDate, LocalDate endDate, LocalDate date) {
-
-		if (date.isBefore(startDate))
-			throw new InvalidLocalDateException(EARLY_DATE_ERROR);
-		if (date.isAfter(endDate))
-			throw new InvalidLocalDateException(LATE_DATE_ERROR);
-	}
 }

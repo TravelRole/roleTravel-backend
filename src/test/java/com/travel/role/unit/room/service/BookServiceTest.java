@@ -18,20 +18,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.Category;
-import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
-import com.travel.role.domain.book.dto.request.BookInfoRequestDTO;
 import com.travel.role.domain.book.dto.response.BookInfoResponseDTO;
 import com.travel.role.domain.book.entity.BookInfo;
-import com.travel.role.domain.book.repository.BookInfoRepository;
+import com.travel.role.domain.book.service.BookReadService;
 import com.travel.role.domain.book.service.BookService;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
+import com.travel.role.domain.schedule.dto.request.ScheduleRequestDTO;
 import com.travel.role.domain.schedule.entity.Board;
 import com.travel.role.domain.schedule.entity.ScheduleInfo;
-import com.travel.role.domain.schedule.repository.BoardRepository;
-import com.travel.role.domain.schedule.repository.ScheduleInfoRepository;
-import com.travel.role.domain.schedule.service.BoardReadService;
+import com.travel.role.domain.schedule.service.ScheduleService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 
@@ -47,19 +44,10 @@ public class BookServiceTest {
 	private RoomParticipantReadService roomParticipantReadService;
 
 	@Mock
-	private BoardRepository boardRepository;
+	private BookReadService bookReadService;
 
 	@Mock
-	private BookInfoRepository bookInfoRepository;
-
-	@Mock
-	private BoardReadService boardReadService;
-
-	@Mock
-	private ScheduleInfoRepository scheduleInfoRepository;
-
-	@Mock
-	private AccountingInfoRepository accountingInfoRepository;
+	private ScheduleService scheduleService;
 
 	@InjectMocks
 	private BookService bookService;
@@ -74,10 +62,12 @@ public class BookServiceTest {
 			.willReturn(user);
 		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
 			.willReturn(room);
-		given(boardReadService.findBookInfoForDate(anyLong(), any(LocalDate.class)))
+		given(bookReadService.findBookInfoForDate(anyLong(), any(LocalDate.class)))
 			.willReturn(findBoardList());
 		doNothing()
 			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
+		doNothing()
+			.when(scheduleService).validateDate(any(LocalDate.class), any(LocalDate.class), any(LocalDate.class));
 
 		//when
 		List<BookInfoResponseDTO> result = bookService.getBookInfo("asd@naver.com", 1L, LocalDate.now());
@@ -86,28 +76,6 @@ public class BookServiceTest {
 		assertThat(result.get(0).getPlaceName()).isEqualTo("우도");
 		assertThat(result.get(0).getCategory()).isEqualTo(Category.ETC);
 		assertThat(result.get(0).getPrice()).isEqualTo(0);
-	}
-
-	@Test
-	void 찜목록에서_일정에_추가_성공() {
-		//given
-		User user = makeUser(1L);
-		Room room = makeRoom(1L);
-		given(userReadService.findUserByEmailOrElseThrow(anyString()))
-			.willReturn(user);
-		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
-			.willReturn(room);
-		doNothing()
-			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
-
-		//when
-		bookService.addSchedule("asd@gmail.com", 1L, createBoardRequestDTO());
-
-		//then
-		then(boardRepository).should(times(1)).save(any(Board.class));
-		then(bookInfoRepository).should(times(1)).save(any(BookInfo.class));
-		then(scheduleInfoRepository).should(times(1)).save(any(ScheduleInfo.class));
-		then(accountingInfoRepository).should(times(1)).save(any(AccountingInfo.class));
 	}
 
 	private User makeUser(Long id) {
@@ -128,8 +96,8 @@ public class BookServiceTest {
 			.build();
 	}
 
-	private BookInfoRequestDTO createBoardRequestDTO() {
-		return new BookInfoRequestDTO("우도", "제주도", LocalDate.now().atTime(LocalTime.now()), null, true, Category.ETC,
+	private ScheduleRequestDTO createBoardRequestDTO() {
+		return new ScheduleRequestDTO("우도", "제주도", LocalDate.now().atTime(LocalTime.now()), null, true, Category.ETC,
 			123.0, 456.0, null, 12345L);
 	}
 

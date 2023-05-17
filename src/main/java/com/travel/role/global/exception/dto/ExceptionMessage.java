@@ -74,6 +74,7 @@ public final class ExceptionMessage {
 	//schedule
 	public static final String MAP_PLACE_ID_VALUE_NOT_EMPTY = "카카오맵 장소 아이디는 필수값 입니다.";
 	public static final String BOARD_NOT_FOUND = "해당하는 일정이 존재하지 않습니다.";
+	public static final String BOARD_ID_EMPTY = "일정 아이디는 필수 값 입니다.";
 
 	//want-place
 	public static final String WANT_PLACE_NOT_FOUND = "해당하는 찜 목록이 존재하지 않습니다.";
