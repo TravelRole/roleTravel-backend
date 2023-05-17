@@ -27,8 +27,8 @@ public class Comment extends BaseTime {
 	@Column
 	private Long groupId;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "from_user_id", nullable = false, updatable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "from_user_id")
 	private User fromUser; // 작성자
 
 	@ManyToOne(fetch = FetchType.LAZY)
