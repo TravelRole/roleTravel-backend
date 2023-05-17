@@ -19,24 +19,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.Category;
 import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
-import com.travel.role.domain.board.dto.request.BoardRequestDTO;
-import com.travel.role.domain.board.dto.response.BookInfoResponseDTO;
-import com.travel.role.domain.board.entity.Board;
-import com.travel.role.domain.board.entity.BookInfo;
-import com.travel.role.domain.board.repository.BoardRepository;
-import com.travel.role.domain.board.repository.BookInfoRepository;
-import com.travel.role.domain.board.service.BoardReadService;
-import com.travel.role.domain.board.service.BoardService;
+import com.travel.role.domain.book.dto.request.BookInfoRequestDTO;
+import com.travel.role.domain.book.dto.response.BookInfoResponseDTO;
+import com.travel.role.domain.book.entity.BookInfo;
+import com.travel.role.domain.book.repository.BookInfoRepository;
+import com.travel.role.domain.book.service.BookService;
 import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
+import com.travel.role.domain.schedule.entity.Board;
 import com.travel.role.domain.schedule.entity.ScheduleInfo;
+import com.travel.role.domain.schedule.repository.BoardRepository;
 import com.travel.role.domain.schedule.repository.ScheduleInfoRepository;
+import com.travel.role.domain.schedule.service.BoardReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 
 @ExtendWith(MockitoExtension.class)
-public class BoardServiceTest {
+public class BookServiceTest {
 	@Mock
 	private UserReadService userReadService;
 
@@ -62,7 +62,7 @@ public class BoardServiceTest {
 	private AccountingInfoRepository accountingInfoRepository;
 
 	@InjectMocks
-	private BoardService boardService;
+	private BookService bookService;
 
 	@Test
 	void 예약페이지_조회_성공() {
@@ -80,7 +80,7 @@ public class BoardServiceTest {
 			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
 		//when
-		List<BookInfoResponseDTO> result = boardService.getBookInfo("asd@naver.com", 1L, LocalDate.now());
+		List<BookInfoResponseDTO> result = bookService.getBookInfo("asd@naver.com", 1L, LocalDate.now());
 
 		//then
 		assertThat(result.get(0).getPlaceName()).isEqualTo("우도");
@@ -101,7 +101,7 @@ public class BoardServiceTest {
 			.when(roomParticipantReadService).checkParticipant(any(User.class), any(Room.class));
 
 		//when
-		boardService.addSchedule("asd@gmail.com", 1L, createBoardRequestDTO());
+		bookService.addSchedule("asd@gmail.com", 1L, createBoardRequestDTO());
 
 		//then
 		then(boardRepository).should(times(1)).save(any(Board.class));
@@ -128,8 +128,8 @@ public class BoardServiceTest {
 			.build();
 	}
 
-	private BoardRequestDTO createBoardRequestDTO() {
-		return new BoardRequestDTO("우도", "제주도", LocalDate.now().atTime(LocalTime.now()), null, true, Category.ETC,
+	private BookInfoRequestDTO createBoardRequestDTO() {
+		return new BookInfoRequestDTO("우도", "제주도", LocalDate.now().atTime(LocalTime.now()), null, true, Category.ETC,
 			123.0, 456.0, null, 12345L);
 	}
 

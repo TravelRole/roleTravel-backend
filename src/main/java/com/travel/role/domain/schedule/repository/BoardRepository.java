@@ -1,4 +1,4 @@
-package com.travel.role.domain.board.repository;
+package com.travel.role.domain.schedule.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.travel.role.domain.board.entity.Board;
+import com.travel.role.domain.schedule.entity.Board;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 	@Query(value = "SELECT DISTINCT b, ai, si, bi " +
