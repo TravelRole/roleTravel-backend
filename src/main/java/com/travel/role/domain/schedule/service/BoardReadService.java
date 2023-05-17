@@ -19,12 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class BoardReadService {
 	private final BoardRepository boardRepository;
 
-	public List<Board> findBookInfoForDate(Long roomId, LocalDate date) {
-
-		return boardRepository.findBoardByRoomIdAndScheduleDate(roomId, date.atStartOfDay(),
-			date.atTime(LocalTime.MAX));
-	}
-
 	public List<Board> findScheduleForDate(Long roomId, LocalDate date) {
 
 		return boardRepository.findScheduleByRoomIdAndScheduleDate(roomId, date.atStartOfDay(),

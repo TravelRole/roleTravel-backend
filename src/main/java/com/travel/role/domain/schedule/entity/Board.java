@@ -18,8 +18,8 @@ import javax.persistence.Table;
 
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.Category;
-import com.travel.role.domain.book.dto.request.BookInfoRequestDTO;
 import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.schedule.dto.request.ScheduleRequestDTO;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -60,14 +60,18 @@ public class Board {
 	@OneToOne(mappedBy = "board", cascade = CascadeType.ALL)
 	private AccountingInfo accountingInfo;
 
-	private Board(Room room, BookInfoRequestDTO bookInfoRequestDTO) {
+	private Board(Room room, ScheduleRequestDTO scheduleRequestDTO) {
 		this.room = room;
-		this.scheduleDate = bookInfoRequestDTO.getScheduleDate();
-		this.link = bookInfoRequestDTO.getLink();
-		this.category = bookInfoRequestDTO.getCategory();
+		this.scheduleDate = scheduleRequestDTO.getScheduleDate();
+		this.link = scheduleRequestDTO.getLink();
+		this.category = scheduleRequestDTO.getCategory();
 	}
 
-	public static Board of(Room room, BookInfoRequestDTO bookInfoRequestDTO) {
-		return new Board(room, bookInfoRequestDTO);
+	public static Board of(Room room, ScheduleRequestDTO scheduleRequestDTO) {
+		return new Board(room, scheduleRequestDTO);
+	}
+
+	public void update() {
+
 	}
 }
