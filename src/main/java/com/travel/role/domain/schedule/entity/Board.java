@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.Category;
 import com.travel.role.domain.room.entity.Room;
+import com.travel.role.domain.schedule.dto.request.ScheduleModifyRequestDTO;
 import com.travel.role.domain.schedule.dto.request.ScheduleRequestDTO;
 
 import lombok.AccessLevel;
@@ -71,7 +72,9 @@ public class Board {
 		return new Board(room, scheduleRequestDTO);
 	}
 
-	public void update() {
-
+	public void updateTimeAndCategory(ScheduleModifyRequestDTO reqDTO) {
+		this.scheduleDate = reqDTO.getScheduleDate();
+		this.category = reqDTO.getCategory();
 	}
+
 }

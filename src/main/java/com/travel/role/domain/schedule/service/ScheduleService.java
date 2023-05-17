@@ -80,9 +80,26 @@ public class ScheduleService {
 		roomParticipantReadService.checkParticipant(user, room);
 		participantRoleReadService.validateUserRoleInRoom(user, room, RoomRole.getScheduleRoles());
 
-		boardReadService.findBoardByIdOrElseThrow(scheduleModifyRequestDTO.getBoardId());
-		scheduleReadService.findScheduleInfoByIdOrElseThrow(scheduleModifyRequestDTO.getMapPlaceId());
+		Board board = boardReadService.findBoardByIdOrElseThrow(scheduleModifyRequestDTO.getBoardId());
+		ScheduleInfo scheduleInfo = scheduleReadService.findScheduleInfoByIdOrElseThrow(
+			scheduleModifyRequestDTO.getBoardId());
 
+		board.updateTimeAndCategory(scheduleModifyRequestDTO);
+		scheduleInfo.updateEtc(scheduleModifyRequestDTO.getEtc());
+
+		if (scheduleModifyRequestDTO.getIsBookRequired()) {
+			BookInfo bookInfo = bookInfoRepository.save(BookInfo.builder()
+				.isBooked(false)
+				.build());
+			accountingInfoRepository.save(AccountingInfo.builder()
+				.board(board)
+				.bookInfo(bookInfo)
+				.category(scheduleModifyRequestDTO.getCategory())
+				.paymentName(scheduleModifyRequestDTO.getPlaceName())
+				.price(0)
+				.room(room)
+				.build());
+		}
 	}
 
 	public void deleteSchedule(String email, Long roomId, List<Long> scheduleIds) {
