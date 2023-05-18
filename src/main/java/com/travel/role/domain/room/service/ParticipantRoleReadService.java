@@ -45,7 +45,7 @@ public class ParticipantRoleReadService {
 	public List<RoomRole> findRoomRolesByUserAndRoom(User user, Room room) {
 
 		List<ParticipantRole> participantRoles = participantRoleRepository.findByUserAndRoom(user, room);
-		return participantRoles.stream().map(participantRole -> participantRole.getRoomRole())
+		return participantRoles.stream().map(ParticipantRole::getRoomRole)
 			.collect(Collectors.toList());
 	}
 }
