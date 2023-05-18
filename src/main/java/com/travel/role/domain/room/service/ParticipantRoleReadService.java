@@ -11,6 +11,7 @@ import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.user.entity.User;
+import com.travel.role.global.exception.room.RolesIsEmptyException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
 
@@ -45,6 +46,10 @@ public class ParticipantRoleReadService {
 	public List<RoomRole> findRoomRolesByUserAndRoom(User user, Room room) {
 
 		List<ParticipantRole> participantRoles = participantRoleRepository.findByUserAndRoom(user, room);
+
+		if (participantRoles.isEmpty())
+			throw new RolesIsEmptyException();
+
 		return participantRoles.stream().map(ParticipantRole::getRoomRole)
 			.collect(Collectors.toList());
 	}
