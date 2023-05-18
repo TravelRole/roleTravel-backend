@@ -476,4 +476,12 @@ public class RoomService {
 
 		return SidebarResponseDTO.of(room, roles);
 	}
+
+	public List<RoomRole> getUserRoles(String email, Long roomId) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(user, room);
+
+		return participantRoleReadService.findRoomRolesByUserAndRoom(user, room);
+	}
 }
