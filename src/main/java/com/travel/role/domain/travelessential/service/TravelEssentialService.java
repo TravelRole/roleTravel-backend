@@ -61,4 +61,12 @@ public class TravelEssentialService {
 			findUser.getId(), findRoom.getId(), reqDTO.getIds(), reqDTO.getCheck()
 		);
 	}
+
+	public void deleteAllByRoomId(Long roomId){
+		travelEssentialRepository.deleteAllByRoomId(roomId);
+	}
+
+	public void deleteAllByRoomIdAndUserId(Long roomId, Long userId){
+		travelEssentialRepository.deleteAllByRoomIdAndUserId(roomId, userId);
+	}
 }
