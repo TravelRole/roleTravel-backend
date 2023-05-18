@@ -53,4 +53,8 @@ public class ParticipantRoleReadService {
 		return participantRoles.stream().map(ParticipantRole::getRoomRole)
 			.collect(Collectors.toList());
 	}
+
+	public boolean checkUserIsAdmin(User user, Room room) {
+		return participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room, List.of(RoomRole.ADMIN));
+	}
 }

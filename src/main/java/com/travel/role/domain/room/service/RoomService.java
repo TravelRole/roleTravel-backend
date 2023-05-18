@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
+import com.travel.role.domain.room.dto.request.ExitRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
@@ -483,5 +484,31 @@ public class RoomService {
 		roomParticipantReadService.checkParticipant(user, room);
 
 		return participantRoleReadService.findRoomRolesByUserAndRoom(user, room);
+	}
+
+	public void exitRoom(String email, Long roomId, ExitRoomRequestDTO dto) {
+		User user = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(user, room);
+
+		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
+		if (checkUserIsAdmin(email, participantRoles) && participantRoles.size() == 1) {
+			// 방에 나 혼자 있을 경우
+			return;
+		}
+
+		if (checkUserIsAdmin(email, participantRoles)) {
+			// 총무가 나가서, 총무를 위임해야하는 경우
+			return;
+		}
+
+
+	}
+
+	private boolean checkUserIsAdmin(String email, List<ParticipantRole> participantRoles) {
+		return participantRoles.stream().anyMatch((participantRole -> {
+			User user = participantRole.getUser();
+			return Objects.equals(user.getEmail(), email) && participantRole.getRoomRole() == RoomRole.ADMIN
+		}));
 	}
 }
