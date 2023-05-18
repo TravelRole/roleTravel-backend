@@ -476,4 +476,8 @@ public class RoomService {
 
 		return SidebarResponseDTO.of(room, roles);
 	}
+
+	public List<RoomRole> getUserRoles(String email, Long roomId) {
+		return null;
+	}
 }

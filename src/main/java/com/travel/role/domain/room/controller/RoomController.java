@@ -27,6 +27,7 @@ import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.SidebarResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
+import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
@@ -114,5 +115,11 @@ public class RoomController {
 	public SidebarResponseDTO getSidebar(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId) {
 		return roomService.getSidebar(userPrincipal.getEmail(), roomId);
+	}
+
+	@GetMapping("/room/{room_id}/role")
+	public List<RoomRole> getUserRoles(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") Long roomId) {
+		return roomService.getUserRoles(userPrincipal.getEmail(), roomId);
 	}
 }
