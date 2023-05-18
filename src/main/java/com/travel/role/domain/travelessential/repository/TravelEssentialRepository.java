@@ -22,6 +22,16 @@ public interface TravelEssentialRepository extends JpaRepository<TravelEssential
 
 	@Modifying
 	@Transactional
+	@Query("DELETE FROM TravelEssential te WHERE te.room.id = :roomId")
+	void deleteAllByRoomId(@Param("roomId") Long roomId);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM TravelEssential te WHERE te.room.id = :roomId AND te.user.id = :userId")
+	void deleteAllByRoomIdAndUserId(@Param("roomId") Long roomId, @Param("userId") Long userId);
+
+	@Modifying
+	@Transactional
 	@Query("UPDATE TravelEssential te SET te.isChecked = :check WHERE te.user.id = :userId AND te.room.id = :roomId AND te.id in :ids")
 	void updateCheckEssentialsByUserAndRoomAndEssentialIds(@Param("userId") Long userId, @Param("roomId") Long roomId,
 		@Param("ids") List<Long> ids, @Param("check") Boolean check);
