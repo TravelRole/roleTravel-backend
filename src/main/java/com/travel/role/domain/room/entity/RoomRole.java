@@ -2,6 +2,7 @@ package com.travel.role.domain.room.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.AllArgsConstructor;
@@ -37,5 +38,14 @@ public enum RoomRole {
 	public static List<RoomRole> getReservationRoles() {
 
 		return List.of(RESERVATION, ADMIN);
+	}
+
+	@JsonCreator
+	public static RoomRole from(String roomRole) {
+		try {
+			return RoomRole.valueOf(roomRole.toUpperCase());
+		} catch (NullPointerException | IllegalArgumentException e) {
+			return null;
+		}
 	}
 }
