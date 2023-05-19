@@ -43,7 +43,12 @@ public enum RoomRole {
 	@JsonCreator
 	public static RoomRole from(String roomRole) {
 		try {
-			return RoomRole.valueOf(roomRole.toUpperCase());
+			for (RoomRole role : RoomRole.values()) {
+				if (role.responseValue.equals(roomRole)) {
+					return role;
+				}
+			}
+			return null;
 		} catch (NullPointerException | IllegalArgumentException e) {
 			return null;
 		}
