@@ -271,9 +271,9 @@ public class RoomService {
 
 		List<Long> ids = new ArrayList<>();
 		List<ParticipantRole> participantRoles = participantMap.get(adminEmail);
-		for (ParticipantRole participantRole : participantRoles) {
-			ids.add(participantRole.getId());
-			participantRoles.remove(participantRole);
+		for (int i = 0; i < participantRoles.size() - 1; i++) {
+			ids.add(participantRoles.get(i).getId());
+			participantRoles.remove(participantRoles.get(i));
 		}
 		participantRoleRepository.deleteAllByIdInQuery(ids);
 	}
