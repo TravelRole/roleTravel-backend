@@ -541,6 +541,7 @@ public class RoomService {
 		boardRepository.deleteAllByRoomId(roomId);
 		participantRoleRepository.deleteAllByRoomId(roomId);
 		roomParticipantRepository.deleteAllByRoomId(roomId);
+
 	}
 
 	private List<Long> getBookIds(List<AccountingInfo> accountingInfos) {
