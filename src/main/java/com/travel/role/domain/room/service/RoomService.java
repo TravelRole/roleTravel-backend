@@ -516,16 +516,13 @@ public class RoomService {
 			return;
 		}
 
-		participantRoleRepository.deleteByRoomIdAndEmail(roomId, email);
-		roomParticipantRepository.deleteByRoomIdAndEmail(roomId, email);
-
 		if (checkUserIsAdmin(email, participantRoles)) {
 			// 총무가 나가서, 총무를 위임해야하는 경우
-
-			return;
+			changeAdmin(dto.getEmail(), roomId);
 		}
 
-
+		participantRoleRepository.deleteByRoomIdAndEmail(roomId, email);
+		roomParticipantRepository.deleteByRoomIdAndEmail(roomId, email);
 	}
 
 	private boolean checkUserIsAdmin(String email, List<ParticipantRole> participantRoles) {
@@ -561,6 +558,13 @@ public class RoomService {
 	}
 
 	private void changeAdmin(String newAdminEmail, Long roomId) {
-		participantRoleRepository.deleteByRoomIdAndEmail(n);
+		List<ParticipantRole> participantRoles = participantRoleRepository.findByRoomIdAndEmail(roomId, newAdminEmail);
+		for (int i = 0; i < participantRoles.size() - 2; i++) {
+			participantRoleRepository.delete(participantRoles.get(i));
+			participantRoles.remove(participantRoles.get(i));
+		}
+
+		ParticipantRole participantRole = participantRoles.get(0);
+		participantRole.updateRole(RoomRole.ADMIN);
 	}
 }
