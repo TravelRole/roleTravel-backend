@@ -14,11 +14,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
+import com.travel.role.domain.accounting.entity.AccountingInfo;
+import com.travel.role.domain.accounting.service.AccountingInfoReadService;
+import com.travel.role.domain.comment.service.CommentService;
 import com.travel.role.domain.room.dto.request.ExitRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
@@ -44,6 +48,7 @@ import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.schedule.entity.Board;
 import com.travel.role.domain.schedule.repository.BoardRepository;
+import com.travel.role.domain.travelessential.service.TravelEssentialService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.exception.room.AdminIsOnlyOneException;
@@ -68,9 +73,12 @@ public class RoomService {
 	private final ParticipantRoleRepository participantRoleRepository;
 	private final ParticipantRoleReadService participantRoleReadService;
 	private final RoomParticipantReadService roomParticipantReadService;
+	private final AccountingInfoReadService accountingInfoReadService;
 	private final PasswordGenerator passwordGenerator;
 	private final RoomReadService roomReadService;
 	private final BoardRepository boardRepository;
+	private final CommentService commentService;
+	private final TravelEssentialService travelEssentialService;
 
 	public List<RoomResponseDTO> getRoomList(String email) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(email);
@@ -494,6 +502,7 @@ public class RoomService {
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
 		if (checkUserIsAdmin(email, participantRoles) && participantRoles.size() == 1) {
 			// 방에 나 혼자 있을 경우
+			deleteAllBoardByRoomId(roomId);
 			return;
 		}
 
@@ -508,7 +517,22 @@ public class RoomService {
 	private boolean checkUserIsAdmin(String email, List<ParticipantRole> participantRoles) {
 		return participantRoles.stream().anyMatch((participantRole -> {
 			User user = participantRole.getUser();
-			return Objects.equals(user.getEmail(), email) && participantRole.getRoomRole() == RoomRole.ADMIN
+			return Objects.equals(user.getEmail(), email) && participantRole.getRoomRole() == RoomRole.ADMIN;
 		}));
+	}
+
+	private void deleteAllBoardByRoomId(Long roomId) {
+		List<Long> boardIds = roomRepository.findBoardIdsByRoomId(roomId);
+		List<AccountingInfo> accountingInfos = accountingInfoReadService.findAccountingInfoByRoomIdAndBoardIds(roomId, boardIds);
+		List<Long> bookIds = getBookIds(accountingInfos);
+
+		commentService.deleteAllByRoomId(roomId);
+		travelEssentialService.deleteAllByRoomId(roomId);
+
+	}
+
+	private List<Long> getBookIds(List<AccountingInfo> accountingInfos) {
+		return accountingInfos.stream().map(a -> a.getBoard().getId())
+			.collect(Collectors.toList());
 	}
 }
