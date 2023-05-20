@@ -34,11 +34,6 @@ public interface ParticipantRoleRepository extends JpaRepository<ParticipantRole
     @Query("DELETE FROM ParticipantRole WHERE room.id = :roomId")
     void deleteAllByRoomId(@Param("roomId") Long roomId);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM ParticipantRole WHERE room.id = :roomId AND user.email = :email")
-    void deleteByRoomIdAndEmail(@Param("roomId") Long roomId, @Param("email") String email);
-
-    @Query("SELECT pr from ParticipantRole pr WHERE pr.room.id = :roomId AND pr.user.id = :email")
+    @Query("SELECT pr from ParticipantRole pr WHERE pr.room.id = :roomId AND pr.user.email = :email")
     List<ParticipantRole> findByRoomIdAndEmail(@Param("roomId") Long roomId, @Param("email") String email);
 }
