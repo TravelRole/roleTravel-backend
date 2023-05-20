@@ -50,6 +50,7 @@ import com.travel.role.domain.room.repository.RoomParticipantRepository;
 import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.schedule.entity.Board;
 import com.travel.role.domain.schedule.repository.BoardRepository;
+import com.travel.role.domain.schedule.repository.ScheduleInfoRepository;
 import com.travel.role.domain.travelessential.service.TravelEssentialService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
@@ -83,6 +84,7 @@ public class RoomService {
 	private final TravelEssentialService travelEssentialService;
 	private final BookInfoRepository bookInfoRepository;
 	private final AccountingInfoRepository accountingInfoRepository;
+	private final ScheduleInfoRepository scheduleInfoRepository;
 
 	public List<RoomResponseDTO> getRoomList(String email) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(email);
@@ -535,6 +537,7 @@ public class RoomService {
 		travelEssentialService.deleteAllByRoomId(roomId);
 		bookInfoRepository.deleteAllByIds(bookIds);
 		accountingInfoRepository.deleteAllByIds(accountIds);
+		scheduleInfoRepository.deleteAllByIds(boardIds);
 
 
 	}
