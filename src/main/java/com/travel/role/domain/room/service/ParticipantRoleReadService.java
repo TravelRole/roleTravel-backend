@@ -58,7 +58,7 @@ public class ParticipantRoleReadService {
 	public List<ParticipantRole> findByRoomIdAndEmail(Long roomId, String email) {
 		List<ParticipantRole> participantRoles = participantRoleRepository.findByRoomIdAndEmail(roomId, email);
 
-		if (participantRoles.isEmpty()) {
+		if (participantRoles.isEmpty() || email == null) {
 			throw new UserInfoNotFoundException();
 		}
 
