@@ -19,5 +19,11 @@ public interface RoomParticipantRepository extends JpaRepository<RoomParticipant
 	@Modifying
 	@Transactional
 	@Query("DELETE FROM RoomParticipant WHERE room.id = :roomId")
-	long deleteAllByRoomId(@Param("roomId") Long roomId);
+	void deleteAllByRoomId(@Param("roomId") Long roomId);
+
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM RoomParticipant WHERE room.id = :roomId AND user.email = :email")
+	void deleteByRoomIdAndEmail(@Param("roomId") Long roomId, @Param("email") String email);
 }

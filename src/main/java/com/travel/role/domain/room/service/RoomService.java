@@ -506,14 +506,22 @@ public class RoomService {
 		roomParticipantReadService.checkParticipant(user, room);
 
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
+
+		commentService.deleteAllByRoomId(roomId);
+		travelEssentialService.deleteAllByRoomId(roomId);
+
 		if (checkUserIsAdmin(email, participantRoles) && participantRoles.size() == 1) {
 			// 방에 나 혼자 있을 경우
 			deleteAllData(roomId);
 			return;
 		}
 
+		participantRoleRepository.deleteByRoomIdAndEmail(roomId, email);
+		roomParticipantRepository.deleteByRoomIdAndEmail(roomId, email);
+
 		if (checkUserIsAdmin(email, participantRoles)) {
 			// 총무가 나가서, 총무를 위임해야하는 경우
+
 			return;
 		}
 
@@ -533,15 +541,13 @@ public class RoomService {
 		List<Long> accountIds = getAccountIds(accountingInfos);
 		List<Long> bookIds = getBookIds(accountingInfos);
 
-		commentService.deleteAllByRoomId(roomId);
-		travelEssentialService.deleteAllByRoomId(roomId);
 		bookInfoRepository.deleteAllByIds(bookIds);
 		accountingInfoRepository.deleteAllByIds(accountIds);
 		scheduleInfoRepository.deleteAllByIds(boardIds);
 		boardRepository.deleteAllByRoomId(roomId);
 		participantRoleRepository.deleteAllByRoomId(roomId);
 		roomParticipantRepository.deleteAllByRoomId(roomId);
-
+		roomRepository.deleteById(roomId);
 	}
 
 	private List<Long> getBookIds(List<AccountingInfo> accountingInfos) {
@@ -552,5 +558,9 @@ public class RoomService {
 	private List<Long> getAccountIds(List<AccountingInfo> accountingInfos) {
 		return accountingInfos.stream().map(a -> a.getId())
 			.collect(Collectors.toList());
+	}
+
+	private void changeAdmin(String newAdminEmail, Long roomId) {
+		participantRoleRepository.deleteByRoomIdAndEmail(n);
 	}
 }
