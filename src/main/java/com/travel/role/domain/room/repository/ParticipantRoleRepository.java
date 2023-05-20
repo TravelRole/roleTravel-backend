@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.room.entity.ParticipantRole;
 import com.travel.role.domain.room.entity.Room;
@@ -27,5 +28,10 @@ public interface ParticipantRoleRepository extends JpaRepository<ParticipantRole
     void deleteAllByIdInQuery(@Param("ids") List<Long> ids);
 
     List<ParticipantRole> findByUserAndRoom(User user, Room room);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM ParticipantRole WHERE room.id = :roomId")
+    long deleteAllByRoomId(@Param("roomId") Long roomId);
 
 }

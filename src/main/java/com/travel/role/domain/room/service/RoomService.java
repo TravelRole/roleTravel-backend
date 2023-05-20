@@ -539,6 +539,7 @@ public class RoomService {
 		accountingInfoRepository.deleteAllByIds(accountIds);
 		scheduleInfoRepository.deleteAllByIds(boardIds);
 		boardRepository.deleteAllByRoomId(roomId);
+		participantRoleRepository.deleteAllByRoomId(roomId);
 
 	}
 
