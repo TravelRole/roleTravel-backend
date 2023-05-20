@@ -507,9 +507,6 @@ public class RoomService {
 
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
 
-		commentService.deleteAllByRoomId(roomId);
-		travelEssentialService.deleteAllByRoomId(roomId);
-
 		if (checkUserIsAdmin(email, participantRoles) && participantRoles.size() == 1) {
 			// 방에 나 혼자 있을 경우
 			deleteAllData(roomId);
@@ -521,6 +518,8 @@ public class RoomService {
 			changeAdmin(dto.getEmail(), roomId);
 		}
 
+		commentService.deleteAllByRoomId(roomId);
+		travelEssentialService.deleteAllByRoomId(roomId);
 		participantRoleRepository.deleteByRoomIdAndEmail(roomId, email);
 		roomParticipantRepository.deleteByRoomIdAndEmail(roomId, email);
 	}
@@ -538,6 +537,8 @@ public class RoomService {
 		List<Long> accountIds = getAccountIds(accountingInfos);
 		List<Long> bookIds = getBookIds(accountingInfos);
 
+		commentService.deleteAllByRoomId(roomId);
+		travelEssentialService.deleteAllByRoomId(roomId);
 		bookInfoRepository.deleteAllByIds(bookIds);
 		accountingInfoRepository.deleteAllByIds(accountIds);
 		scheduleInfoRepository.deleteAllByIds(boardIds);
@@ -558,7 +559,7 @@ public class RoomService {
 	}
 
 	private void changeAdmin(String newAdminEmail, Long roomId) {
-		List<ParticipantRole> participantRoles = participantRoleRepository.findByRoomIdAndEmail(roomId, newAdminEmail);
+		List<ParticipantRole> participantRoles = participantRoleReadService.findByRoomIdAndEmail(roomId, newAdminEmail);
 		for (int i = 0; i < participantRoles.size() - 2; i++) {
 			participantRoleRepository.delete(participantRoles.get(i));
 			participantRoles.remove(participantRoles.get(i));
