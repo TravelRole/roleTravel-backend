@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.querydsl.core.Tuple;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.service.AccountingInfoReadService;
+import com.travel.role.domain.book.repository.BookInfoRepository;
 import com.travel.role.domain.comment.service.CommentService;
 import com.travel.role.domain.room.dto.request.ExitRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
@@ -79,6 +80,7 @@ public class RoomService {
 	private final BoardRepository boardRepository;
 	private final CommentService commentService;
 	private final TravelEssentialService travelEssentialService;
+	private final BookInfoRepository bookInfoRepository;
 
 	public List<RoomResponseDTO> getRoomList(String email) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(email);
@@ -528,6 +530,8 @@ public class RoomService {
 
 		commentService.deleteAllByRoomId(roomId);
 		travelEssentialService.deleteAllByRoomId(roomId);
+		bookInfoRepository.deleteAllByIds(bookIds);
+
 
 	}
 
