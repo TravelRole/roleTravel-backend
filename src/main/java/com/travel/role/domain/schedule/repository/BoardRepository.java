@@ -49,4 +49,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	@Transactional
 	@Query(value = "DELETE FROM Board b WHERE b.id IN :ids AND NOT EXISTS (SELECT a FROM b.accountingInfo a WHERE a.board = b)")
 	void deleteAllByIdsExceptAccountingInfo(@Param("ids") List<Long> ids);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM Board WHERE room.id = :roomId")
+	long deleteAllByRoomId(@Param("roomId") Long roomId);
 }

@@ -508,7 +508,7 @@ public class RoomService {
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
 		if (checkUserIsAdmin(email, participantRoles) && participantRoles.size() == 1) {
 			// 방에 나 혼자 있을 경우
-			deleteAllBoardByRoomId(roomId);
+			deleteAllData(roomId);
 			return;
 		}
 
@@ -527,7 +527,7 @@ public class RoomService {
 		}));
 	}
 
-	private void deleteAllBoardByRoomId(Long roomId) {
+	private void deleteAllData(Long roomId) {
 		List<Long> boardIds = roomRepository.findBoardIdsByRoomId(roomId);
 		List<AccountingInfo> accountingInfos = accountingInfoReadService.findAccountingInfoByRoomIdAndBoardIds(roomId, boardIds);
 		List<Long> accountIds = getAccountIds(accountingInfos);
@@ -538,7 +538,7 @@ public class RoomService {
 		bookInfoRepository.deleteAllByIds(bookIds);
 		accountingInfoRepository.deleteAllByIds(accountIds);
 		scheduleInfoRepository.deleteAllByIds(boardIds);
-		b
+		boardRepository.deleteAllByRoomId(roomId);
 
 	}
 
