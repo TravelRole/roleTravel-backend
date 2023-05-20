@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.Tuple;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
+import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
 import com.travel.role.domain.accounting.service.AccountingInfoReadService;
 import com.travel.role.domain.book.repository.BookInfoRepository;
 import com.travel.role.domain.comment.service.CommentService;
@@ -81,6 +82,7 @@ public class RoomService {
 	private final CommentService commentService;
 	private final TravelEssentialService travelEssentialService;
 	private final BookInfoRepository bookInfoRepository;
+	private final AccountingInfoRepository accountingInfoRepository;
 
 	public List<RoomResponseDTO> getRoomList(String email) {
 		List<Tuple> findRoomInfo = roomRepository.getMemberInRoom(email);
@@ -526,17 +528,24 @@ public class RoomService {
 	private void deleteAllBoardByRoomId(Long roomId) {
 		List<Long> boardIds = roomRepository.findBoardIdsByRoomId(roomId);
 		List<AccountingInfo> accountingInfos = accountingInfoReadService.findAccountingInfoByRoomIdAndBoardIds(roomId, boardIds);
+		List<Long> accountIds = getAccountIds(accountingInfos);
 		List<Long> bookIds = getBookIds(accountingInfos);
 
 		commentService.deleteAllByRoomId(roomId);
 		travelEssentialService.deleteAllByRoomId(roomId);
 		bookInfoRepository.deleteAllByIds(bookIds);
+		accountingInfoRepository.deleteAllByIds(accountIds);
 
 
 	}
 
 	private List<Long> getBookIds(List<AccountingInfo> accountingInfos) {
 		return accountingInfos.stream().map(a -> a.getBoard().getId())
+			.collect(Collectors.toList());
+	}
+
+	private List<Long> getAccountIds(List<AccountingInfo> accountingInfos) {
+		return accountingInfos.stream().map(a -> a.getId())
 			.collect(Collectors.toList());
 	}
 }
