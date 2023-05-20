@@ -116,7 +116,7 @@ public class ScheduleService {
 	private void deleteScheduleById(List<Long> scheduleIds) {
 
 		scheduleInfoRepository.deleteAllByIds(scheduleIds);
-		boardRepository.deleteAllByIds(scheduleIds);
+		boardRepository.deleteAllByIdsExceptAccountingInfo(scheduleIds);
 	}
 
 	public List<ScheduleResponseDTO> getSchedule(String email, Long roomId, LocalDate date) {
