@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.travel.role.domain.room.dto.request.ExitRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.AllPlanDTO;
@@ -28,6 +29,7 @@ import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 
 @SpringBootTest
 @Transactional
@@ -136,5 +138,17 @@ class RoomTest {
         assertThat(sidebar.getRoomImage()).isEqualTo(1);
         assertThat(sidebar.getRoomName()).isEqualTo("여수에서 간장게장");
         assertThat(sidebar.getRoles()).contains(RoomRole.RESERVATION, RoomRole.SCHEDULE);
+    }
+
+    @Test
+    void 스페이스_탈퇴시_총무인데_총무인원을_설정하지_않았을_경우() {
+        // given
+        String email = "gy@naver.com";
+        Long roomId = 1L;
+        ExitRoomRequestDTO exitRoomRequestDTO = new ExitRoomRequestDTO();
+        // when, then
+        assertThatThrownBy(() -> {
+            roomService.exitRoom(email, roomId, exitRoomRequestDTO);
+        }).isInstanceOf(UserInfoNotFoundException.class);
     }
 }

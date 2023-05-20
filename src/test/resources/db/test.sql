@@ -185,15 +185,15 @@ insert into schedule_info(board_id, latitude, longitude, place_address, place_na
 values (15, 34.123, 127.232, '경기 가평군 가평읍 보납로 459-158 동기간', '동기간', null, 1234);
 
 insert into book_info(book_info_id, book_etc, is_booked)
-values (1, "예매 입금날짜가 다름", true);
+values (1, '예매 입금날짜가 다름', true);
 insert into book_info(book_info_id, book_etc, is_booked)
 values (2, null, false);
 insert into book_info(book_info_id, book_etc, is_booked)
 values (3, true, true);
 insert into book_info(book_info_id, book_etc, is_booked)
-values (4, "분할결제 확인바람", false);
+values (4, '분할결제 확인바람', false);
 insert into book_info(book_info_id, book_etc, is_booked)
-values (5, "현장 결제임", true);
+values (5, '현장 결제임', true);
 insert into book_info(book_info_id, book_etc, is_booked)
 values (6, true, true);
 
@@ -215,3 +215,19 @@ values (5, null, 'ETC', 'CREDIT', null, '2023-04-13', 290000, 11, 5, 1);
 insert into accounting_info(accounting_info_id, accounting_etc, category, payment_method, payment_name, payment_time,
                             price, board_id, book_info_id, room_id)
 values (6, null, 'SHOPPING', 'CARD', null, '2023-05-10', 130000, 14, 6, 1);
+
+insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
+values (1, 0, false, '차키', 1, 1);
+insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
+    values (2, 1, false, '예비 외투', 1, 1);
+insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
+    values (3, 2, false, '멀미약', 1, 1);
+insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
+    values (4, 3, false, '허브솔트', 1, 1);
+
+insert into want_place(place_id, category, latitude, link, longitude, lot_number_address, map_place_id, phone_number, place_address, place_name, room_id)
+values (1, '카테고리', 34.2131, 'https://www.naver.com', 127.2312, '서울 동작구 상도동 500-1', 123421, '010-1111-2222', '주소주소1', '테스트1', 1);
+insert into want_place(place_id, category, latitude, link, longitude, lot_number_address, map_place_id, phone_number, place_address, place_name, room_id)
+values (2, '카테고리', 34.2131, 'https://www.naver.com', 127.2312, '서울 동작구 상도동 500-2', 123421, '010-2222-3333', '주소주소2', '테스트2', 1);
+insert into want_place(place_id, category, latitude, link, longitude, lot_number_address, map_place_id, phone_number, place_address, place_name, room_id)
+values (3, '카테고리', 34.2131, 'https://www.naver.com', 127.2312, '서울 동작구 상도동 500-3', 123421, '010-4444-5555', '주소주소3', '테스트3', 1);
