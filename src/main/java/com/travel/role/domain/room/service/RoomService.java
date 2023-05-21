@@ -518,7 +518,8 @@ public class RoomService {
 			changeAdmin(dto.getEmail(), roomId);
 		}
 
-		// commentService.deleteCommentsByRoomIdAndUserId();
+		commentService.deleteCommentsByRoomIdAndUserId(roomId, user.getId());
+		travelEssentialService.deleteAllByRoomIdAndUserId(roomId, user.getId());
 		participantRoleRepository.deleteByRoomIdAndEmail(roomId, email);
 		roomParticipantRepository.deleteByRoomIdAndEmail(roomId, email);
 	}
