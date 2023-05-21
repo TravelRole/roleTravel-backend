@@ -52,6 +52,12 @@ insert into room_info(room_id, created_at, location, room_expired_time, room_ima
 values (4, '2023-01-02 09:00:00', '순천시', '2023-01-02 09:00:00', 1, 'KWOENdA8qPKeZFZvqqzH', '여수에서 간장게장', '2023-06-26',
         '2023-06-25', 420000);
 
+insert into room_info(room_id, created_at, location, room_expired_time, room_image, room_invite_code, room_name,
+                      travel_end_date, tarvel_start_date, travel_expense)
+values (5, '2023-01-04 09:00:00', '서울특별시', '2023-01-04 09:00:00', 1, 'KWOENdA8qPKeZFZvqqzH', '서울 남산 투어', '2023-07-01',
+        '2023-07-02', 300000);
+
+
 insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
 values (1, false, '2023-01-03 09:00:00', 1, 1);
 insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
@@ -84,6 +90,8 @@ insert into room_participant_info(room_participant_id, is_paid, joined_at, room_
 values (15, false, '2023-01-02 09:00:00', 4, 11);
 insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
 values (16, false, '2023-01-02 09:00:00', 4, 12);
+insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
+values (17, false, '2023-01-02 09:00:00', 5, 1);
 
 insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
 values (1, '2023-01-03 09:00:00', '2023-01-03 09:00:00', 'ADMIN', 1, 1);
@@ -123,6 +131,8 @@ insert into participant_role(participant_role_id, created_at, modified_at, room_
 values (18, '2023-01-05 09:00:00', '2023-01-05 09:00:00', 'ACCOUNTING', 4, 12);
 insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
 values (19, '2023-01-03 09:00:00', '2023-01-03 09:00:00', 'SCHEDULE', 1, 2);
+insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
+values (20, '2023-01-03 09:00:00', '2023-01-03 09:00:00', 'ADMIN', 5, 1);
 
 insert into board(board_id, category, link, schedule_date, room_id)
 values (1, 'ACCOMMODATION', 'https://www.naver.com', '2023-08-10 10:00:00', 1);
@@ -153,7 +163,7 @@ values (13, 'FOOD', '2023-08-14 12:00:00', 1);
 insert into board(board_id, category, schedule_date, room_id)
 values (14, 'SHOPPING', '2023-08-14 17:25:00', 1);
 insert into board(board_id, category, schedule_date, room_id)
-values (15, 'FOOD', '2023-08-14 18:00:00', 1);
+values (15, 'FOOD', '2023-08-14 18:00:00', 1);;
 
 insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
 values (1, 34.123, 127.232, '경기 가평군 상면 축령로45번길 114-22', '워터파크 아이린 키즈풀빌라', '꼭 9일전에 예약할것', 4444);

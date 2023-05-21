@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +48,9 @@ class RoomTest {
 
     @Autowired
     private ParticipantRoleRepository participantRoleRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private RoomService roomService;
@@ -150,5 +156,45 @@ class RoomTest {
         assertThatThrownBy(() -> {
             roomService.exitRoom(email, roomId, exitRoomRequestDTO);
         }).isInstanceOf(UserInfoNotFoundException.class);
+    }
+
+    @Test
+    void 스페이스_탈퇴시_총무인_경우() {
+        //given
+        String email = "gy@naver.com";
+        Long roomId = 1L;
+        ExitRoomRequestDTO exitRoomRequestDTO = new ExitRoomRequestDTO("kmimi@naver.com");
+
+        //when
+        roomService.exitRoom(email, roomId, exitRoomRequestDTO);
+
+        List<ParticipantRole> participantRoles = participantRoleRepository.findByRoomIdAndEmail(1L, "kmimi@naver.com");
+        List<ParticipantRole> deleteRoles = participantRoleRepository.findByRoomIdAndEmail(1L, email);
+
+
+        //then
+        assertThat(deleteRoles).isEmpty();
+        assertThat(participantRoles).hasSize(1);
+        assertThat(participantRoles.get(0).getRoomRole()).isEqualTo(RoomRole.ADMIN);
+    }
+
+    @Test
+    void 스페이스_탈퇴시_나만_존재하는_방인_경우() {
+        //given
+        String email = "gy@naver.com";
+        Long roomId = 5L;
+
+        //when
+        roomService.exitRoom(email, roomId, new ExitRoomRequestDTO());
+        em.flush();
+        em.clear();
+
+        Optional<Room> room = roomRepository.findById(5L);
+        Optional<RoomParticipant> roomParticipant = roomParticipantRepository.findById(17L);
+        Optional<ParticipantRole> participantRole = participantRoleRepository.findById(20L);
+        //then
+        assertThat(room.isEmpty()).isTrue();
+        assertThat(roomParticipant.isEmpty()).isTrue();
+        assertThat(participantRole.isEmpty()).isTrue();
     }
 }
