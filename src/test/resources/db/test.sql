@@ -121,6 +121,8 @@ insert into participant_role(participant_role_id, created_at, modified_at, room_
 values (17, '2023-01-04 09:00:00', '2023-01-04 09:00:00', 'SCHEDULE', 4, 11);
 insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
 values (18, '2023-01-05 09:00:00', '2023-01-05 09:00:00', 'ACCOUNTING', 4, 12);
+insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
+values (19, '2023-01-03 09:00:00', '2023-01-03 09:00:00', 'SCHEDULE', 1, 2);
 
 insert into board(board_id, category, link, schedule_date, room_id)
 values (1, 'ACCOMMODATION', 'https://www.naver.com', '2023-08-10 10:00:00', 1);
@@ -217,13 +219,13 @@ insert into accounting_info(accounting_info_id, accounting_etc, category, paymen
 values (6, null, 'SHOPPING', 'CARD', null, '2023-05-10', 130000, 14, 6, 1);
 
 insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
-values (1, 0, false, '차키', 1, 1);
+values (1, 'ABOARD', false, '차키', 1, 1);
 insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
-    values (2, 1, false, '예비 외투', 1, 1);
+    values (2, 'CLOTHES', false, '예비 외투', 1, 1);
 insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
-    values (3, 2, false, '멀미약', 1, 1);
+    values (3, 'MEDICINE', false, '멀미약', 1, 1);
 insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
-    values (4, 3, false, '허브솔트', 1, 1);
+    values (4, 'COOKWARE', false, '허브솔트', 1, 1);
 
 insert into want_place(place_id, category, latitude, link, longitude, lot_number_address, map_place_id, phone_number, place_address, place_name, room_id)
 values (1, '카테고리', 34.2131, 'https://www.naver.com', 127.2312, '서울 동작구 상도동 500-1', 123421, '010-1111-2222', '주소주소1', '테스트1', 1);
