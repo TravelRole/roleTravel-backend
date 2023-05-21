@@ -518,8 +518,7 @@ public class RoomService {
 			changeAdmin(dto.getEmail(), roomId);
 		}
 
-		commentService.deleteAllByRoomId(roomId);
-		travelEssentialService.deleteAllByRoomId(roomId);
+		// commentService.deleteCommentsByRoomIdAndUserId();
 		participantRoleRepository.deleteByRoomIdAndEmail(roomId, email);
 		roomParticipantRepository.deleteByRoomIdAndEmail(roomId, email);
 	}
@@ -560,7 +559,7 @@ public class RoomService {
 
 	private void changeAdmin(String newAdminEmail, Long roomId) {
 		List<ParticipantRole> participantRoles = participantRoleReadService.findByRoomIdAndEmail(roomId, newAdminEmail);
-		for (int i = 0; i < participantRoles.size() - 2; i++) {
+		for (int i = participantRoles.size() - 1; i >= 1; i--) {
 			participantRoleRepository.delete(participantRoles.get(i));
 			participantRoles.remove(participantRoles.get(i));
 		}
