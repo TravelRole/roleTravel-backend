@@ -15,5 +15,5 @@ public interface BookInfoRepository extends JpaRepository<BookInfo, Long> {
 	@Modifying
 	@Transactional
 	@Query("DELETE FROM BookInfo WHERE id in :ids")
-	long deleteAllByIds(@Param("ids") List<Long> ids);
+	void deleteAllByIds(@Param("ids") List<Long> ids);
 }

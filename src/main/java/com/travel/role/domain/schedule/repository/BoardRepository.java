@@ -53,5 +53,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	@Modifying
 	@Transactional
 	@Query("DELETE FROM Board WHERE room.id = :roomId")
-	long deleteAllByRoomId(@Param("roomId") Long roomId);
+	void deleteAllByRoomId(@Param("roomId") Long roomId);
 }
