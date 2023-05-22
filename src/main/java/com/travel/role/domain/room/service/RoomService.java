@@ -49,6 +49,7 @@ import com.travel.role.global.exception.room.AdminIsOnlyOneException;
 import com.travel.role.global.exception.room.AlreadyExistInRoomException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
+import com.travel.role.global.exception.room.RoomNotUpdateAdminException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.util.PasswordGenerator;
 
@@ -250,6 +251,7 @@ public class RoomService {
 
 	public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto, Long roomId) {
 		validRoomRoles(email, roomId, RoomRole.ADMIN);
+		validAdmin(dto);
 
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
 		List<String> adminList = validateUserRoleAndEmail(dto.getUserRoles());
@@ -261,6 +263,14 @@ public class RoomService {
 
 		modifyRoomNameAndDateAndLocation(participantRoles.get(0).getRoom(), dto);
 		modifyRoles(participantMap, dto.getUserRoles());
+	}
+
+	private void validAdmin(RoomModifiedRequestDTO dto) {
+		boolean isExistsAdmin = dto.getUserRoles().stream().anyMatch(data -> data.getRoles().contains(RoomRole.ADMIN));
+
+		if (isExistsAdmin) {
+			throw new RoomNotUpdateAdminException();
+		}
 	}
 
 	private void deleteAdminUserRoles(Map<String, List<ParticipantRole>> participantMap, String email,
