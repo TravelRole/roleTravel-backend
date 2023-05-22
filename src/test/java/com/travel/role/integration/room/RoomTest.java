@@ -64,7 +64,7 @@ class RoomTest {
 
         //when, then
         assertThat(userResult.size()).isEqualTo(12);
-        assertThat(roomResult.size()).isEqualTo(4);
+        assertThat(roomResult.size()).isEqualTo(5);
         assertThat(roomParticipantResult.size()).isEqualTo(16);
     }
 
@@ -76,7 +76,7 @@ class RoomTest {
         List<RoomResponseDTO> roomList = roomService.getRoomList(email);
 
         // then
-        assertThat(roomList.size()).isEqualTo(1);
+        assertThat(roomList.size()).isEqualTo(2);
         assertThat(roomList.get(0).getRoomName()).isEqualTo("가아아아아평");
         assertThat(roomList.get(0).getMembers().size()).isEqualTo(5);
     }
