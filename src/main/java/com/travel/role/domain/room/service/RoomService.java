@@ -254,12 +254,8 @@ public class RoomService {
 		validAdmin(dto);
 
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
-		List<String> adminList = validateUserRoleAndEmail(dto.getUserRoles());
 
 		Map<String, List<ParticipantRole>> participantMap = convertToParticipantRoleList(participantRoles);
-		if (adminList.size() == 1) {
-			deleteAdminUserRoles(participantMap, email, adminList.get(0));
-		}
 
 		modifyRoomNameAndDateAndLocation(participantRoles.get(0).getRoom(), dto);
 		modifyRoles(participantMap, dto.getUserRoles());
@@ -304,24 +300,28 @@ public class RoomService {
 	private void modifyRoles(Map<String, List<ParticipantRole>> participantMap, List<RoomRoleDTO> userRoles) {
 		for (RoomRoleDTO userRole : userRoles) {
 			List<ParticipantRole> dbParticipant = participantMap.get(userRole.getEmail());
+			deleteRole(dbParticipant, userRole.getRoles().size());
 			modifyRole(dbParticipant, userRole.getRoles());
 		}
 	}
 
-	private void modifyRole(List<ParticipantRole> participantRoles, List<RoomRole> roomRoles) {
-		if (participantRoles.size() > roomRoles.size()) {
+	private void deleteRole(List<ParticipantRole> participantRoles, int roomRoleSize) {
+		int participantRoleSize = participantRoles.size();
+
+		if (participantRoleSize > roomRoleSize) {
 			List<Long> ids = new ArrayList<>();
-			for (int i = 0; i < participantRoles.size() - roomRoles.size(); i++) {
+			for (int i = 0 ; i < participantRoleSize - roomRoleSize; i++) {
 				ids.add(participantRoles.get(i).getId());
 				participantRoles.remove(participantRoles.get(i));
 			}
 
-			if (ids.size() > 1) {
-				ids.remove(0);
+			if (!ids.isEmpty()) {
 				participantRoleRepository.deleteAllByIdInQuery(ids);
 			}
 		}
+	}
 
+	private void modifyRole(List<ParticipantRole> participantRoles, List<RoomRole> roomRoles) {
 		for (int i = 0; i < roomRoles.size(); i++) {
 			if (i > participantRoles.size() - 1) {
 				ParticipantRole participantRole = participantRoles.get(0);
