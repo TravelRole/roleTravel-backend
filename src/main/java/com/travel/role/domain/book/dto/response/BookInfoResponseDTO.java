@@ -19,7 +19,7 @@ public class BookInfoResponseDTO {
 	private Integer price;
 	private PaymentMethod paymentMethod;
 	private Category category;
-	private String accountingEtc;
+	private String scheduleEtc;
 	private Boolean isBooked;
 	private Long bookInfoId;
 	private Long accountingId;
@@ -32,7 +32,7 @@ public class BookInfoResponseDTO {
 		this.price = board.getAccountingInfo().getPrice();
 		this.paymentMethod = board.getAccountingInfo().getPaymentMethod();
 		this.category = board.getCategory();
-		this.accountingEtc = board.getAccountingInfo().getAccountingEtc();
+		this.scheduleEtc = board.getScheduleInfo().getScheduleEtc();
 		this.isBooked = board.getAccountingInfo().getBookInfo().getIsBooked();
 		this.bookInfoId = board.getAccountingInfo().getBookInfo().getId();
 		this.accountingId = board.getAccountingInfo().getId();
