@@ -251,7 +251,7 @@ public class RoomService {
 
 	public void modifyRoomInfo(String email, RoomModifiedRequestDTO dto, Long roomId) {
 		validRoomRoles(email, roomId, RoomRole.ADMIN);
-		validAdmin(dto);
+		validAdmin(dto, email);
 
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
 
@@ -261,27 +261,12 @@ public class RoomService {
 		modifyRoles(participantMap, dto.getUserRoles());
 	}
 
-	private void validAdmin(RoomModifiedRequestDTO dto) {
-		boolean isExistsAdmin = dto.getUserRoles().stream().anyMatch(data -> data.getRoles().contains(RoomRole.ADMIN));
-
-		if (isExistsAdmin) {
-			throw new RoomNotUpdateAdminException();
+	private void validAdmin(RoomModifiedRequestDTO dto, String email) {
+		for (RoomRoleDTO userRole : dto.getUserRoles()) {
+			if (!userRole.getEmail().equals(email) && userRole.getRoles().contains(RoomRole.ADMIN)) {
+				throw new RoomNotUpdateAdminException();
+			}
 		}
-	}
-
-	private void deleteAdminUserRoles(Map<String, List<ParticipantRole>> participantMap, String email,
-		String adminEmail) {
-		if (adminEmail.equals(email)) {
-			return;
-		}
-
-		List<Long> ids = new ArrayList<>();
-		List<ParticipantRole> participantRoles = participantMap.get(adminEmail);
-		for (int i = 0; i < participantRoles.size() - 1; i++) {
-			ids.add(participantRoles.get(i).getId());
-			participantRoles.remove(participantRoles.get(i));
-		}
-		participantRoleRepository.deleteAllByIdInQuery(ids);
 	}
 
 	private void validRoomRoles(String email, Long roomId, RoomRole roomRole) {

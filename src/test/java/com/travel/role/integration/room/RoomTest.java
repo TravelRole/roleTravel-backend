@@ -79,10 +79,11 @@ class RoomTest {
         RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.RESERVATION));
         RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("mogu@naver.com", List.of(RoomRole.SCHEDULE));
         RoomRoleDTO roomRoleDTO3 = new RoomRoleDTO("dsl@naver.com", List.of(RoomRole.ACCOUNTING, RoomRole.SCHEDULE));
+        RoomRoleDTO roomRoleDTO4 = new RoomRoleDTO("Junsik@naver.com", List.of(RoomRole.ADMIN));
 
         RoomModifiedRequestDTO roomModifiedRequestDTO = new RoomModifiedRequestDTO("광양 펜션잡고 놀자", "경주", LocalDate.of(2023, 6, 16),
             LocalDate.of(2023, 6, 17),
-            List.of(roomRoleDTO1, roomRoleDTO2, roomRoleDTO3));
+            List.of(roomRoleDTO1, roomRoleDTO2, roomRoleDTO3, roomRoleDTO4));
 
         //when
         roomService.modifyRoomInfo("Junsik@naver.com", roomModifiedRequestDTO, 4L);
