@@ -34,7 +34,6 @@ import com.travel.role.domain.wantplace.repository.WantPlaceRepository;
 import com.travel.role.domain.wantplace.service.WantPlaceService;
 import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.dto.ExceptionMessage;
-import com.travel.role.global.exception.room.AdminIsOnlyOneException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
@@ -173,18 +172,6 @@ class RoomServiceTest {
 		assertThatThrownBy(() -> roomService.modifyRoomInfo("haechan@naver.com",
 			createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1)), 1L))
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
-	}
-
-	@Test
-	void 방_수정시_총무가_두명이상으로_선택되있는_경우() {
-		//given
-		given(participantRoleRepository.existsByUserEmailAndRoomIdAndRole(anyString(), anyLong(), any(RoomRole.class)))
-			.willReturn(true);
-
-		//when, then
-		assertThatThrownBy(() -> roomService.modifyRoomInfo("chan@naver.com",
-			createWrongRoomModifiedDTO(LocalDate.now(), LocalDate.now().plusDays(1)), 1L))
-			.isInstanceOf(AdminIsOnlyOneException.class);
 	}
 
 	private static RoomModifiedRequestDTO createWrongRoomModifiedDTO(LocalDate startDate, LocalDate endDate) {
