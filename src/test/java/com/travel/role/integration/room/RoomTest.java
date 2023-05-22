@@ -65,7 +65,7 @@ class RoomTest {
         //when, then
         assertThat(userResult.size()).isEqualTo(12);
         assertThat(roomResult.size()).isEqualTo(5);
-        assertThat(roomParticipantResult.size()).isEqualTo(16);
+        assertThat(roomParticipantResult.size()).isEqualTo(17);
     }
 
     @Test
