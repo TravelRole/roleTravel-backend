@@ -27,6 +27,7 @@ import com.travel.role.global.exception.dto.ExceptionResponse;
 import com.travel.role.global.exception.room.AlreadyExistInRoomException;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
+import com.travel.role.global.exception.room.RoomNotUpdateAdminException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.exception.user.AlreadyExistUserException;
 import com.travel.role.global.exception.user.InputValueNotMatchException;
@@ -193,6 +194,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(WantPlaceNotFound.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ExceptionResponse wantPlaceNotFound(Exception e) {
+		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+	}
+
+	@ExceptionHandler(RoomNotUpdateAdminException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ExceptionResponse roomNotUpdateAdmin(Exception e) {
 		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 	}
 }
