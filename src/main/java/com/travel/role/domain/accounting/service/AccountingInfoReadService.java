@@ -51,4 +51,8 @@ public class AccountingInfoReadService {
 
 		return ExpenseDetailsResDTO.from(expenseDetailResDTOS);
 	}
+
+	public List<AccountingInfo> findAccountingInfoByRoomIdAndBoardIds(Long roomId, List<Long> boardIds) {
+		return accountingInfoRepository.findAccountingInfoByRoomIdAndBoardIds(roomId, boardIds);
+	}
 }

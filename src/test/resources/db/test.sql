@@ -52,6 +52,12 @@ insert into room_info(room_id, created_at, location, room_expired_time, room_ima
 values (4, '2023-01-02 09:00:00', '순천시', '2023-01-02 09:00:00', 1, 'KWOENdA8qPKeZFZvqqzH', '여수에서 간장게장', '2023-06-26',
         '2023-06-25', 420000);
 
+insert into room_info(room_id, created_at, location, room_expired_time, room_image, room_invite_code, room_name,
+                      travel_end_date, tarvel_start_date, travel_expense)
+values (5, '2023-01-04 09:00:00', '서울특별시', '2023-01-04 09:00:00', 1, 'KWOENdA8qPKeZFZvqqzH', '서울 남산 투어', '2023-07-01',
+        '2023-07-02', 300000);
+
+
 insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
 values (1, false, '2023-01-03 09:00:00', 1, 1);
 insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
@@ -84,6 +90,8 @@ insert into room_participant_info(room_participant_id, is_paid, joined_at, room_
 values (15, false, '2023-01-02 09:00:00', 4, 11);
 insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
 values (16, false, '2023-01-02 09:00:00', 4, 12);
+insert into room_participant_info(room_participant_id, is_paid, joined_at, room_id, user_id)
+values (17, false, '2023-01-02 09:00:00', 5, 1);
 
 insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
 values (1, '2023-01-03 09:00:00', '2023-01-03 09:00:00', 'ADMIN', 1, 1);
@@ -121,6 +129,10 @@ insert into participant_role(participant_role_id, created_at, modified_at, room_
 values (17, '2023-01-04 09:00:00', '2023-01-04 09:00:00', 'SCHEDULE', 4, 11);
 insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
 values (18, '2023-01-05 09:00:00', '2023-01-05 09:00:00', 'ACCOUNTING', 4, 12);
+insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
+values (19, '2023-01-03 09:00:00', '2023-01-03 09:00:00', 'SCHEDULE', 1, 2);
+insert into participant_role(participant_role_id, created_at, modified_at, room_role, room_id, user_id)
+values (20, '2023-01-03 09:00:00', '2023-01-03 09:00:00', 'ADMIN', 5, 1);
 
 insert into board(board_id, category, link, schedule_date, room_id)
 values (1, 'ACCOMMODATION', 'https://www.naver.com', '2023-08-10 10:00:00', 1);
@@ -151,7 +163,7 @@ values (13, 'FOOD', '2023-08-14 12:00:00', 1);
 insert into board(board_id, category, schedule_date, room_id)
 values (14, 'SHOPPING', '2023-08-14 17:25:00', 1);
 insert into board(board_id, category, schedule_date, room_id)
-values (15, 'FOOD', '2023-08-14 18:00:00', 1);
+values (15, 'FOOD', '2023-08-14 18:00:00', 1);;
 
 insert into schedule_info(board_id, latitude, longitude, place_address, place_name, schedule_etc, map_place_id)
 values (1, 34.123, 127.232, '경기 가평군 상면 축령로45번길 114-22', '워터파크 아이린 키즈풀빌라', '꼭 9일전에 예약할것', 4444);
@@ -185,15 +197,15 @@ insert into schedule_info(board_id, latitude, longitude, place_address, place_na
 values (15, 34.123, 127.232, '경기 가평군 가평읍 보납로 459-158 동기간', '동기간', null, 1234);
 
 insert into book_info(book_info_id, book_etc, is_booked)
-values (1, "예매 입금날짜가 다름", true);
+values (1, '예매 입금날짜가 다름', true);
 insert into book_info(book_info_id, book_etc, is_booked)
 values (2, null, false);
 insert into book_info(book_info_id, book_etc, is_booked)
 values (3, true, true);
 insert into book_info(book_info_id, book_etc, is_booked)
-values (4, "분할결제 확인바람", false);
+values (4, '분할결제 확인바람', false);
 insert into book_info(book_info_id, book_etc, is_booked)
-values (5, "현장 결제임", true);
+values (5, '현장 결제임', true);
 insert into book_info(book_info_id, book_etc, is_booked)
 values (6, true, true);
 
@@ -215,3 +227,19 @@ values (5, null, 'ETC', 'CREDIT', null, '2023-04-13', 290000, 11, 5, 1);
 insert into accounting_info(accounting_info_id, accounting_etc, category, payment_method, payment_name, payment_time,
                             price, board_id, book_info_id, room_id)
 values (6, null, 'SHOPPING', 'CARD', null, '2023-05-10', 130000, 14, 6, 1);
+
+insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
+values (1, 'ABOARD', false, '차키', 1, 1);
+insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
+    values (2, 'CLOTHES', false, '예비 외투', 1, 1);
+insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
+    values (3, 'MEDICINE', false, '멀미약', 1, 1);
+insert into travel_essential(travel_essential_id, category, is_checked, item_name, room_id, user_id)
+    values (4, 'COOKWARE', false, '허브솔트', 1, 1);
+
+insert into want_place(place_id, category, latitude, link, longitude, lot_number_address, map_place_id, phone_number, place_address, place_name, room_id)
+values (1, '카테고리', 34.2131, 'https://www.naver.com', 127.2312, '서울 동작구 상도동 500-1', 123421, '010-1111-2222', '주소주소1', '테스트1', 1);
+insert into want_place(place_id, category, latitude, link, longitude, lot_number_address, map_place_id, phone_number, place_address, place_name, room_id)
+values (2, '카테고리', 34.2131, 'https://www.naver.com', 127.2312, '서울 동작구 상도동 500-2', 123421, '010-2222-3333', '주소주소2', '테스트2', 1);
+insert into want_place(place_id, category, latitude, link, longitude, lot_number_address, map_place_id, phone_number, place_address, place_name, room_id)
+values (3, '카테고리', 34.2131, 'https://www.naver.com', 127.2312, '서울 동작구 상도동 500-3', 123421, '010-4444-5555', '주소주소3', '테스트3', 1);

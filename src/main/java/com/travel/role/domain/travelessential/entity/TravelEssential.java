@@ -44,7 +44,7 @@ public class TravelEssential {
 	private User user;
 
 	@Column(length = 20, nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	private EssentialCategory category;
 
 	@Column(name = "is_checked", nullable = false, columnDefinition = "TINYINT(1)")

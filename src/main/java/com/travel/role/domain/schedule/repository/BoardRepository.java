@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.schedule.entity.Board;
 
@@ -45,6 +46,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	List<Board> findScheduleAndAccountByRoomOrderByAsc(@Param("roomId") Long roomId);
 
 	@Modifying
+	@Transactional
 	@Query(value = "DELETE FROM Board b WHERE b.id IN :ids AND NOT EXISTS (SELECT a FROM b.accountingInfo a WHERE a.board = b)")
-	void deleteAllByIds(@Param("ids") List<Long> ids);
+	void deleteAllByIdsExceptAccountingInfo(@Param("ids") List<Long> ids);
+
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM Board WHERE room.id = :roomId")
+	void deleteAllByRoomId(@Param("roomId") Long roomId);
 }
