@@ -506,8 +506,9 @@ public class RoomService {
 		roomParticipantReadService.checkParticipant(user, room);
 
 		List<ParticipantRole> participantRoles = participantRoleReadService.findUserByRoomId(roomId);
+		List<RoomParticipant> roomParticipants = roomParticipantReadService.findByRoomId(roomId);
 
-		if (checkUserIsAdmin(email, participantRoles) && participantRoles.size() == 1) {
+		if (checkUserIsAdmin(email, participantRoles) && roomParticipants.size() == 1) {
 			// 방에 나 혼자 있을 경우
 			deleteAllData(roomId);
 			return;
