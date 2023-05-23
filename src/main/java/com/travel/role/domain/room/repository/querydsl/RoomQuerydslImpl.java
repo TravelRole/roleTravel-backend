@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoomQuerydslImpl implements RoomQuerydsl {
 	private final JPAQueryFactory queryFactory;
-	private final EntityManager em;
 
 	@Override
 	public List<Tuple> getMemberInRoom(String email) {
@@ -43,21 +42,6 @@ public class RoomQuerydslImpl implements RoomQuerydsl {
 					.join(findParticipant.user, user)
 					.where(user.email.eq(email))
 			)).fetch();
-	}
-
-	public long deleteAllBoard(Long roomId) {
-		List<Long> boardIds = findBoardIdsByRoomId(roomId);
-
-		long count = queryFactory
-			.delete(scheduleInfo)
-			.where(scheduleInfo.id.in(boardIds))
-			.execute();
-
-
-		// em.flush();
-		// em.clear();
-
-		return count;
 	}
 
 	public List<Long> findBoardIdsByRoomId(Long roomId) {
