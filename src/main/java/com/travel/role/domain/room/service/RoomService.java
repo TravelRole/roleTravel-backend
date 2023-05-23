@@ -525,10 +525,9 @@ public class RoomService {
 	}
 
 	private boolean checkUserIsAdmin(String email, List<ParticipantRole> participantRoles) {
-		return participantRoles.stream().anyMatch((participantRole -> {
-			User user = participantRole.getUser();
-			return Objects.equals(user.getEmail(), email) && participantRole.getRoomRole() == RoomRole.ADMIN;
-		}));
+		return participantRoles.stream()
+			.filter(participantRole -> Objects.equals(participantRole.getUser().getEmail(), email))
+			.anyMatch(participantRole -> RoomRole.isAdmin(participantRole.getRoomRole()));
 	}
 
 	private void deleteAllData(Long roomId) {
