@@ -16,7 +16,7 @@ public class AWSSESConfig {
 	@Value("${cloud.aws.ses.access-key}")
 	private String accessKey;
 
-	@Value("${cloud.aws.ses.secret-key")
+	@Value("${cloud.aws.ses.secret-key}")
 	private String secretKey;
 
 	@Bean
