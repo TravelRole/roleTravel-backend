@@ -3,9 +3,11 @@ package com.travel.role.global.auth.service.mail;
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Properties;
 
+import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
@@ -31,19 +33,25 @@ public class MailService {
 		Session session=  Session.getDefaultInstance(new Properties());
 		MimeMessage mimeMessage = new MimeMessage(session);
 		try {
-			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-			mimeMessageHelper.setTo(email);
-			mimeMessageHelper.setFrom("no-reply@travel-role.com");
-			mimeMessageHelper.setText("변경된 비밀번호는 : " + password + " 입니다!", false);
-			mimeMessageHelper.setSubject("[역할여행] 변경된 비밀번호입니다.");
-
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			mimeMessage.writeTo(outputStream);
-			RawMessage rawMessage = new RawMessage(ByteBuffer.wrap(outputStream.toByteArray()));
-			amazonSimpleEmailService.sendRawEmail(new SendRawEmailRequest(rawMessage));
+			amazonSimpleEmailService.sendRawEmail(makeSendMessage(password, email, mimeMessage));
 		} catch (Exception e) {
 			log.info("메일을 보내는데 실패하였습니다 {}", e.getMessage());
 			throw new SendFailedException(MAIL_SEND_FAILED_ERROR);
 		}
+	}
+
+	private static SendRawEmailRequest makeSendMessage(String password, String email, MimeMessage mimeMessage) throws
+		MessagingException,
+		IOException {
+		MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+		mimeMessageHelper.setTo(email);
+		mimeMessageHelper.setFrom("no-reply@travel-role.com");
+		mimeMessageHelper.setText("변경된 비밀번호는 : " + password + " 입니다!", false);
+		mimeMessageHelper.setSubject("[역할여행] 변경된 비밀번호입니다.");
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		mimeMessage.writeTo(outputStream);
+		RawMessage rawMessage = new RawMessage(ByteBuffer.wrap(outputStream.toByteArray()));
+		return new SendRawEmailRequest(rawMessage);
 	}
 }
