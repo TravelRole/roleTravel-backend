@@ -3,7 +3,6 @@ package com.travel.role.domain.user.controller;
 import javax.mail.SendFailedException;
 import javax.validation.Valid;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -110,8 +109,7 @@ public class UserController {
 	}
 
 	@PostMapping("/new-password")
-	public ResponseEntity<?> newPassword(@RequestBody NewPasswordRequestDTO dto) throws SendFailedException {
+	public void newPassword(@RequestBody NewPasswordRequestDTO dto) throws SendFailedException {
 		authService.changePassword(dto);
-		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
