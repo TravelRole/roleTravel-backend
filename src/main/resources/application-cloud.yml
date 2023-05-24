@@ -1,5 +1,8 @@
 cloud:
   aws:
+    ses:
+      access-key: ENC(8b1rp/swdalSLvjt3zu7IXEkezBPVib4KGqpAHD1OAE=)
+      secret-key: ENC(I8XqdbHRwYF+FWS3AA7iTU+jusJo2oMQ4H/eGtpmfjrMSzfa4ay3BNOoQdvLyP9R0S4AEn4svDY=)
     s3:
       credentials:
         accessKey: ENC(IlmbXknVPL7fdZy7MIQtdc6A3HkW02ILZ9gXvqdpSds=)
