@@ -99,6 +99,8 @@ class RoomTest {
         //then
         List<ParticipantRole> participantRoles = participantRoleRepository.findUserAndRoomByRoomId(4L);
         assertThat(participantRoles).hasSize(5);
+        assertThat(participantRoles.get(0).getRoom().getTravelStartDate()).isEqualTo(LocalDate.of(2023, 6, 16));
+        assertThat(participantRoles.get(0).getRoom().getTravelEndDate()).isEqualTo(LocalDate.of(2023, 6, 17));
     }
 
     @Test

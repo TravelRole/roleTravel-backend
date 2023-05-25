@@ -272,7 +272,8 @@ public class RoomService {
 
 		Map<String, List<ParticipantRole>> participantMap = convertToParticipantRoleList(participantRoles);
 
-		modifyRoomNameAndDateAndLocation(participantRoles.get(0).getRoom(), dto);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		modifyRoomNameAndDateAndLocation(room, dto);
 		modifyRoles(participantMap, dto.getUserRoles());
 	}
 
@@ -293,8 +294,8 @@ public class RoomService {
 
 	private void modifyRoomNameAndDateAndLocation(Room room, RoomModifiedRequestDTO dto) {
 		validateDate(dto.getStartDate(), dto.getEndDate());
-		room.updateRoomNameAndDate(dto.getRoomName(), dto.getLocation(), room.getTravelStartDate(),
-			room.getTravelEndDate());
+		room.updateRoomNameAndDate(dto.getRoomName(), dto.getLocation(), dto.getStartDate(),
+			dto.getEndDate());
 	}
 
 	private void modifyRoles(Map<String, List<ParticipantRole>> participantMap, List<RoomRoleDTO> userRoles) {
