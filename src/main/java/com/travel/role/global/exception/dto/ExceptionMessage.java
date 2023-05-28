@@ -51,6 +51,7 @@ public final class ExceptionMessage {
 	// travel essential
 	public static final String INVALID_ESSENTIAL_CATEGORY = "지정한 카테고리 내에서 입력해 주세요.";
 	public static final String INVALID_ESSENTIAL_ITEM_LENGTH = "준비물 길이는 2 이상 15 이하여야 합니다.";
+	public static final String ESSENTIAL_NAME_NOT_EMPTY = "준비물을 하나 이상 입력해 주세요.";
 
 	// expense
 	public static final String EXPENSE_MUST_GREATER_THAN_OR_EQUAL_TO_ZERO = "경비는 0원 이상이어야 합니다.";
