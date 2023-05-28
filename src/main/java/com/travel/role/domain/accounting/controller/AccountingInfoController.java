@@ -22,6 +22,7 @@ import com.travel.role.domain.accounting.dto.request.ExpenseDetailModifyReqDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailCreateResDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailModifyResDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailsResDTO;
+import com.travel.role.domain.accounting.dto.response.TotalExpenseDetailResDTO;
 import com.travel.role.domain.accounting.entity.PaymentMethod;
 import com.travel.role.domain.accounting.service.AccountingInfoReadService;
 import com.travel.role.domain.accounting.service.AccountingInfoService;
@@ -45,6 +46,15 @@ public class AccountingInfoController {
 
 		ExpenseDetailsResDTO resDTO = accountingInfoReadService.getExpenseDetails(
 			userPrincipal.getEmail(), roomId, searchDate, paymentMethod);
+
+		return ResponseEntity.ok(resDTO);
+	}
+
+	@GetMapping("/total")
+	public ResponseEntity<TotalExpenseDetailResDTO> getTotalExpenseDetails(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("roomId") Long roomId){
+
+		TotalExpenseDetailResDTO resDTO = accountingInfoReadService.getTotalExpenseDetails(userPrincipal.getEmail(), roomId);
 
 		return ResponseEntity.ok(resDTO);
 	}
