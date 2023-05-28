@@ -33,6 +33,15 @@ public class AccountingInfoQuerydslImpl implements AccountingInfoQuerydsl {
 	}
 
 	@Override
+	public Integer findTotalExpenseByRoomId(Long roomId) {
+
+		return queryFactory.select(accountingInfo.price.sum())
+			.from(accountingInfo)
+			.where(accountingInfo.room.id.eq(roomId), accountingInfo.paymentTime.isNotNull())
+			.fetchOne();
+	}
+
+	@Override
 	public List<AccountingInfo> findAccountingInfoByRoomIdAndBoardIds(Long roomId, List<Long> boardIds) {
 		return queryFactory
 			.selectDistinct(accountingInfo)
