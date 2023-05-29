@@ -291,174 +291,174 @@ class TravelEssentialControllerTest extends ControllerTestSupport {
 				.andExpect(jsonPath("$.httpStatus").value(HttpStatus.UNAUTHORIZED.name()))
 				.andExpect(jsonPath("$.time").exists());
 		}
+	}
 
-		@DisplayName("회원이 준비물을 삭제했을 때")
-		@Nested
-		class DeleteTravelEssentials {
+	@DisplayName("회원이 준비물을 체크했을 때")
+	@Nested
+	class CheckTravelEssentials {
 
-			@DisplayName("정상적인 경우라면 준비물이 삭제된다.")
-			@Test
-			void deleteTravelEssentials() throws Exception {
+		@DisplayName("정상적인 경우라면 준비물이 체크된다.")
+		@Test
+		void checkTravelEssentials() throws Exception {
 
-				// Given
-				List<Long> requestIds = List.of(1L, 2L);
-				TravelEssentialDeleteReqDTO request = createTravelEssentialDeleteReqDTO(requestIds);
+			// Given
+			List<Long> requestIds = List.of(1L, 2L);
+			TravelEssentialCheckReqDTO request = createTravelEssentialCheckReqDTO(true,
+				requestIds);
 
-				//When & Then
-				mockMvc.perform(delete("/api/room/1/essentials")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(om.writeValueAsString(request))
-						.characterEncoding("UTF-8"))
-					.andExpect(status().isOk());
+			//When & Then
+			mockMvc.perform(patch("/api/room/1/essentials/check")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(om.writeValueAsString(request))
+					.characterEncoding("UTF-8"))
+				.andExpect(status().isOk());
 
-				then(travelEssentialService).should(times(1))
-					.deleteTravelEssentials(anyString(), anyLong(), any(TravelEssentialDeleteReqDTO.class));
-			}
-
-			@DisplayName("존재하지 않는 방이면 예외메시지를 응답한다.")
-			@Test
-			void deleteTravelEssentialsWithNotExistsRoom() throws Exception {
-
-				// Given
-				List<Long> requestIds = List.of(1L, 2L);
-				TravelEssentialDeleteReqDTO request = createTravelEssentialDeleteReqDTO(requestIds);
-
-				// Stub
-				RoomInfoNotFoundException expectedException = new RoomInfoNotFoundException();
-				willThrow(expectedException).given(travelEssentialService)
-					.deleteTravelEssentials(anyString(), anyLong(), any(TravelEssentialDeleteReqDTO.class));
-
-				//When & Then
-				mockMvc.perform(delete("/api/room/1/essentials")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(om.writeValueAsString(request))
-						.characterEncoding("UTF-8"))
-					.andExpect(status().isNotFound())
-					.andExpect(jsonPath("$.message").value(ExceptionMessage.ROOM_NOT_FOUND))
-					.andExpect(jsonPath("$.httpStatus").value(HttpStatus.NOT_FOUND.name()))
-					.andExpect(jsonPath("$.time").exists());
-			}
-
-			@DisplayName("방에 속해 있지 않은 회원이면 예외메시지를 응답한다.")
-			@Test
-			void deleteTravelEssentialsWithNotParticipantUser() throws Exception {
-
-				// Given
-				List<Long> requestIds = List.of(1L, 2L);
-				TravelEssentialDeleteReqDTO request = createTravelEssentialDeleteReqDTO(requestIds);
-
-				// Stub
-				UserNotParticipateRoomException expectedException = new UserNotParticipateRoomException();
-				willThrow(expectedException).given(travelEssentialService)
-					.deleteTravelEssentials(anyString(), anyLong(), any(TravelEssentialDeleteReqDTO.class));
-
-				//When & Then
-				mockMvc.perform(delete("/api/room/1/essentials")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(om.writeValueAsString(request))
-						.characterEncoding("UTF-8"))
-					.andExpect(status().isUnauthorized())
-					.andExpect(jsonPath("$.message").value(ExceptionMessage.USER_NOT_PARTICIPATE_ROOM))
-					.andExpect(jsonPath("$.httpStatus").value(HttpStatus.UNAUTHORIZED.name()))
-					.andExpect(jsonPath("$.time").exists());
-			}
+			then(travelEssentialService).should(times(1))
+				.updateCheckTravelEssentials(anyString(), anyLong(), any(TravelEssentialCheckReqDTO.class));
 		}
 
-		@DisplayName("회원이 준비물을 체크했을 때")
-		@Nested
-		class CheckTravelEssentials {
+		@DisplayName("존재하지 않는 방이면 예외메시지를 응답한다.")
+		@Test
+		void checkTravelEssentialsWithNotExistsRoom() throws Exception {
 
-			@DisplayName("정상적인 경우라면 준비물이 체크된다.")
-			@Test
-			void checkTravelEssentials() throws Exception {
+			// Given
+			List<Long> requestIds = List.of(1L, 2L);
+			TravelEssentialCheckReqDTO request = createTravelEssentialCheckReqDTO(true,
+				requestIds);
 
-				// Given
-				List<Long> requestIds = List.of(1L, 2L);
-				TravelEssentialCheckReqDTO request = createTravelEssentialCheckReqDTO(true,
-					requestIds);
+			// Stub
+			RoomInfoNotFoundException expectedException = new RoomInfoNotFoundException();
+			willThrow(expectedException).given(travelEssentialService)
+				.updateCheckTravelEssentials(anyString(), anyLong(), any(TravelEssentialCheckReqDTO.class));
 
-				//When & Then
-				mockMvc.perform(patch("/api/room/1/essentials/check")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(om.writeValueAsString(request))
-						.characterEncoding("UTF-8"))
-					.andExpect(status().isOk());
+			//When & Then
+			mockMvc.perform(patch("/api/room/1/essentials/check")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(om.writeValueAsString(request))
+					.characterEncoding("UTF-8"))
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.message").value(ExceptionMessage.ROOM_NOT_FOUND))
+				.andExpect(jsonPath("$.httpStatus").value(HttpStatus.NOT_FOUND.name()))
+				.andExpect(jsonPath("$.time").exists());
+		}
 
-				then(travelEssentialService).should(times(1))
-					.updateCheckTravelEssentials(anyString(), anyLong(), any(TravelEssentialCheckReqDTO.class));
-			}
+		@DisplayName("방에 속해 있지 않은 회원이면 예외메시지를 응답한다.")
+		@Test
+		void checkTravelEssentialsWithNotParticipantUser() throws Exception {
 
-			@DisplayName("존재하지 않는 방이면 예외메시지를 응답한다.")
-			@Test
-			void checkTravelEssentialsWithNotExistsRoom() throws Exception {
+			// Given
+			List<Long> requestIds = List.of(1L, 2L);
+			TravelEssentialCheckReqDTO request = createTravelEssentialCheckReqDTO(true,
+				requestIds);
 
-				// Given
-				List<Long> requestIds = List.of(1L, 2L);
-				TravelEssentialCheckReqDTO request = createTravelEssentialCheckReqDTO(true,
-					requestIds);
+			// Stub
+			UserNotParticipateRoomException expectedException = new UserNotParticipateRoomException();
+			willThrow(expectedException).given(travelEssentialService)
+				.updateCheckTravelEssentials(anyString(), anyLong(), any(TravelEssentialCheckReqDTO.class));
 
-				// Stub
-				RoomInfoNotFoundException expectedException = new RoomInfoNotFoundException();
-				willThrow(expectedException).given(travelEssentialService)
-					.updateCheckTravelEssentials(anyString(), anyLong(), any(TravelEssentialCheckReqDTO.class));
+			//When & Then
+			mockMvc.perform(patch("/api/room/1/essentials/check")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(om.writeValueAsString(request))
+					.characterEncoding("UTF-8"))
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.message").value(ExceptionMessage.USER_NOT_PARTICIPATE_ROOM))
+				.andExpect(jsonPath("$.httpStatus").value(HttpStatus.UNAUTHORIZED.name()))
+				.andExpect(jsonPath("$.time").exists());
+		}
 
-				//When & Then
-				mockMvc.perform(patch("/api/room/1/essentials/check")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(om.writeValueAsString(request))
-						.characterEncoding("UTF-8"))
-					.andExpect(status().isNotFound())
-					.andExpect(jsonPath("$.message").value(ExceptionMessage.ROOM_NOT_FOUND))
-					.andExpect(jsonPath("$.httpStatus").value(HttpStatus.NOT_FOUND.name()))
-					.andExpect(jsonPath("$.time").exists());
-			}
+		@DisplayName("어떤 상태로 변경할 것인지 입력되지 않았다면 예외메시지를 응답한다.")
+		@Test
+		void checkTravelEssentialsWithEmptyStatus() throws Exception {
 
-			@DisplayName("방에 속해 있지 않은 회원이면 예외메시지를 응답한다.")
-			@Test
-			void checkTravelEssentialsWithNotParticipantUser() throws Exception {
+			// Given
+			List<Long> requestIds = List.of(1L, 2L);
+			TravelEssentialCheckReqDTO request = createTravelEssentialCheckReqDTO(null,
+				requestIds);
 
-				// Given
-				List<Long> requestIds = List.of(1L, 2L);
-				TravelEssentialCheckReqDTO request = createTravelEssentialCheckReqDTO(true,
-					requestIds);
+			//When & Then
+			mockMvc.perform(patch("/api/room/1/essentials/check")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(om.writeValueAsString(request))
+					.characterEncoding("UTF-8"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message").value(ExceptionMessage.ESSENTIAL_CHECK_STATUS_NOT_EMPTY))
+				.andExpect(jsonPath("$.httpStatus").value(HttpStatus.BAD_REQUEST.name()))
+				.andExpect(jsonPath("$.time").exists());
 
-				// Stub
-				UserNotParticipateRoomException expectedException = new UserNotParticipateRoomException();
-				willThrow(expectedException).given(travelEssentialService)
-					.updateCheckTravelEssentials(anyString(), anyLong(), any(TravelEssentialCheckReqDTO.class));
+			then(travelEssentialService).shouldHaveNoInteractions();
+		}
+	}
 
-				//When & Then
-				mockMvc.perform(patch("/api/room/1/essentials/check")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(om.writeValueAsString(request))
-						.characterEncoding("UTF-8"))
-					.andExpect(status().isUnauthorized())
-					.andExpect(jsonPath("$.message").value(ExceptionMessage.USER_NOT_PARTICIPATE_ROOM))
-					.andExpect(jsonPath("$.httpStatus").value(HttpStatus.UNAUTHORIZED.name()))
-					.andExpect(jsonPath("$.time").exists());
-			}
+	@DisplayName("회원이 준비물을 삭제했을 때")
+	@Nested
+	class DeleteTravelEssentials {
 
-			@DisplayName("어떤 상태로 변경할 것인지 입력되지 않았다면 예외메시지를 응답한다.")
-			@Test
-			void checkTravelEssentialsWithEmptyStatus() throws Exception {
+		@DisplayName("정상적인 경우라면 준비물이 삭제된다.")
+		@Test
+		void deleteTravelEssentials() throws Exception {
 
-				// Given
-				List<Long> requestIds = List.of(1L, 2L);
-				TravelEssentialCheckReqDTO request = createTravelEssentialCheckReqDTO(null,
-					requestIds);
+			// Given
+			List<Long> requestIds = List.of(1L, 2L);
+			TravelEssentialDeleteReqDTO request = createTravelEssentialDeleteReqDTO(requestIds);
 
-				//When & Then
-				mockMvc.perform(patch("/api/room/1/essentials/check")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(om.writeValueAsString(request))
-						.characterEncoding("UTF-8"))
-					.andExpect(status().isBadRequest())
-					.andExpect(jsonPath("$.message").value(ExceptionMessage.ESSENTIAL_CHECK_STATUS_NOT_EMPTY))
-					.andExpect(jsonPath("$.httpStatus").value(HttpStatus.BAD_REQUEST.name()))
-					.andExpect(jsonPath("$.time").exists());
+			//When & Then
+			mockMvc.perform(delete("/api/room/1/essentials")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(om.writeValueAsString(request))
+					.characterEncoding("UTF-8"))
+				.andExpect(status().isOk());
 
-				then(travelEssentialService).shouldHaveNoInteractions();
-			}
+			then(travelEssentialService).should(times(1))
+				.deleteTravelEssentials(anyString(), anyLong(), any(TravelEssentialDeleteReqDTO.class));
+		}
+
+		@DisplayName("존재하지 않는 방이면 예외메시지를 응답한다.")
+		@Test
+		void deleteTravelEssentialsWithNotExistsRoom() throws Exception {
+
+			// Given
+			List<Long> requestIds = List.of(1L, 2L);
+			TravelEssentialDeleteReqDTO request = createTravelEssentialDeleteReqDTO(requestIds);
+
+			// Stub
+			RoomInfoNotFoundException expectedException = new RoomInfoNotFoundException();
+			willThrow(expectedException).given(travelEssentialService)
+				.deleteTravelEssentials(anyString(), anyLong(), any(TravelEssentialDeleteReqDTO.class));
+
+			//When & Then
+			mockMvc.perform(delete("/api/room/1/essentials")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(om.writeValueAsString(request))
+					.characterEncoding("UTF-8"))
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.message").value(ExceptionMessage.ROOM_NOT_FOUND))
+				.andExpect(jsonPath("$.httpStatus").value(HttpStatus.NOT_FOUND.name()))
+				.andExpect(jsonPath("$.time").exists());
+		}
+
+		@DisplayName("방에 속해 있지 않은 회원이면 예외메시지를 응답한다.")
+		@Test
+		void deleteTravelEssentialsWithNotParticipantUser() throws Exception {
+
+			// Given
+			List<Long> requestIds = List.of(1L, 2L);
+			TravelEssentialDeleteReqDTO request = createTravelEssentialDeleteReqDTO(requestIds);
+
+			// Stub
+			UserNotParticipateRoomException expectedException = new UserNotParticipateRoomException();
+			willThrow(expectedException).given(travelEssentialService)
+				.deleteTravelEssentials(anyString(), anyLong(), any(TravelEssentialDeleteReqDTO.class));
+
+			//When & Then
+			mockMvc.perform(delete("/api/room/1/essentials")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(om.writeValueAsString(request))
+					.characterEncoding("UTF-8"))
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.message").value(ExceptionMessage.USER_NOT_PARTICIPATE_ROOM))
+				.andExpect(jsonPath("$.httpStatus").value(HttpStatus.UNAUTHORIZED.name()))
+				.andExpect(jsonPath("$.time").exists());
 		}
 	}
 
