@@ -9,5 +9,5 @@ import lombok.Data;
 @Builder
 public class TotalExpenseDetailResDTO {
 
-	private Integer totalExpense;
+	private int totalExpense;
 }

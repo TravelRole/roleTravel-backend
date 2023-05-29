@@ -59,7 +59,7 @@ public class AccountingInfoReadService {
 		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
 		roomParticipantReadService.checkParticipant(loginUser, room);
 
-		Integer totalExpense = accountingInfoRepository.findTotalExpenseByRoomId(roomId);
+		int totalExpense = accountingInfoRepository.findTotalExpenseByRoomId(roomId);
 
 		return new TotalExpenseDetailResDTO(totalExpense);
 	}
