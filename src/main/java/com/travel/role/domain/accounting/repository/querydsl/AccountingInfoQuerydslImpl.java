@@ -33,12 +33,14 @@ public class AccountingInfoQuerydslImpl implements AccountingInfoQuerydsl {
 	}
 
 	@Override
-	public Integer findTotalExpenseByRoomId(Long roomId) {
+	public int findTotalExpenseByRoomId(Long roomId) {
 
-		return queryFactory.select(accountingInfo.price.sum())
+		Integer totalExpense = queryFactory.select(accountingInfo.price.sum())
 			.from(accountingInfo)
 			.where(accountingInfo.room.id.eq(roomId), accountingInfo.paymentTime.isNotNull())
 			.fetchOne();
+
+		return totalExpense == null ? 0 : totalExpense;
 	}
 
 	@Override
