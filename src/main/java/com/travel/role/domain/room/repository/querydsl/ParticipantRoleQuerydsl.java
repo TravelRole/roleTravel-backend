@@ -4,4 +4,5 @@ import com.travel.role.domain.room.entity.RoomRole;
 
 public interface ParticipantRoleQuerydsl {
 	boolean existsByUserEmailAndRoomIdAndRole(String email, Long roomId, RoomRole role);
+	void deleteByRoomIdAndEmail(Long roomId, String email);
 }

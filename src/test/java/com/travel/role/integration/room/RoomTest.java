@@ -4,12 +4,16 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.travel.role.domain.room.dto.request.ExitRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.AllPlanDTO;
@@ -28,6 +32,7 @@ import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.repository.UserRepository;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 
 @SpringBootTest
 @Transactional
@@ -45,6 +50,9 @@ class RoomTest {
     private ParticipantRoleRepository participantRoleRepository;
 
     @Autowired
+    private EntityManager em;
+
+    @Autowired
     private RoomService roomService;
 
     @Test
@@ -56,8 +64,8 @@ class RoomTest {
 
         //when, then
         assertThat(userResult.size()).isEqualTo(12);
-        assertThat(roomResult.size()).isEqualTo(4);
-        assertThat(roomParticipantResult.size()).isEqualTo(16);
+        assertThat(roomResult.size()).isEqualTo(5);
+        assertThat(roomParticipantResult.size()).isEqualTo(17);
     }
 
     @Test
@@ -68,7 +76,7 @@ class RoomTest {
         List<RoomResponseDTO> roomList = roomService.getRoomList(email);
 
         // then
-        assertThat(roomList.size()).isEqualTo(1);
+        assertThat(roomList.size()).isEqualTo(2);
         assertThat(roomList.get(0).getRoomName()).isEqualTo("가아아아아평");
         assertThat(roomList.get(0).getMembers().size()).isEqualTo(5);
     }
@@ -76,10 +84,10 @@ class RoomTest {
     @Test
     void 방_총무_변경_테스트() {
         //given
-        RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("Junsik@naver.com", List.of(RoomRole.NONE));
-        RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.RESERVATION));
-        RoomRoleDTO roomRoleDTO3 = new RoomRoleDTO("mogu@naver.com", List.of(RoomRole.ADMIN));
-        RoomRoleDTO roomRoleDTO4 = new RoomRoleDTO("dsl@naver.com", List.of(RoomRole.ACCOUNTING, RoomRole.SCHEDULE));
+        RoomRoleDTO roomRoleDTO1 = new RoomRoleDTO("haechan@naver.com", List.of(RoomRole.RESERVATION));
+        RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("mogu@naver.com", List.of(RoomRole.SCHEDULE));
+        RoomRoleDTO roomRoleDTO3 = new RoomRoleDTO("dsl@naver.com", List.of(RoomRole.ACCOUNTING, RoomRole.SCHEDULE));
+        RoomRoleDTO roomRoleDTO4 = new RoomRoleDTO("Junsik@naver.com", List.of(RoomRole.ADMIN));
 
         RoomModifiedRequestDTO roomModifiedRequestDTO = new RoomModifiedRequestDTO("광양 펜션잡고 놀자", "경주", LocalDate.of(2023, 6, 16),
             LocalDate.of(2023, 6, 17),
@@ -90,7 +98,9 @@ class RoomTest {
 
         //then
         List<ParticipantRole> participantRoles = participantRoleRepository.findUserAndRoomByRoomId(4L);
-        assertThat(participantRoles.size()).isEqualTo(5);
+        assertThat(participantRoles).hasSize(5);
+        assertThat(participantRoles.get(0).getRoom().getTravelStartDate()).isEqualTo(LocalDate.of(2023, 6, 16));
+        assertThat(participantRoles.get(0).getRoom().getTravelEndDate()).isEqualTo(LocalDate.of(2023, 6, 17));
     }
 
     @Test
@@ -136,5 +146,57 @@ class RoomTest {
         assertThat(sidebar.getRoomImage()).isEqualTo(1);
         assertThat(sidebar.getRoomName()).isEqualTo("여수에서 간장게장");
         assertThat(sidebar.getRoles()).contains(RoomRole.RESERVATION, RoomRole.SCHEDULE);
+    }
+
+    @Test
+    void 스페이스_탈퇴시_총무인데_총무인원을_설정하지_않았을_경우() {
+        // given
+        String email = "gy@naver.com";
+        Long roomId = 1L;
+        ExitRoomRequestDTO exitRoomRequestDTO = new ExitRoomRequestDTO();
+        // when, then
+        assertThatThrownBy(() -> {
+            roomService.exitRoom(email, roomId, exitRoomRequestDTO);
+        }).isInstanceOf(UserInfoNotFoundException.class);
+    }
+
+    @Test
+    void 스페이스_탈퇴시_총무인_경우() {
+        //given
+        String email = "gy@naver.com";
+        Long roomId = 1L;
+        ExitRoomRequestDTO exitRoomRequestDTO = new ExitRoomRequestDTO("kmimi@naver.com");
+
+        //when
+        roomService.exitRoom(email, roomId, exitRoomRequestDTO);
+
+        List<ParticipantRole> participantRoles = participantRoleRepository.findByRoomIdAndEmail(1L, "kmimi@naver.com");
+        List<ParticipantRole> deleteRoles = participantRoleRepository.findByRoomIdAndEmail(1L, email);
+
+
+        //then
+        assertThat(deleteRoles).isEmpty();
+        assertThat(participantRoles).hasSize(1);
+        assertThat(participantRoles.get(0).getRoomRole()).isEqualTo(RoomRole.ADMIN);
+    }
+
+    @Test
+    void 스페이스_탈퇴시_나만_존재하는_방인_경우() {
+        //given
+        String email = "gy@naver.com";
+        Long roomId = 5L;
+
+        //when
+        roomService.exitRoom(email, roomId, new ExitRoomRequestDTO());
+        em.flush();
+        em.clear();
+
+        Optional<Room> room = roomRepository.findById(5L);
+        Optional<RoomParticipant> roomParticipant = roomParticipantRepository.findById(17L);
+        Optional<ParticipantRole> participantRole = participantRoleRepository.findById(20L);
+        //then
+        assertThat(room.isEmpty()).isTrue();
+        assertThat(roomParticipant.isEmpty()).isTrue();
+        assertThat(participantRole.isEmpty()).isTrue();
     }
 }

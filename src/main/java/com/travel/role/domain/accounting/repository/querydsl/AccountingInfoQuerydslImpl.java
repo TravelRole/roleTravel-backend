@@ -1,6 +1,7 @@
 package com.travel.role.domain.accounting.repository.querydsl;
 
 import static com.travel.role.domain.accounting.entity.QAccountingInfo.*;
+import static com.travel.role.domain.book.entity.QBookInfo.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +30,25 @@ public class AccountingInfoQuerydslImpl implements AccountingInfoQuerydsl {
 			.fetch();
 
 		return accountingInfos;
+	}
+
+	@Override
+	public Integer findTotalExpenseByRoomId(Long roomId) {
+
+		return queryFactory.select(accountingInfo.price.sum())
+			.from(accountingInfo)
+			.where(accountingInfo.room.id.eq(roomId), accountingInfo.paymentTime.isNotNull())
+			.fetchOne();
+	}
+
+	@Override
+	public List<AccountingInfo> findAccountingInfoByRoomIdAndBoardIds(Long roomId, List<Long> boardIds) {
+		return queryFactory
+			.selectDistinct(accountingInfo)
+			.from(accountingInfo)
+			.join(accountingInfo.bookInfo, bookInfo).fetchJoin()
+			.where(accountingInfo.room.id.eq(roomId).or(accountingInfo.board.id.in(boardIds)))
+			.fetch();
 	}
 
 	private BooleanExpression eqPaymentMethod(PaymentMethod paymentMethod) {

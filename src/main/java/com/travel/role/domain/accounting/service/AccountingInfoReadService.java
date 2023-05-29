@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailResDTO;
 import com.travel.role.domain.accounting.dto.response.ExpenseDetailsResDTO;
+import com.travel.role.domain.accounting.dto.response.TotalExpenseDetailResDTO;
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.entity.PaymentMethod;
 import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
@@ -50,5 +51,20 @@ public class AccountingInfoReadService {
 			.collect(Collectors.toList());
 
 		return ExpenseDetailsResDTO.from(expenseDetailResDTOS);
+	}
+
+	public TotalExpenseDetailResDTO getTotalExpenseDetails(String email, Long roomId){
+
+		User loginUser = userReadService.findUserByEmailOrElseThrow(email);
+		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
+		roomParticipantReadService.checkParticipant(loginUser, room);
+
+		Integer totalExpense = accountingInfoRepository.findTotalExpenseByRoomId(roomId);
+
+		return new TotalExpenseDetailResDTO(totalExpense);
+	}
+
+	public List<AccountingInfo> findAccountingInfoByRoomIdAndBoardIds(Long roomId, List<Long> boardIds) {
+		return accountingInfoRepository.findAccountingInfoByRoomIdAndBoardIds(roomId, boardIds);
 	}
 }

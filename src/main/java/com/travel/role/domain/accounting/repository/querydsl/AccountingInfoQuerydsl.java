@@ -9,4 +9,7 @@ import com.travel.role.domain.accounting.entity.PaymentMethod;
 public interface AccountingInfoQuerydsl {
 
 	List<AccountingInfo> findAllByRoomIdAndDateAndPaymentMethod(Long roomId, LocalDate date, PaymentMethod paymentMethod);
+	List<AccountingInfo> findAccountingInfoByRoomIdAndBoardIds(Long roomId, List<Long> boardIds);
+
+	Integer findTotalExpenseByRoomId(Long roomId);
 }

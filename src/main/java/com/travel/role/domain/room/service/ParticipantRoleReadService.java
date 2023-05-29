@@ -14,6 +14,7 @@ import com.travel.role.domain.user.entity.User;
 import com.travel.role.global.exception.room.RolesIsEmptyException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.exception.user.RoomInfoNotFoundException;
+import com.travel.role.global.exception.user.UserInfoNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,5 +53,15 @@ public class ParticipantRoleReadService {
 
 		return participantRoles.stream().map(ParticipantRole::getRoomRole)
 			.collect(Collectors.toList());
+	}
+
+	public List<ParticipantRole> findByRoomIdAndEmail(Long roomId, String email) {
+		List<ParticipantRole> participantRoles = participantRoleRepository.findByRoomIdAndEmail(roomId, email);
+
+		if (participantRoles.isEmpty() || email == null) {
+			throw new UserInfoNotFoundException();
+		}
+
+		return participantRoles;
 	}
 }

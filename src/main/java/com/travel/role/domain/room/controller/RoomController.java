@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.travel.role.domain.room.dto.request.ExitRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.ExpensesRequestDTO;
 import com.travel.role.domain.room.dto.request.MakeRoomRequestDTO;
 import com.travel.role.domain.room.dto.request.RoomModifiedRequestDTO;
@@ -121,5 +123,12 @@ public class RoomController {
 	public List<RoomRole> getUserRoles(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId) {
 		return roomService.getUserRoles(userPrincipal.getEmail(), roomId);
+	}
+
+	@DeleteMapping("/room/{room_id}")
+	public void exitRoom(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@PathVariable("room_id") Long roomId,
+		@RequestBody ExitRoomRequestDTO dto) {
+		roomService.exitRoom(userPrincipal.getEmail(), roomId, dto);
 	}
 }

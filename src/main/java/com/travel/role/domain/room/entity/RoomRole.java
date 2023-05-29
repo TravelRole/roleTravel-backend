@@ -20,6 +20,10 @@ public enum RoomRole {
 	private final String value;
 	private final String responseValue;
 
+	public static boolean isAdmin(RoomRole roomRole) {
+		return roomRole == RoomRole.ADMIN;
+	}
+
 	@JsonValue
 	public String getResponseValue() {
 		return this.responseValue;

@@ -11,13 +11,13 @@ import lombok.Data;
 @Builder
 public class ExpenseDetailsResDTO {
 
-	private Long totalExpense;
+	private Integer totalExpense;
 	private List<ExpenseDetailResDTO> expenses;
 
 	public static ExpenseDetailsResDTO from(List<ExpenseDetailResDTO> expenses) {
 
-		long totalExpense = expenses.stream()
-			.mapToLong(ExpenseDetailResDTO::getPrice)
+		int totalExpense = expenses.stream()
+			.mapToInt(ExpenseDetailResDTO::getPrice)
 			.sum();
 
 		return ExpenseDetailsResDTO.builder()

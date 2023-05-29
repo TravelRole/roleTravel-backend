@@ -22,6 +22,7 @@ public class RefreshTokenCookieProvider {
 			.path("/") // 모든 경로일 때
 			.domain(COOKIE_DOMAIN)
 			.httpOnly(true)
+			.secure(true)
 			.maxAge(EXPIRED_TIME)
 			.build();
 	}
