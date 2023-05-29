@@ -72,7 +72,7 @@ public class TravelEssentialController {
 	@PatchMapping("/check")
 	public void checkTravelEssentials(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId,
-		@RequestBody TravelEssentialCheckReqDTO reqDTO) {
+		@RequestBody @Valid TravelEssentialCheckReqDTO reqDTO) {
 
 		travelEssentialService.updateCheckTravelEssentials(userPrincipal.getEmail(), roomId, reqDTO);
 	}
