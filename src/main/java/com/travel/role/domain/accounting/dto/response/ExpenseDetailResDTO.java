@@ -15,6 +15,7 @@ import lombok.Data;
 public class ExpenseDetailResDTO {
 
 	private Long id;
+	private String paymentName;
 	private PaymentMethod paymentMethod;
 	private Category category;
 	private Integer price;
@@ -29,6 +30,7 @@ public class ExpenseDetailResDTO {
 
 		return ExpenseDetailResDTO.builder()
 			.id(accountingInfo.getId())
+			.paymentName(accountingInfo.getPaymentName())
 			.paymentMethod(accountingInfo.getPaymentMethod())
 			.category(accountingInfo.getCategory())
 			.price(accountingInfo.getPrice())
