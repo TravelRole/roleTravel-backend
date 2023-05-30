@@ -126,9 +126,9 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(RoomInfoNotFoundException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ExceptionResponse roomInfoNotFoundException(Exception e) {
-		return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+		return new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
 	}
 
 	@ExceptionHandler(PlaceInfoNotFoundException.class)
