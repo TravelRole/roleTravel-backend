@@ -546,7 +546,7 @@ public class RoomService {
 	}
 
 	public List<Long> getBookIds(List<AccountingInfo> accountingInfos) {
-		return accountingInfos.stream().map(a -> a.getBoard().getId())
+		return accountingInfos.stream().map(a -> a.getBookInfo().getId())
 			.collect(Collectors.toList());
 	}
 

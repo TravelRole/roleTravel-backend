@@ -49,7 +49,7 @@ public class AccountingInfoQuerydslImpl implements AccountingInfoQuerydsl {
 			.selectDistinct(accountingInfo)
 			.from(accountingInfo)
 			.join(accountingInfo.bookInfo, bookInfo).fetchJoin()
-			.where(accountingInfo.room.id.eq(roomId).or(accountingInfo.board.id.in(boardIds)))
+			.where(accountingInfo.room.id.eq(roomId).and(accountingInfo.board.id.in(boardIds)))
 			.fetch();
 	}
 
