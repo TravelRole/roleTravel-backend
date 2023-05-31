@@ -69,7 +69,7 @@ public class AccountingInfoService {
 			requestDTO.getPaymentName(),
 			requestDTO.getPrice(),
 			requestDTO.getCategory(),
-			requestDTO.getAccountEtc()
+			requestDTO.getAccountingEtc()
 		);
 
 		return ExpenseDetailModifyResDTO.from(findAccountingInfo);
