@@ -311,7 +311,7 @@ public class RoomService {
 
 		if (participantRoleSize > roomRoleSize) {
 			List<Long> ids = new ArrayList<>();
-			for (int i = 0 ; i < participantRoleSize - roomRoleSize; i++) {
+			for (int i = 0; i < participantRoleSize - roomRoleSize; i++) {
 				ids.add(participantRoles.get(i).getId());
 				participantRoles.remove(participantRoles.get(i));
 			}
@@ -529,7 +529,8 @@ public class RoomService {
 
 	private void deleteAllData(Long roomId) {
 		List<Long> boardIds = roomRepository.findBoardIdsByRoomId(roomId);
-		List<AccountingInfo> accountingInfos = accountingInfoReadService.findAccountingInfoByRoomIdAndBoardIds(roomId, boardIds);
+		List<AccountingInfo> accountingInfos = accountingInfoReadService.findAccountingInfoByRoomIdAndBoardIds(roomId,
+			boardIds);
 		List<Long> accountIds = getAccountIds(accountingInfos);
 		List<Long> bookIds = getBookIds(accountingInfos);
 
@@ -544,12 +545,12 @@ public class RoomService {
 		roomRepository.deleteById(roomId);
 	}
 
-	private List<Long> getBookIds(List<AccountingInfo> accountingInfos) {
+	public List<Long> getBookIds(List<AccountingInfo> accountingInfos) {
 		return accountingInfos.stream().map(a -> a.getBoard().getId())
 			.collect(Collectors.toList());
 	}
 
-	private List<Long> getAccountIds(List<AccountingInfo> accountingInfos) {
+	public List<Long> getAccountIds(List<AccountingInfo> accountingInfos) {
 		return accountingInfos.stream().map(a -> a.getId())
 			.collect(Collectors.toList());
 	}
