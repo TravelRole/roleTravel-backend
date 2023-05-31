@@ -20,7 +20,7 @@ public class ExpenseDetailCreateResDTO {
 	private Integer price;
 	private PaymentMethod paymentMethod;
 	private Category category;
-	private String accountEtc;
+	private String accountingEtc;
 	private LocalDate paymentTime;
 
 	public static ExpenseDetailCreateResDTO from(AccountingInfo accountingInfo) {
@@ -31,7 +31,7 @@ public class ExpenseDetailCreateResDTO {
 			.price(accountingInfo.getPrice())
 			.paymentMethod(accountingInfo.getPaymentMethod())
 			.category(accountingInfo.getCategory())
-			.accountEtc(accountingInfo.getAccountingEtc())
+			.accountingEtc(accountingInfo.getAccountingEtc())
 			.paymentTime(accountingInfo.getPaymentTime())
 			.build();
 	}

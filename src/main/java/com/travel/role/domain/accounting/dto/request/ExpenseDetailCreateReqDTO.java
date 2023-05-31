@@ -33,7 +33,7 @@ public class ExpenseDetailCreateReqDTO {
 	@NotNull(message = INVALID_CATEGORY)
 	private Category category;
 
-	private String accountEtc;
+	private String accountingEtc;
 
 	private LocalDate paymentTime;
 
@@ -43,7 +43,7 @@ public class ExpenseDetailCreateReqDTO {
 		@JsonProperty("price") Integer price,
 		@JsonProperty("paymentMethod") PaymentMethod paymentMethod,
 		@JsonProperty("category") Category category,
-		@JsonProperty("accountEtc") String accountEtc,
+		@JsonProperty("accountingEtc") String accountingEtc,
 		@JsonProperty("paymentTime") String paymentTimeStr) {
 
 		LocalDate paymentTime = FormatterUtil.stringToLocalDate(paymentTimeStr, "yyyy-MM-dd",
@@ -53,7 +53,7 @@ public class ExpenseDetailCreateReqDTO {
 		this.price = price;
 		this.paymentMethod = paymentMethod;
 		this.category = category;
-		this.accountEtc = accountEtc;
+		this.accountingEtc = accountingEtc;
 		this.paymentTime = paymentTime;
 	}
 
@@ -64,7 +64,7 @@ public class ExpenseDetailCreateReqDTO {
 			.board(null)
 			.bookInfo(null)
 			.category(this.category)
-			.accountingEtc(this.accountEtc)
+			.accountingEtc(this.accountingEtc)
 			.paymentMethod(this.paymentMethod)
 			.paymentName(this.paymentName)
 			.price(this.price)

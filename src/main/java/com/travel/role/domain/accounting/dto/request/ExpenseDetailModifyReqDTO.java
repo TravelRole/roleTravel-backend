@@ -26,5 +26,5 @@ public class ExpenseDetailModifyReqDTO {
 	@NotNull(message = INVALID_CATEGORY)
 	private Category category;
 
-	private String accountEtc;
+	private String accountingEtc;
 }
