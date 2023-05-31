@@ -70,8 +70,8 @@ public class BookService {
 		participantRoleReadService.validateUserRoleInRoom(user, room, RoomRole.getReservationRoles());
 
 		modifyIsBooked(bookedRequestDTO.getBookInfoId(), !bookedRequestDTO.getIsBooked());
-		if (!bookedRequestDTO.getIsBooked())
-			modifyPaymentTime(bookedRequestDTO.getAccountingInfoId(), bookedRequestDTO.getPaymentTime());
+		modifyPaymentTime(bookedRequestDTO.getAccountingInfoId(), bookedRequestDTO.getPaymentTime(),
+			bookedRequestDTO.getIsBooked());
 	}
 
 	private void modifyIsBooked(Long bookInfoId, Boolean isBooked) {
@@ -80,10 +80,13 @@ public class BookService {
 		bookInfo.updateIsBooked(isBooked);
 	}
 
-	private void modifyPaymentTime(Long accountingInfoId, LocalDate paymentTime) {
+	private void modifyPaymentTime(Long accountingInfoId, LocalDate paymentTime, Boolean isBooked) {
 
 		AccountingInfo accountingInfo = accountingInfoReadService.findAccountingInfoByIdOrElseThrow(accountingInfoId);
-		accountingInfo.updatePaymentTime(paymentTime);
+		if (!isBooked)
+			accountingInfo.updatePaymentTime(paymentTime);
+		else
+			accountingInfo.updatePaymentTime(null);
 	}
 
 	public List<BookInfoResponseDTO> getBookInfo(String email, Long roomId, LocalDate date) {
