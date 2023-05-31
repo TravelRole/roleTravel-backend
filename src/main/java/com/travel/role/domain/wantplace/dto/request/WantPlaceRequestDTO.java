@@ -19,7 +19,6 @@ public class WantPlaceRequestDTO {
 	@NotBlank(message = ExceptionMessage.PLACE_NAME_VALUE_NOT_EMPTY)
 	private String placeName;
 
-	@NotBlank(message = ExceptionMessage.PLACE_ADDRESS_VALUE_NOT_EMPTY)
 	private String placeAddress;
 
 	private String phoneNumber;
@@ -32,7 +31,6 @@ public class WantPlaceRequestDTO {
 
 	private String category;
 
-	@NotBlank(message = ExceptionMessage.PLACE_ADDRESS_VALUE_NOT_EMPTY)
 	private String lotNumberAddress;
 
 	@NotNull(message = ExceptionMessage.MAP_PLACE_ID_VALUE_NOT_EMPTY)
