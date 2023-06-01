@@ -17,4 +17,10 @@ public interface AccountingInfoRepository extends JpaRepository<AccountingInfo, 
 	@Transactional
 	@Query("DELETE FROM AccountingInfo WHERE id = :ids")
 	void deleteAllByIds(@Param("ids") List<Long> ids);
+
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM AccountingInfo WHERE id IN :ids")
+	void deleteAllByIdsIn(@Param("ids") List<Long> ids);
+
 }

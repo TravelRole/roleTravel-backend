@@ -14,6 +14,6 @@ public interface ScheduleInfoRepository extends JpaRepository<ScheduleInfo, Long
 
 	@Modifying
 	@Transactional
-	@Query(value = "DELETE FROM ScheduleInfo s WHERE s.id IN :ids AND NOT EXISTS (SELECT a FROM s.board.accountingInfo a WHERE a.board.scheduleInfo = s)")
+	@Query(value = "DELETE FROM ScheduleInfo s WHERE s.id IN :ids")
 	void deleteAllByIds(@Param("ids") List<Long> ids);
 }

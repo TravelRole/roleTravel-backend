@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.role.domain.accounting.entity.AccountingInfo;
 import com.travel.role.domain.accounting.repository.AccountingInfoRepository;
+import com.travel.role.domain.accounting.service.AccountingInfoReadService;
 import com.travel.role.domain.book.entity.BookInfo;
 import com.travel.role.domain.book.repository.BookInfoRepository;
 import com.travel.role.domain.room.entity.Room;
@@ -18,6 +19,7 @@ import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.service.ParticipantRoleReadService;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
+import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.domain.schedule.dto.request.ScheduleModifyRequestDTO;
 import com.travel.role.domain.schedule.dto.request.ScheduleRequestDTO;
 import com.travel.role.domain.schedule.dto.response.ScheduleResponseDTO;
@@ -35,10 +37,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class ScheduleService {
+	private final RoomService roomService;
 	private final UserReadService userReadService;
 	private final RoomReadService roomReadService;
 	private final BoardReadService boardReadService;
 	private final ScheduleReadService scheduleReadService;
+	private final AccountingInfoReadService accountingInfoReadService;
 	private final RoomParticipantReadService roomParticipantReadService;
 	private final ParticipantRoleReadService participantRoleReadService;
 	private final BoardRepository boardRepository;
@@ -110,13 +114,20 @@ public class ScheduleService {
 		roomParticipantReadService.checkParticipant(user, room);
 		participantRoleReadService.validateUserRoleInRoom(user, room, RoomRole.getScheduleRoles());
 
-		deleteScheduleById(scheduleIds);
+		deleteScheduleById(roomId, scheduleIds);
 	}
 
-	private void deleteScheduleById(List<Long> scheduleIds) {
+	private void deleteScheduleById(Long roomId, List<Long> scheduleIds) {
 
+		List<AccountingInfo> accountingInfos = accountingInfoReadService.findAccountingInfoByRoomIdAndBoardIds(roomId,
+			scheduleIds);
+		List<Long> accountIds = roomService.getAccountIds(accountingInfos);
+		List<Long> bookIds = roomService.getBookIds(accountingInfos);
+
+		accountingInfoRepository.deleteAllByIdsIn(accountIds);
+		bookInfoRepository.deleteAllByIds(bookIds);
 		scheduleInfoRepository.deleteAllByIds(scheduleIds);
-		boardRepository.deleteAllByIdsExceptAccountingInfo(scheduleIds);
+		boardRepository.deleteAllByIds(scheduleIds);
 	}
 
 	public List<ScheduleResponseDTO> getSchedule(String email, Long roomId, LocalDate date) {
