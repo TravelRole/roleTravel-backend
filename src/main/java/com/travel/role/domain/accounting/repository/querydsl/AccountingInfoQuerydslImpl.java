@@ -26,7 +26,7 @@ public class AccountingInfoQuerydslImpl implements AccountingInfoQuerydsl {
 			.leftJoin(accountingInfo.bookInfo)
 			.fetchJoin()
 			.where(accountingInfo.room.id.eq(roomId), accountingInfo.paymentTime.eq(date),
-				eqPaymentMethod(paymentMethod))
+				eqPaymentMethod(paymentMethod), accountingInfo.price.gt(0))
 			.fetch();
 
 		return accountingInfos;
