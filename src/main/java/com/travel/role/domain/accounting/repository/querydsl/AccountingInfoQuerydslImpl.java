@@ -53,6 +53,16 @@ public class AccountingInfoQuerydslImpl implements AccountingInfoQuerydsl {
 			.fetch();
 	}
 
+	@Override
+	public List<AccountingInfo> findAccountingInfoByRoomIdOrBoardIds(Long roomId, List<Long> boardIds) {
+		return queryFactory
+			.selectDistinct(accountingInfo)
+			.from(accountingInfo)
+			.join(accountingInfo.bookInfo, bookInfo).fetchJoin()
+			.where(accountingInfo.room.id.eq(roomId).or(accountingInfo.board.id.in(boardIds)))
+			.fetch();
+	}
+
 	private BooleanExpression eqPaymentMethod(PaymentMethod paymentMethod) {
 
 		if (paymentMethod == null)

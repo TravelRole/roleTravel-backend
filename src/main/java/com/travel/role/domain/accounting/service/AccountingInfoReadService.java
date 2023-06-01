@@ -64,6 +64,10 @@ public class AccountingInfoReadService {
 		return new TotalExpenseDetailResDTO(totalExpense);
 	}
 
+	public List<AccountingInfo> findAccountingInfoByRoomIdOrBoardIds(Long roomId, List<Long> boardIds) {
+		return accountingInfoRepository.findAccountingInfoByRoomIdOrBoardIds(roomId, boardIds);
+	}
+
 	public List<AccountingInfo> findAccountingInfoByRoomIdAndBoardIds(Long roomId, List<Long> boardIds) {
 		return accountingInfoRepository.findAccountingInfoByRoomIdAndBoardIds(roomId, boardIds);
 	}

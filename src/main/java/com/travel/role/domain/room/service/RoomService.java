@@ -529,7 +529,7 @@ public class RoomService {
 
 	private void deleteAllData(Long roomId) {
 		List<Long> boardIds = roomRepository.findBoardIdsByRoomId(roomId);
-		List<AccountingInfo> accountingInfos = accountingInfoReadService.findAccountingInfoByRoomIdAndBoardIds(roomId,
+		List<AccountingInfo> accountingInfos = accountingInfoReadService.findAccountingInfoByRoomIdOrBoardIds(roomId,
 			boardIds);
 		List<Long> accountIds = getAccountIds(accountingInfos);
 		List<Long> bookIds = getBookIds(accountingInfos);

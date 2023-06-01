@@ -13,5 +13,7 @@ public interface AccountingInfoQuerydsl {
 
 	List<AccountingInfo> findAccountingInfoByRoomIdAndBoardIds(Long roomId, List<Long> boardIds);
 
+	List<AccountingInfo> findAccountingInfoByRoomIdOrBoardIds(Long roomId, List<Long> boardIds);
+
 	int findTotalExpenseByRoomId(Long roomId);
 }
