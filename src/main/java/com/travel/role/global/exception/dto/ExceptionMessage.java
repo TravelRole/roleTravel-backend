@@ -41,6 +41,8 @@ public final class ExceptionMessage {
 	public static final String ROOM_NAME_NOT_EMPTY = "방 이름은 필수값 입니다.";
 	public static final String ROLE_IS_EMPTY = "이 방에 해당하는 유저의 역할 정보가 존재하지 않습니다.";
 	public static final String ROOM_NOT_UPDATE_ADMIN = "방 수정에서는 총무를 변경할 수 없습니다.";
+	public static final String TIME_IS_EMPTY = "시간은 필수 값 입니다.";
+
 	// comment
 	public static final String COMMENT_NOT_EMPTY = "댓글 내용은 필수값 입니다.";
 	public static final String COMMENT_NOT_FOUND = "해당하는 댓글이 존재하지 않습니다.";

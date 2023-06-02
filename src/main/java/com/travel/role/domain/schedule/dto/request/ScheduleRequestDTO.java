@@ -25,6 +25,7 @@ public class ScheduleRequestDTO {
 	private String placeAddress;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+	@NotNull(message = ExceptionMessage.TIME_IS_EMPTY)
 	private LocalDateTime scheduleDate;
 
 	private String link;
