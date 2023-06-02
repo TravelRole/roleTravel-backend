@@ -22,9 +22,10 @@ public class ScheduleRequestDTO {
 	private String placeName;
 
 	@NotBlank(message = ExceptionMessage.PLACE_ADDRESS_VALUE_NOT_EMPTY)
-	private String placeAddress;
+	private String lotNumberAddress;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+	@NotNull(message = ExceptionMessage.TIME_IS_EMPTY)
 	private LocalDateTime scheduleDate;
 
 	private String link;

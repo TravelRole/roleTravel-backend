@@ -36,7 +36,7 @@ public class WantPlace extends BaseTime {
 	@Column(name = "place_name", length = 100, nullable = false)
 	private String placeName;
 
-	@Column(name = "place_address", length = 100, nullable = false)
+	@Column(name = "place_address", length = 100)
 	private String placeAddress;
 
 	@Column(name = "phone_number", length = 20)

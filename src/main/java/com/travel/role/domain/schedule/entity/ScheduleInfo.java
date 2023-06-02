@@ -55,7 +55,7 @@ public class ScheduleInfo {
 		this.latitude = scheduleRequestDTO.getLatitude();
 		this.longitude = scheduleRequestDTO.getLongitude();
 		this.placeName = scheduleRequestDTO.getPlaceName();
-		this.placeAddress = scheduleRequestDTO.getPlaceAddress();
+		this.placeAddress = scheduleRequestDTO.getLotNumberAddress();
 		this.scheduleEtc = scheduleRequestDTO.getEtc();
 		this.mapPlaceId = scheduleRequestDTO.getMapPlaceId();
 	}
