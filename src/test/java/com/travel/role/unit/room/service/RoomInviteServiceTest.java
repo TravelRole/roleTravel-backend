@@ -15,15 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.travel.role.domain.room.entity.Room;
-import com.travel.role.domain.room.repository.ParticipantRoleRepository;
 import com.travel.role.domain.room.repository.RoomParticipantRepository;
-import com.travel.role.domain.room.repository.RoomRepository;
 import com.travel.role.domain.room.service.ParticipantRoleReadService;
 import com.travel.role.domain.room.service.RoomInviteService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
-import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
 import com.travel.role.global.util.PasswordGenerator;
@@ -44,11 +41,7 @@ class RoomInviteServiceTest {
 	private ParticipantRoleReadService participantRoleReadService;
 
 	@Mock
-	private RoomRepository roomRepository;
-	@Mock
 	private RoomParticipantRepository roomParticipantRepository;
-	@Mock
-	private ParticipantRoleRepository participantRoleRepository;
 
 	@Mock
 	private PasswordGenerator passwordGenerator;
@@ -137,10 +130,6 @@ class RoomInviteServiceTest {
 			roomInviteService.inviteUser("haechan@naver.com", "1234", List.of("HAECHAN"));
 		})
 			.isInstanceOf(UserHaveNotPrivilegeException.class);
-	}
-
-	private static UserPrincipal makeUserPrincipal() {
-		return new UserPrincipal(1L, "haechan@naver.com", "1234", null);
 	}
 
 	private static Room makeRoom() {

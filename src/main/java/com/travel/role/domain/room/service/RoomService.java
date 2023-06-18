@@ -53,7 +53,6 @@ import com.travel.role.domain.schedule.repository.ScheduleInfoRepository;
 import com.travel.role.domain.travelessential.service.TravelEssentialService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
-import com.travel.role.global.exception.room.AdminIsOnlyOneException;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.RoomNotUpdateAdminException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
@@ -270,21 +269,6 @@ public class RoomService {
 			result.put(email, data);
 		}
 		return result;
-	}
-
-	private List<String> validateUserRoleAndEmail(List<RoomRoleDTO> userRoles) {
-		List<String> admins = new ArrayList<>();
-
-		for (RoomRoleDTO userRole : userRoles) {
-			if (userRole.getRoles().contains(RoomRole.ADMIN))
-				admins.add(userRole.getEmail());
-		}
-
-		if (admins.size() >= 2) {
-			throw new AdminIsOnlyOneException();
-		}
-
-		return admins;
 	}
 
 	@Transactional(readOnly = true)
