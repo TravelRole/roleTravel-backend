@@ -1,7 +1,6 @@
 package com.travel.role.domain.room.service;
 
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
-import static com.travel.role.global.util.Constants.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,7 +33,6 @@ import com.travel.role.domain.room.dto.request.RoomRoleDTO;
 import com.travel.role.domain.room.dto.response.AllPlanDTO;
 import com.travel.role.domain.room.dto.response.AllPlanResponseDTO;
 import com.travel.role.domain.room.dto.response.ExpenseResponseDTO;
-import com.travel.role.domain.room.dto.response.InviteResponseDTO;
 import com.travel.role.domain.room.dto.response.MemberDTO;
 import com.travel.role.domain.room.dto.response.RoomInfoResponseDTO;
 import com.travel.role.domain.room.dto.response.RoomResponseDTO;
@@ -56,12 +54,9 @@ import com.travel.role.domain.travelessential.service.TravelEssentialService;
 import com.travel.role.domain.user.entity.User;
 import com.travel.role.domain.user.service.UserReadService;
 import com.travel.role.global.exception.room.AdminIsOnlyOneException;
-import com.travel.role.global.exception.room.AlreadyExistInRoomException;
-import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.RoomNotUpdateAdminException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
-import com.travel.role.global.util.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -77,7 +72,6 @@ public class RoomService {
 	private final ParticipantRoleReadService participantRoleReadService;
 	private final RoomParticipantReadService roomParticipantReadService;
 	private final AccountingInfoReadService accountingInfoReadService;
-	private final PasswordGenerator passwordGenerator;
 	private final RoomReadService roomReadService;
 	private final BoardRepository boardRepository;
 	private final CommentService commentService;
@@ -146,87 +140,11 @@ public class RoomService {
 			throw new InvalidLocalDateException(INVALID_DATE_ERROR);
 	}
 
-	public String makeInviteCode(String email, Long roomId) {
-		User user = userReadService.findUserByEmailOrElseThrow(email);
-		Room room = roomReadService.findRoomByIdOrElseThrow(roomId);
-
-		validRoomRole(user, room, RoomRole.ADMIN);
-
-		String inviteCode = room.getRoomInviteCode();
-		if (validateInviteCode(room)) {
-			inviteCode = generateInviteCode();
-			room.updateInviteCode(inviteCode, LocalDateTime.now());
-		}
-
-		return inviteCode;
-	}
-
-	private boolean validateInviteCode(Room room) {
-		return room.getRoomInviteCode() == null || room.getRoomExpiredTime().plusDays(1L).isAfter(LocalDateTime.now());
-	}
-
 	private void validRoomRole(User user, Room room, RoomRole... checkRooms) {
 		boolean isExist = participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room,
 			Arrays.asList(checkRooms));
 		if (!isExist)
 			throw new UserHaveNotPrivilegeException();
-	}
-
-	private String generateInviteCode() {
-		String inviteCode = passwordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
-
-		while (roomRepository.existsByRoomInviteCode(inviteCode)) {
-			inviteCode = passwordGenerator.generateRandomPassword(MAX_PASSWORD_LENGTH);
-		}
-
-		return inviteCode;
-	}
-
-	@Transactional(readOnly = true)
-	public void checkRoomInviteCode(String email, String inviteCode) {
-		Room room = roomReadService.getRoomUsingInviteCode(inviteCode);
-
-		validateInviteRoom(email, room);
-	}
-
-	private void validateInviteRoom(String email, Room room) {
-		if (!validateInviteCode(room)) {
-			throw new InvalidInviteCode();
-		}
-
-		if (roomParticipantRepository.existsUserInRoom(email, room.getId())) {
-			throw new AlreadyExistInRoomException();
-		}
-	}
-
-	public InviteResponseDTO inviteUser(String email, String inviteCode, List<String> roles) {
-		Room room = roomReadService.getRoomUsingInviteCode(inviteCode);
-		User user = userReadService.findUserByEmailOrElseThrow(email);
-
-		validateInviteRoom(email, room);
-		validateSelectRole(roles);
-
-		for (String role : roles) {
-			ParticipantRole participantRole = new ParticipantRole(null, RoomRole.valueOf(role), user, room);
-			participantRoleRepository.save(participantRole);
-		}
-
-		RoomParticipant roomParticipant = new RoomParticipant(null, LocalDateTime.now(), false, user, room);
-		roomParticipantRepository.save(roomParticipant);
-
-		return new InviteResponseDTO(room.getId());
-	}
-
-	private void validateSelectRole(List<String> roles) {
-		for (String role : roles) {
-			try {
-				if (RoomRole.valueOf(role) == RoomRole.ADMIN) {
-					throw new UserHaveNotPrivilegeException();
-				}
-			} catch (IllegalArgumentException e) {
-				throw new UserHaveNotPrivilegeException();
-			}
-		}
 	}
 
 	public List<TimeResponseDTO> getTime(Long roomId) {
