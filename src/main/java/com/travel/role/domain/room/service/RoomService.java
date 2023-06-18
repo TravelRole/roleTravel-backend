@@ -1,6 +1,7 @@
 package com.travel.role.domain.room.service;
 
 import static com.travel.role.global.exception.dto.ExceptionMessage.*;
+import static com.travel.role.global.util.Constants.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -68,8 +69,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class RoomService {
-
-	private static final int MAX_PASSWORD_LENGTH = 20;
 
 	private final RoomRepository roomRepository;
 	private final UserReadService userReadService;

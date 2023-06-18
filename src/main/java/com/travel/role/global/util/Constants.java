@@ -6,4 +6,5 @@ public final class Constants {
 	public static final String REFRESH_TOKEN_NAME = "refreshToken";
 	public static final String OAUTH_LOGIN_FAILURE = "소셜 로그인에 실패하였습니다";
 	public static final String COOKIE_HEADER = "Set-Cookie";
+	public static final int MAX_PASSWORD_LENGTH = 20;
 }
