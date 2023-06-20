@@ -64,4 +64,10 @@ public class ParticipantRoleReadService {
 
 		return participantRoles;
 	}
+
+	public void validIsAdmin(User user, Room room) {
+		if (!participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(user, room, List.of(RoomRole.ADMIN))) {
+			throw new UserHaveNotPrivilegeException();
+		}
+	}
 }

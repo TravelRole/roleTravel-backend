@@ -20,9 +20,6 @@ import com.travel.role.domain.room.entity.Room;
 import com.travel.role.domain.room.entity.RoomParticipant;
 import com.travel.role.domain.room.entity.RoomRole;
 import com.travel.role.domain.room.repository.ParticipantRoleRepository;
-import com.travel.role.domain.room.repository.RoomParticipantRepository;
-import com.travel.role.domain.room.repository.RoomRepository;
-import com.travel.role.domain.room.service.ParticipantRoleReadService;
 import com.travel.role.domain.room.service.RoomParticipantReadService;
 import com.travel.role.domain.room.service.RoomReadService;
 import com.travel.role.domain.room.service.RoomService;
@@ -32,35 +29,17 @@ import com.travel.role.domain.wantplace.dto.request.WantPlaceRequestDTO;
 import com.travel.role.domain.wantplace.entity.WantPlace;
 import com.travel.role.domain.wantplace.repository.WantPlaceRepository;
 import com.travel.role.domain.wantplace.service.WantPlaceService;
-import com.travel.role.global.auth.token.UserPrincipal;
 import com.travel.role.global.exception.dto.ExceptionMessage;
-import com.travel.role.global.exception.room.InvalidInviteCode;
 import com.travel.role.global.exception.room.InvalidLocalDateException;
 import com.travel.role.global.exception.room.UserHaveNotPrivilegeException;
-import com.travel.role.global.util.PasswordGenerator;
 
 @ExtendWith(MockitoExtension.class)
 class RoomServiceTest {
 
 	@InjectMocks
 	private RoomService roomService;
-
-	@Mock
-	private UserReadService userReadService;
-
-	@Mock
-	private RoomReadService roomReadService;
-
-	@Mock
-	private PasswordGenerator passwordGenerator;
-	@Mock
-	private RoomParticipantRepository roomParticipantRepository;
 	@Mock
 	private ParticipantRoleRepository participantRoleRepository;
-	@Mock
-	private RoomRepository roomRepository;
-	@Mock
-	private ParticipantRoleReadService participantRoleReadService;
 
 	@Test
 	void 시작날짜가_종료날짜보다_클_경우() {
@@ -72,94 +51,6 @@ class RoomServiceTest {
 		assertThatThrownBy(() -> roomService.makeRoom(null, newDto))
 			.isInstanceOf(InvalidLocalDateException.class)
 			.hasMessageContaining(ExceptionMessage.INVALID_DATE_ERROR);
-	}
-
-	@Test
-	void 해당_유저의_코드가_유효기간이_지나_재생성_해야하는_경우() {
-		//given
-		given(passwordGenerator.generateRandomPassword(20))
-			.willReturn("1234");
-		given(participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(any(User.class), any(Room.class), anyList()))
-			.willReturn(true);
-		given(userReadService.findUserByEmailOrElseThrow(anyString()))
-			.willReturn(User.builder().build());
-		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
-			.willReturn(new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
-				null, "강릉", "12", LocalDateTime.now().minusDays(1L).plusSeconds(1L)));
-		given(roomRepository.existsByRoomInviteCode(anyString()))
-			.willReturn(false);
-
-		//when
-		String inviteCode = roomService.makeInviteCode("haechan@naver.com", 1L);
-
-		//then
-		assertThat(inviteCode).isEqualTo("1234");
-	}
-
-	@Test
-	void 해당_유저의_코드를_처음_생성해_초대코드를_생성해야_하는_경우() {
-		//given
-		given(passwordGenerator.generateRandomPassword(20))
-			.willReturn("1234");
-		given(participantRoleRepository.existsByUserAndRoomAndRoomRoleIn(any(User.class), any(Room.class), anyList()))
-			.willReturn(true);
-		given(userReadService.findUserByEmailOrElseThrow(anyString()))
-			.willReturn(User.builder().build());
-		given(roomReadService.findRoomByIdOrElseThrow(anyLong()))
-			.willReturn(makeRoom());
-
-		//when
-		String inviteCode = roomService.makeInviteCode("haechan@naver.com", 1L);
-
-		//then
-		assertThat(inviteCode).isEqualTo("1234");
-	}
-
-	@Test
-	void 방에_들어갔는데_코드가_만료된_경우() {
-		//given
-		given(roomReadService.getRoomUsingInviteCode(anyString()))
-			.willReturn(makeInvalidInviteDateRoom());
-
-		//when,then
-		assertThatThrownBy(() -> {
-			roomService.checkRoomInviteCode("haechan@naver.com", "1234");
-		})
-			.isInstanceOf(InvalidInviteCode.class);
-	}
-
-	@Test
-	void 초대한_방_링크로_접속했을때_총무_역할을_선택한_경우() {
-		//given
-		given(roomReadService.getRoomUsingInviteCode(anyString()))
-			.willReturn(makeRoom());
-		given(userReadService.findUserByEmailOrElseThrow(anyString()))
-			.willReturn(makeUser());
-		given(roomParticipantRepository.existsUserInRoom(anyString(), anyLong()))
-			.willReturn(false);
-
-		//when, then
-		assertThatThrownBy(() -> {
-			roomService.inviteUser("haechan@naver.com", "1234", List.of("ADMIN"));
-		})
-			.isInstanceOf(UserHaveNotPrivilegeException.class);
-	}
-
-	@Test
-	void 초대한_방_링크로_접속했을때_존재하지_않은_역할을_선택한_경우() {
-		//given
-		given(roomReadService.getRoomUsingInviteCode(anyString()))
-			.willReturn(makeRoom());
-		given(userReadService.findUserByEmailOrElseThrow(anyString()))
-			.willReturn(makeUser());
-		given(roomParticipantRepository.existsUserInRoom(anyString(), anyLong()))
-			.willReturn(false);
-
-		//when, then
-		assertThatThrownBy(() -> {
-			roomService.inviteUser("haechan@naver.com", "1234", List.of("HAECHAN"));
-		})
-			.isInstanceOf(UserHaveNotPrivilegeException.class);
 	}
 
 	@Test
@@ -179,24 +70,6 @@ class RoomServiceTest {
 		RoomRoleDTO roomRoleDTO2 = new RoomRoleDTO("chan@naver.com", List.of(RoomRole.ADMIN));
 		List<RoomRoleDTO> roomRoleDTOS = List.of(roomRoleDTO1, roomRoleDTO2);
 		return new RoomModifiedRequestDTO("경주로 고고", "경주", startDate, endDate, roomRoleDTOS);
-	}
-
-	private static UserPrincipal makeUserPrincipal() {
-		return new UserPrincipal(1L, "haechan@naver.com", "1234", null);
-	}
-
-	private static Room makeRoom() {
-		return new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
-			1L, "강릉", null, null);
-	}
-
-	private static Room makeInvalidInviteDateRoom() {
-		return new Room(1L, "강릉으로떠나요", LocalDate.now(), LocalDate.now().plusDays(1L),
-			1L, "강릉", "1234", LocalDateTime.now().minusDays(2L));
-	}
-
-	private static User makeUser() {
-		return new User(1L, "해찬", "haechan@naver.com", "1234", null, LocalDate.now());
 	}
 
 	@ExtendWith(MockitoExtension.class)

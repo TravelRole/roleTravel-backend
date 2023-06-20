@@ -30,6 +30,7 @@ import com.travel.role.domain.room.dto.response.RoomResponseDTO;
 import com.travel.role.domain.room.dto.response.SidebarResponseDTO;
 import com.travel.role.domain.room.dto.response.TimeResponseDTO;
 import com.travel.role.domain.room.entity.RoomRole;
+import com.travel.role.domain.room.service.RoomInviteService;
 import com.travel.role.domain.room.service.RoomService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
@@ -41,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 public class RoomController {
 
 	private final RoomService roomService;
+	private final RoomInviteService roomInviteService;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/room")
@@ -56,20 +58,20 @@ public class RoomController {
 	@GetMapping("/room/invite-code/{room_id}")
 	public String getInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("room_id") Long roomId) {
-		return roomService.makeInviteCode(userPrincipal.getEmail(), roomId);
+		return roomInviteService.makeInviteCode(userPrincipal.getEmail(), roomId);
 	}
 
 	@GetMapping("/check-room/{invite_code}")
 	public void checkRoomInviteCode(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("invite_code") String inviteCode) {
-		roomService.checkRoomInviteCode(userPrincipal.getEmail(), inviteCode);
+		roomInviteService.checkRoomInviteCode(userPrincipal.getEmail(), inviteCode);
 	}
 
 	@PostMapping("/room/{invite_code}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public InviteResponseDTO inviteUser(@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@PathVariable("invite_code") String inviteCode, @RequestBody List<String> roles) {
-		return roomService.inviteUser(userPrincipal.getEmail(), inviteCode, roles);
+		return roomInviteService.inviteUser(userPrincipal.getEmail(), inviteCode, roles);
 	}
 
 	@GetMapping("/room/day")
