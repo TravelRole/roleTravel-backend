@@ -1,44 +1,35 @@
 package com.travel.role.global.auth.service;
 
-import static com.travel.role.global.exception.ExceptionMessage.*;
-
-import java.util.Optional;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.travel.role.domain.user.dao.UserRepository;
-import com.travel.role.domain.user.domain.UserEntity;
+import com.travel.role.global.auth.entity.AuthInfo;
+import com.travel.role.global.auth.repository.AuthReadService;
 import com.travel.role.global.auth.token.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-	private final UserRepository userRepository;
+	private final AuthReadService authReadService;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-		UserEntity user = userRepository.findByEmail(email)
-			.orElseThrow(() ->
-				new UsernameNotFoundException(USERNAME_NOT_FOUND));
+		AuthInfo authInfo = authReadService.findUserByEmailOrElseThrow(email);
 
-		return UserPrincipal.create(user);
+		return UserPrincipal.create(authInfo);
 	}
 
-	@Transactional
 	public UserDetails loadUserById(Long id) {
-		Optional<UserEntity> user = userRepository.findById(id);
-		if (user.isEmpty()) {
-			throw new UsernameNotFoundException(USERNAME_NOT_FOUND);
-		}
+		AuthInfo authInfo = authReadService.findUserByIdOrElseThrow(id);
 
-		return UserPrincipal.create(user.get());
+		return UserPrincipal.create(authInfo);
 	}
 }

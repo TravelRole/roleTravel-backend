@@ -1,0 +1,14 @@
+cloud:
+  aws:
+    ses:
+      access-key: ENC(Qo7GUCZwBxIPnm9GyVHw0sgKB3RtdSAifL4pRfewalM=)
+      secret-key: ENC(qCd2aIfWKtVpzKfxwHxv8sRwmnXVyg3M7fJw7vTn89piPEQKgIAXwzN1TPsa562NaOlT7SLP7zc=)
+    s3:
+      credentials:
+        accessKey: ENC(IlmbXknVPL7fdZy7MIQtdc6A3HkW02ILZ9gXvqdpSds=)
+        secretKey: ENC(4b9qi8p0FeIFZEZcaRCxTlXJEpJ8FRBEG9EoC3evNtrh12P/+BAti2kBLikyUFJFse2Iz4wGBZM=)
+      bucket: ENC(743o2jb4oyIiTHoglXlirxJbM83rY3hC)
+      region:
+        static: ap-northeast-2
+    stack:
+      auto: false

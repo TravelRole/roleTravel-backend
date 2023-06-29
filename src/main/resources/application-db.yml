@@ -1,0 +1,49 @@
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "db-local"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:13306/travel?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: ENC(XrpSHS7ui0UHI0+lHi+gfQ==)
+    password: ENC(kTCBipfR9pT65kKfvf2cfw==)
+
+  jpa:
+    database: MYSQL
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          time_zone: Asia/Seoul
+---
+spring:
+  config:
+    activate:
+      on-profile: "db-dev"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(xX2NII+W8Klp6f5JFOs1RwKKdfUeoZtMUiUrt5axw+Xr96Xge3qfpg+RbLM8LE7FoyTWyGBhXvR78WKR/7djFjkfD2aFHrRzDpr1ePl8fEmRmkD502mZVmXQLHA9gmH5hmH4QQ2wxkSxPHlu0dEVcFEE2hBXvO6ZWbUgGiFE6AhP7ImYNn+GASJeo41Ty2GOn/ErYQzTv6XfrTLkWcKhlXJj5POu9LV1KEraPKf4z9cZQCywtojNOQ==)
+    username: ENC(zpu19pDvBBlJ4Vln6GVoAQ==)
+    password: ENC(zO8mdpjWkI7QZYrrUHzW5ehsEzJORh7BP+K2ojEH2VQ=)
+
+  jpa:
+    database: MYSQL
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          time_zone: Asia/Seoul

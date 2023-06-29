@@ -1,20 +1,23 @@
 package com.travel.role.global.auth.service;
 
+import static com.travel.role.global.exception.dto.ExceptionMessage.*;
+
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.travel.role.global.auth.dto.TokenResponse;
+import com.travel.role.global.auth.dto.AccessTokenRequestDTO;
 import com.travel.role.global.auth.dto.TokenMapping;
 import com.travel.role.global.auth.token.UserPrincipal;
+import com.travel.role.global.exception.auth.InvalidTokenException;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -29,14 +32,31 @@ public class TokenProvider {
 
 	private final CustomUserDetailService customUserDetailService;
 
-	private static final Long ACCESS_TOKEN_EXPIRATION = 1000L * 60 * 5;
-	private static final Long REFRESH_TOKEN_EXPIRATION = 1000L * 60 * 10;
-	private static final String SECRET_KEY = "secretsegseigjesilgjesigjesiljgesilgjeislfilesnilvsenilsenfklesnfiesseifnesilnesi21tgf8h3igh38o2ur59t23utg9ehjnwasiotu89023uqjrtfi3qgh0983y12ht923h90gh3qw2g923h9g230hng239gh";
+	private static Long accessTokenExpiration;
+
+	private static Long refreshTokenExpiration;
+
+	private static String secretKey;
+
+	@Value("${accessTokenExpireTime}")
+	public void setAccessTokenExpiration(Long accessTokenExpiration) {
+		this.accessTokenExpiration = accessTokenExpiration;
+	}
+
+	@Value("${refreshTokenExpireTime}")
+	public void setRefreshTokenExpiration(Long refreshTokenExpiration) {
+		this.refreshTokenExpiration = refreshTokenExpiration;
+	}
+
+	@Value("${secretKey}")
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
+	}
 
 	public TokenMapping createToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
 
-		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		SecretKey key = Keys.hmacShaKeyFor(keyBytes);
 
 		String accessToken = createAccessToken(userPrincipal, key);
@@ -46,22 +66,22 @@ public class TokenProvider {
 		return new TokenMapping(userPrincipal.getEmail(), accessToken, refreshToken);
 	}
 
-	public TokenResponse refreshAccessToken(Authentication authentication) {
+	public AccessTokenRequestDTO refreshAccessToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
 
-		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		SecretKey key = Keys.hmacShaKeyFor(keyBytes);
 
 		String accessToken = createAccessToken(userPrincipal, key);
 
-		return new TokenResponse(accessToken, null);
+		return new AccessTokenRequestDTO(accessToken);
 	}
 
 	private static String createAccessToken(UserPrincipal userPrincipal, SecretKey key) {
 		Date now = new Date();
 		return Jwts.builder()
 			.setIssuedAt(now)
-			.setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION))
+			.setExpiration(new Date(now.getTime() + accessTokenExpiration))
 			.setIssuer("Travel-Role")
 			.setSubject(Long.toString(userPrincipal.getId()))
 			.signWith(key, SignatureAlgorithm.HS512).compact();
@@ -70,7 +90,7 @@ public class TokenProvider {
 	private static String createRefreshToken(SecretKey key) {
 		Date now = new Date();
 		return Jwts.builder()
-			.setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION))
+			.setExpiration(new Date(now.getTime() + refreshTokenExpiration))
 			.signWith(key, SignatureAlgorithm.HS512).compact();
 	}
 
@@ -82,7 +102,7 @@ public class TokenProvider {
 
 	public Long getUserIdFromToken(String token) {
 		Claims claims = Jwts.parserBuilder()
-			.setSigningKey(SECRET_KEY)
+			.setSigningKey(secretKey)
 			.build()
 			.parseClaimsJws(token)
 			.getBody();
@@ -92,19 +112,16 @@ public class TokenProvider {
 
 	public void validateToken(String token) {
 		try {
-			Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
-		} catch (ExpiredJwtException e) {
-			log.info("validation 결과 Jwt 토큰이 잘못되었습니다 : {}", e.getMessage());
-			throw e;
+			Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
 		} catch (Exception e) {
 			log.info("JWT 토큰이 잘못되었습니다 : {}", e.getMessage());
-			throw e;
+			throw new InvalidTokenException(INVALID_TOKEN);
 		}
 	}
 
 	public Long getTokenExpiration(String token) {
 		Date expiration = Jwts.parserBuilder()
-			.setSigningKey(SECRET_KEY)
+			.setSigningKey(secretKey)
 			.build()
 			.parseClaimsJws(token)
 			.getBody()

@@ -1,0 +1,34 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(BOY0pJfJAS/FWMg/xrxh+NAcBJi3Ny1f6llUjAn91Mmgu3sXXkAgB4VD4lQ+ddhihbPmMIYkpqXbQeAvmZQIajxBCcHphplMscLDAN54/iOVmYCX85V17Q==)
+            client-secret: ENC(/M5KAZAMC0VsKVsHeY27PYbJMzYMJSfEZK8WVYY9nqRgBgTeK82lrZtgy+rutP5A)
+            redirect-uri: https://dev.travel-role.com/oauth2/callback/google
+            scope: profile,email
+          kakao:
+            client-id: ENC(OlKEOgMNgf6nfmqp6e98acodDmtLwZyncwADfLg3VPAiSaa6QIUNz+LVv7lqHGci)
+            client-secret: ENC(J02uIb7BLBhp26Bs2Zca3SoQlMatIQIwVEEvbohtqiPZhbQrAW4NouCNcuuPZTfC)
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email, birthday
+            client-name: Kakao
+            redirect-uri: https://dev.travel-role.com/oauth2/callback/kakao
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+redirectPath: ENC(PzGk5vguQAe8hnJRjegAA3h1CnZCQSy52yvpWkLRJMLN9hLUbxXExCLPJZ3ttjjwl4OgM/opbjk=)
+
+# 60 * 60 * 24 * 14
+cookieExpireTime: 1209600
+cookieDomain: ENC(7bmpkt2FFk45Fvsw18INs1D9oQiT9Q6NOpdWMpdyyKk=)
+
+secretKey: ENC(nGmivbDHDjs+9lRnOwPFWDhN8X5HeWUeMeJSuf4BWNfxjieC1wXqjfyVe9CXte5WrqCNdi4jTcNRPJ10lqp6cEfV8QYWDobyZmf25cROhlQb+My3a5wpFwLWz6RWgJg2X1nCAtTD+uT/5auYIbv7RhGZy3kY2MOpIamUqLaPcBM=)
+accessTokenExpireTime: 3600000
+refreshTokenExpireTime: 21600000
